@@ -4,7 +4,6 @@ import { CprContext } from '../../context/CprContext.jsx';
 const PatientSelection = () => {
   const { dispatch } = useContext(CprContext);
 
-  // Später erweitern wir diese Funktionen, um auch das Patient-Objekt (Gewicht etc.) im Reducer zu speichern.
   const handleAdult = () => {
     dispatch({ type: 'SET_PHASE', payload: 'COMPRESSION_CHECK' });
   };
