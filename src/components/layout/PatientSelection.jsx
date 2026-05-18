@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { CprContext } from '../../context/CprContext.jsx';
+import { CprContext } from '../context/CprContext.jsx'; // Ein Ordner hoch, dann in context
 
 const PatientSelection = () => {
   const { dispatch } = useContext(CprContext);
