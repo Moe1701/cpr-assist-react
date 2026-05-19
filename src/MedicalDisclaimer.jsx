@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
-import { CprContext } from '../../context/CprContext.jsx';
+
 
 const MedicalDisclaimer = () => {
   const { hasAcceptedDisclaimer, acceptDisclaimer } = useContext(CprContext);
-
+import { CprContext } from "./context/CprContext.jsx";
   // Wenn noch nicht akzeptiert -> Bildfüllendes Overlay (Blur)
   if (!hasAcceptedDisclaimer) {
     return (
