@@ -1,7 +1,12 @@
 import React from 'react';
+
+// Der Tresor mit allen Daten
 import { CprProvider } from './context/CprContext.jsx';
-import MedicalDisclaimer from './MedicalDisclaimer.jsx'; 
-import CenterDisplay from './components/CenterDisplay.jsx'; 
+
+// Unsere globalen Komponenten
+import MedicalDisclaimer from './MedicalDisclaimer.jsx';
+import CenterDisplay from './components/CenterDisplay.jsx';
+import PatientSetupModal from './components/PatientSetupModal.jsx'; 
 
 export default function App() {
   return (
@@ -20,13 +25,15 @@ export default function App() {
           </div>
         </header>
 
-        {/* Disclaimer Overlay */}
+        {/* OVERLAYS (Liegen über der gesamten App, z-Index greift hier) */}
         <MedicalDisclaimer />
+        <PatientSetupModal /> 
 
-        {/* Interface */}
+        {/* INTERFACE (Der Kreis und später die Satelliten) */}
         <main className="flex-1 flex flex-col items-center justify-center p-4 relative z-10">
            <CenterDisplay />
         </main>
+        
       </div>
     </CprProvider>
   );
