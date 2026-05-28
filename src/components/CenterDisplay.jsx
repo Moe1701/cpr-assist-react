@@ -5,11 +5,12 @@ import PatientSelection from './PatientSelection.jsx';
 export default function CenterDisplay() {
   const { state } = useContext(CprContext);
 
-  // Der Kreis wird kleiner, sobald der CPR-Timer läuft
-  const isRunning = state.appPhase === 'CPR_RUNNING'; 
-  const sizeClasses = isRunning
-    ? 'w-[224px] h-[224px] sm:w-[244px] sm:h-[244px]'
-    : 'w-[330px] h-[330px] sm:w-[400px] sm:h-[400px]';
+  // Der Kreis wird kleiner (224px), sobald die Rea-Logik gestartet wurde
+  const isRunning = state.isCompressing; 
+  
+  // WICHTIG: Wir nutzen hartcodierte INLINE-Styles (wie in deinem Original-Code), 
+  // damit Tailwind (PurgeCSS) den Kreis beim Kompilieren nicht auf 0 Pixel schrumpft!
+  const circleSize = isRunning ? 224 : 330;
 
   // Die Routing-Zentrale: Was soll im Kreis angezeigt werden?
   const renderPhase = () => {
@@ -33,7 +34,10 @@ export default function CenterDisplay() {
   };
 
   return (
-    <div className={`${sizeClasses} rounded-full bg-white shadow-[0_20px_60px_rgba(0,0,0,0.05)] border border-slate-100 flex items-center justify-center mx-auto my-auto relative overflow-hidden pointer-events-auto z-30 transition-all duration-500`}>
+    <div 
+      style={{ width: `${circleSize}px`, height: `${circleSize}px` }}
+      className="rounded-full bg-white shadow-[0_20px_60px_rgba(0,0,0,0.05)] border border-slate-100 flex items-center justify-center mx-auto my-auto relative overflow-hidden pointer-events-auto z-30 transition-all duration-500 shrink-0"
+    >
       {renderPhase()}
     </div>
   );
