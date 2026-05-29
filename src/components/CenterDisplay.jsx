@@ -5,25 +5,31 @@ import PatientSelection from './PatientSelection.jsx';
 export default function CenterDisplay() {
   const { state } = useContext(CprContext);
 
-  // Der Kreis wird kleiner (224px), sobald die Rea-Logik gestartet wurde
-  const isRunning = state.isCompressing; 
-  
-  // WICHTIG: Wir nutzen hartcodierte INLINE-Styles (wie in deinem Original-Code), 
-  // damit Tailwind (PurgeCSS) den Kreis beim Kompilieren nicht auf 0 Pixel schrumpft!
-  const circleSize = isRunning ? 224 : 330;
+  // KORREKTUR: Der Kreis schrumpft ERST im finalen Dashboard,
+  // nicht schon während des Onboardings!
+  const isDashboard = state.appPhase === 'RUNNING'; 
+  const circleSize = isDashboard ? 224 : 330;
 
-  // Die Routing-Zentrale: Was soll im Kreis angezeigt werden?
   const renderPhase = () => {
     switch (state.appPhase) {
       case 'ONBOARDING':
       case 'OB_INITIAL_BREATHS':
       case 'OB_COMPRESSIONS':
       case 'OB_ANALYZE':
-        // Unsere Onboarding-State-Machine übernimmt all diese Phasen
+      case 'DECISION':
+      case 'JOULE':
+      case 'WAITING_CPR_RESUME':
+        // All diese Phasen gehören zum großen Onboarding/Menü-Kreis
         return <PatientSelection />;
       
+      case 'RUNNING':
+        return (
+          <div className="text-center w-full z-10 p-6 flex flex-col items-center justify-center">
+            <div className="text-4xl font-black text-slate-700">120</div>
+          </div>
+        );
+
       default:
-        // Ein Platzhalter für alle Phasen, die wir noch nicht gebaut haben
         return (
           <div className="text-center w-full z-10 p-6">
             <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px] mb-2">Work in Progress</p>
