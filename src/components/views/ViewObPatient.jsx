@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-// Passe den Pfad an die flache Struktur der Vorschau-Umgebung an
-import { CprContext } from '../../CprContext.jsx';
+// Korrekter Pfad: Zwei Ebenen zurück (aus /views in /components in /src), dann in context
+import { CprContext } from '../../context/CprContext.jsx';
 
 export default function ViewObPatient() {
   const { dispatch } = useContext(CprContext);

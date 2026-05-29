@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
-// Pfad korrigiert
-import { CprContext } from '../../CprContext.jsx';
+import { CprContext } from '../../context/CprContext.jsx';
 
 export default function ViewObInitialBreaths() {
   const { dispatch } = useContext(CprContext);

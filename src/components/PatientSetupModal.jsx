@@ -1,26 +1,17 @@
 import React, { useContext, useState } from 'react';
-// Wichtig: Wir nutzen den globalen Context
+// Korrekter Pfad: Eine Ebene zurück, dann in den context Ordner
 import { CprContext } from '../context/CprContext.jsx';
 
 export default function PatientSetupModal() {
   const { state, dispatch } = useContext(CprContext);
-  
-  // Wir nutzen 4kg (Säugling, Grau) als Standard-Startwert
   const [weight, setWeight] = useState(4);
 
-  // Wenn das Modal nicht offen ist, rendere nichts (spart Leistung)
   if (!state.isPatientModalOpen) return null;
 
-  // 1. Finde die aktive Broselow-Zone basierend auf dem aktuellen Gewicht
   const activeZone = state.broselowData.find(z => weight >= z.minKg && weight <= z.maxKg) || state.broselowData[0];
-
-  // 2. Ableitungen für die Slider, damit sie sich synchron zum Gewicht bewegen
-  // Pädiatrische Faustformel Alter -> Gewicht: kg = 2 * (Alter + 4)
   const derivedAge = weight < 10 ? 0 : Math.max(1, (weight - 8) / 2);
-  // Größe näherungsweise zwischen 55cm (4kg) und 135cm (33kg)
   const derivedHeight = 55 + ((weight - 4) / 29) * 80;
 
-  // 3. Optische Zuweisung der echten Broselow-Farben für Tailwind
   const colorStyles = {
     grau:   'bg-slate-400 text-white border-slate-500',
     rosa:   'bg-pink-400 text-white border-pink-500',
@@ -47,10 +38,7 @@ export default function PatientSetupModal() {
 
   return (
     <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200">
-      
       <div className="bg-white w-full max-w-sm rounded-[32px] p-6 shadow-2xl relative animate-in zoom-in-95 duration-300 flex flex-col">
-        
-        {/* Schließen Button */}
         <button 
           onClick={() => dispatch({ type: 'TOGGLE_PATIENT_MODAL', payload: false })}
           className="absolute top-4 right-4 w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-200 active:scale-95 transition-all"
@@ -58,17 +46,11 @@ export default function PatientSetupModal() {
           <i className="fa-solid fa-xmark"></i>
         </button>
 
-        {/* Header */}
         <div className="text-center mb-6 mt-2">
-          <h2 className="text-lg font-black text-slate-800 uppercase tracking-widest">
-            Pädiatrie Setup
-          </h2>
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">
-            Alter | Gewicht | Größe
-          </p>
+          <h2 className="text-lg font-black text-slate-800 uppercase tracking-widest">Pädiatrie Setup</h2>
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Alter | Gewicht | Größe</p>
         </div>
 
-        {/* Broselow Grid (3x3) */}
         <div className="grid grid-cols-3 gap-2 mb-6">
           {state.broselowData.map((zone) => {
             const isActive = activeZone.color === zone.color;
@@ -84,10 +66,7 @@ export default function PatientSetupModal() {
           })}
         </div>
 
-        {/* Sliders */}
         <div className="space-y-5 mb-6 px-1">
-          
-          {/* Alter Slider */}
           <div className="flex items-center gap-4">
             <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest w-16">Alter</span>
             <input 
@@ -104,7 +83,6 @@ export default function PatientSetupModal() {
             </span>
           </div>
 
-          {/* Gewicht Slider (Master) */}
           <div className="flex items-center gap-4">
             <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest w-16">Gewicht</span>
             <input 
@@ -118,7 +96,6 @@ export default function PatientSetupModal() {
             </span>
           </div>
 
-          {/* Größe Slider */}
           <div className="flex items-center gap-4">
             <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest w-16">Größe</span>
             <input 
@@ -136,14 +113,12 @@ export default function PatientSetupModal() {
           </div>
         </div>
 
-        {/* Info Text */}
         <div className="text-center mb-6 bg-slate-50 py-2 rounded-xl border border-slate-100">
           <span className="text-[11px] font-bold text-slate-600 uppercase tracking-widest">
             <span className="font-black text-slate-800">{activeZone.color}</span> | ~{activeZone.avgKg}kg | {activeZone.ageStr}
           </span>
         </div>
 
-        {/* Action Buttons */}
         <div className="flex items-center gap-3 mt-auto">
           <button onClick={handleStartLater} className="flex flex-col items-center justify-center w-[100px] h-[55px] text-slate-400 active:scale-95 transition-all hover:bg-slate-50 rounded-xl border border-slate-200">
             <i className="fa-solid fa-weight-scale text-lg mb-1"></i>
@@ -155,7 +130,6 @@ export default function PatientSetupModal() {
             <i className="fa-solid fa-play text-sm"></i>
           </button>
         </div>
-
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { CprContext } from '../CprContext.jsx'; // KORRIGIERTER PFAD
+import { CprContext } from '../../context/CprContext.jsx';
 
 export default function ViewJoule() {
   const { state, dispatch } = useContext(CprContext);
@@ -8,8 +8,7 @@ export default function ViewJoule() {
     dispatch({ type: 'SET_PHASE', payload: 'WAITING_CPR_RESUME' });
   };
 
-  // Dummy-Werte für das Layout (das echte Gewicht holen wir in Schritt 3)
-  const weight = state.patientWeight || 4; // Fallback auf 4kg
+  const weight = state.patientWeight || 4;
   const jouleLow = weight * 4;
   const jouleHigh = weight * 8;
 
@@ -20,7 +19,6 @@ export default function ViewJoule() {
       </div>
       
       {state.isPediatric ? (
-        /* --- PÄDIATRIE LAYOUT --- */
         <div className="absolute top-[130px] w-full flex justify-center gap-4 px-6">
           <button onClick={() => handleJouleSelect(jouleLow)} className="flex-1 h-[80px] bg-yellow-50/30 text-yellow-600 rounded-[20px] shadow-sm border-2 border-yellow-400 active:scale-95 transition-all flex flex-col items-center justify-center hover:bg-yellow-100/50">
             <span className="font-black uppercase tracking-wider text-[26px] leading-none">{jouleLow} J</span>
@@ -32,7 +30,6 @@ export default function ViewJoule() {
           </button>
         </div>
       ) : (
-        /* --- ERWACHSENEN LAYOUT --- */
         <>
           <div className="absolute top-[95px] w-full flex justify-center">
             <button onClick={() => handleJouleSelect(150)} className="w-[85%] max-w-[260px] h-[60px] bg-yellow-50/30 text-yellow-600 rounded-[20px] font-black uppercase tracking-wider text-[22px] shadow-sm border-2 border-yellow-400 active:scale-95 transition-all flex items-center justify-center hover:bg-yellow-100/50">

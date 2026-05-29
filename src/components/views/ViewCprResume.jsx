@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { CprContext } from '../../CprContext.jsx';
+import { CprContext } from '../../context/CprContext.jsx';
 
 export default function ViewCprResume() {
   const { dispatch } = useContext(CprContext);
