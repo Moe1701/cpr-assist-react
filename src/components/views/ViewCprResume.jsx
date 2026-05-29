@@ -17,7 +17,7 @@ export default function ViewCprResume() {
          <i className="fa-solid fa-heart-pulse text-6xl text-red-100"></i>
       </div>
       <div className="absolute top-[215px] w-full flex justify-center">
-        <button onClick={handleResumeCpr} className="w-[85%] max-w-[260px] h-[60px] bg-[#E3000F] text-white rounded-full font-black uppercase tracking-[0.15em] text-[15px] shadow-[0_8px_25px_rgba(227,0,15,0.25)] active:scale-95 transition-all flex items-center justify-center gap-3 hover:bg-red-700">
+        <button onClick={handleResumeCpr} className="w-[85%] max-w-[260px] h-[60px] bg-[#E3000F] text-white rounded-full font-black uppercase tracking-[0.15em] text-[15px] shadow-[0_8px_25px_rgba(227,0,15,0.25)] active:scale-95 transition-all flex items-center justify-center gap-3">
           <i className="fa-solid fa-play text-xl"></i>
           <span>Bestätigen</span>
         </button>

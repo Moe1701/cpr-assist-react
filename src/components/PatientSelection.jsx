@@ -1,8 +1,7 @@
 import React, { useContext } from 'react';
-// Korrekter Pfad: Eine Ebene zurück, dann in den context Ordner
 import { CprContext } from '../context/CprContext.jsx';
 
-// Korrekte Pfade in den views Ordner
+// Import unserer sauberen View-Komponenten
 import ViewObPatient from './views/ViewObPatient.jsx';
 import ViewObCompressions from './views/ViewObCompressions.jsx';
 import ViewObAnalyze from './views/ViewObAnalyze.jsx';

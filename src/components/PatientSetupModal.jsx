@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react';
-// Korrekter Pfad: Eine Ebene zurück, dann in den context Ordner
 import { CprContext } from '../context/CprContext.jsx';
 
 export default function PatientSetupModal() {
@@ -39,6 +38,7 @@ export default function PatientSetupModal() {
   return (
     <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200">
       <div className="bg-white w-full max-w-sm rounded-[32px] p-6 shadow-2xl relative animate-in zoom-in-95 duration-300 flex flex-col">
+        
         <button 
           onClick={() => dispatch({ type: 'TOGGLE_PATIENT_MODAL', payload: false })}
           className="absolute top-4 right-4 w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-200 active:scale-95 transition-all"
