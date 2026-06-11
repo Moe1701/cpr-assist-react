@@ -20,23 +20,50 @@ export default function DashboardShell() {
   const patientLabel = state.isPediatric ? `${state.patientWeight} KG` : 'ERW.';
   const modeLabel = state.cprMode === 'continuous' ? 'KONT' : state.cprMode;
 
-  // Wir nutzen jetzt 'positionClasses' (Tailwind) statt wackeliger style-Attribute
-  const SatelliteBtn = ({ positionClasses, icon, label, colorClass = "bg-white text-slate-500 border-slate-200" }) => (
-    <button 
-      className={`absolute w-[75px] h-[75px] rounded-full shadow-sm border flex flex-col items-center justify-center gap-1 hover:bg-slate-50 active:scale-95 transition-all z-20 ${colorClass} ${positionClasses}`}
-    >
-      <i className={`fa-solid ${icon} text-[22px] mb-0.5`}></i>
-      <span className="text-[7.5px] font-black uppercase tracking-wider leading-none text-center px-1">
+  const SatelliteBtn = ({ icon, label, colorClass = "bg-white text-slate-500 border-slate-200" }) => (
+    <button className={`w-[78px] h-[78px] rounded-full shadow-sm border flex flex-col items-center justify-center gap-1 hover:bg-slate-50 active:scale-95 transition-all ${colorClass}`}>
+      <i className={`fa-solid ${icon} text-[21px] mb-0.5`}></i>
+      <span className="text-[8px] font-black uppercase tracking-wider leading-none text-center px-1">
         {label}
       </span>
     </button>
   );
 
+  const MainBtn = ({ icon, label, colorClass = "bg-white text-slate-500 border-slate-200" }) => (
+    <button className={`w-[85px] h-[85px] rounded-full shadow-md border flex flex-col items-center justify-center gap-1 hover:bg-slate-50 active:scale-95 transition-all ${colorClass}`}>
+      <i className={`fa-solid ${icon} text-[26px] mb-1`}></i>
+      <span className="text-[8.5px] font-black uppercase tracking-wider leading-none text-center px-1">
+        {label}
+      </span>
+    </button>
+  );
+
+  const OrbitPosition = ({ x, y, children, zIndex = 20 }) => (
+    <div 
+      className="absolute pointer-events-auto"
+      style={{ 
+        top: '50%', 
+        left: '50%', 
+        marginLeft: `${x}px`,
+        marginTop: `${y}px`,
+        transform: 'translate(-50%, -50%)',
+        zIndex: zIndex
+      }}
+    >
+      {children}
+    </div>
+  );
+
+  // Diese Prüfung gilt jetzt NUR NOCH für die 6 Satelliten
+  const isRunningPhase = state.appPhase === 'RUNNING';
+
+  const orbitShiftClass = state.isCompressing ? '-translate-y-[20px]' : 'translate-y-[0px]';
+
   return (
-    <div className="absolute inset-0 w-full h-full flex flex-col bg-slate-50 animate-in fade-in duration-500">
+    <div className="absolute inset-0 w-full h-full flex flex-col bg-slate-50 animate-in fade-in duration-500 overflow-hidden">
       
-      {/* TOP STATS */}
-      <div className="flex items-stretch justify-between gap-2 p-4 shrink-0 z-30 relative">
+      {/* 1. DIE DECKE */}
+      <div className="flex items-stretch justify-between gap-2 p-4 shrink-0 z-40 relative">
         <div className="bg-white rounded-2xl p-2.5 shadow-sm border border-slate-200 flex-1 flex flex-col justify-between">
           <div className="flex justify-between items-center w-full">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Zeit</span>
@@ -66,75 +93,53 @@ export default function DashboardShell() {
         </div>
       </div>
 
-      {/* ORBIT BÜHNE - Feste Maximalbreite für eine stabile Darstellung */}
-      <div className="flex-1 relative flex items-center justify-center w-full max-w-[360px] mx-auto pb-4">
+      {/* 2. DAS SONNENSYSTEM */}
+      <div className={`flex-1 relative w-full transition-transform duration-500 ${orbitShiftClass}`}>
         
-        {/* Die absolute Spielfläche (400px hoch) */}
-        <div className="relative w-full h-[400px]">
-          
-          {/* ======================================= */}
-          {/* 1. DAS ZENTRUM (Eingesperrt in einen fixen Käfig) */}
-          {/* ======================================= */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[240px] h-[240px] z-10 flex items-center justify-center pointer-events-none">
-            <div className="relative w-full h-full pointer-events-auto flex items-center justify-center">
-              <CenterDisplay />
-            </div>
-          </div>
+        {/* Das Zentrum */}
+        <OrbitPosition x={0} y={0} zIndex={10}>
+          <CenterDisplay />
+        </OrbitPosition>
 
-          {/* ======================================= */}
-          {/* 2. DIE UNTERE REIHE (Deine Haupt-Buttons) */}
-          {/* ======================================= */}
-          <SatelliteBtn 
-            positionClasses="bottom-0 left-2" 
-            icon="fa-lungs" label="Atemweg" 
-            colorClass="bg-amber-50 text-amber-600 border-amber-400 ring-4 ring-amber-100 shadow-md" 
-          />
-          
-          <SatelliteBtn 
-            positionClasses="bottom-0 right-2" 
-            icon="fa-pause" label="CPR Pausieren" 
-          />
-          
-          <SatelliteBtn 
-            positionClasses="bottom-[-10px] left-1/2 -translate-x-1/2" 
-            icon="fa-flag-checkered" label="Ende ROSC" 
-          />
-
-          {/* ======================================= */}
-          {/* 3. DIE OBERE REIHE (Medikamente) */}
-          {/* ======================================= */}
-          <SatelliteBtn 
-            positionClasses="top-0 left-1/2 -translate-x-1/2" 
-            icon="fa-syringe" label="40 µg" 
-          />
-          
-          <SatelliteBtn 
-            positionClasses="top-6 right-2" 
-            icon="fa-syringe" label="Amio. 20 MG" 
-            colorClass="bg-purple-50 text-purple-600 border-purple-200" 
-          />
-          
-          <SatelliteBtn 
-            positionClasses="top-6 left-2" 
-            icon="fa-droplet" label="Zugang" 
-            colorClass="bg-blue-50 text-blue-600 border-blue-200" 
-          />
-
-          {/* ======================================= */}
-          {/* 4. DIE MITTLERE REIHE (Doku) */}
-          {/* ======================================= */}
-          <SatelliteBtn 
-            positionClasses="top-1/2 -translate-y-1/2 left-[-10px]" 
-            icon="fa-file-lines" label="Log" 
-          />
-          
-          <SatelliteBtn 
-            positionClasses="top-1/2 -translate-y-1/2 right-[-10px]" 
-            icon="fa-heart-circle-check" label="Hits Anamnese" 
-          />
-
-        </div>
+        {/* Die 6 Satelliten (Bleiben versteckt bis das Onboarding durch ist!) */}
+        {isRunningPhase && (
+          <>
+            <OrbitPosition x={0} y={-150}>
+              <SatelliteBtn icon="fa-syringe" label="40 µg" />
+            </OrbitPosition>
+            <OrbitPosition x={130} y={-75}>
+              <SatelliteBtn icon="fa-syringe" label="Amio. 20 MG" colorClass="bg-purple-50 text-purple-600 border-purple-200" />
+            </OrbitPosition>
+            <OrbitPosition x={130} y={75}>
+              <SatelliteBtn icon="fa-heart-circle-check" label="Hits Anamnese" />
+            </OrbitPosition>
+            <OrbitPosition x={0} y={150}>
+              <SatelliteBtn icon="fa-flag-checkered" label="Ende ROSC" />
+            </OrbitPosition>
+            <OrbitPosition x={-130} y={75}>
+              <SatelliteBtn icon="fa-file-lines" label="Log" />
+            </OrbitPosition>
+            <OrbitPosition x={-130} y={-75}>
+              <SatelliteBtn icon="fa-droplet" label="Zugang" colorClass="bg-blue-50 text-blue-600 border-blue-200" />
+            </OrbitPosition>
+          </>
+        )}
       </div>
+
+      {/* 3. DER BODEN (Ist jetzt IMMER da, sobald das Dashboard lädt!) */}
+      <div className="absolute bottom-6 left-5 z-50 pointer-events-auto">
+        <MainBtn 
+          icon="fa-lungs" label="Atemweg" 
+          colorClass="bg-amber-50 text-amber-600 border-amber-400 ring-4 ring-amber-100 shadow-[0_0_15px_rgba(251,191,36,0.5)]" 
+        />
+      </div>
+
+      <div className="absolute bottom-6 right-5 z-50 pointer-events-auto">
+        <MainBtn 
+          icon="fa-pause" label="CPR Pausieren" 
+        />
+      </div>
+
     </div>
   );
 }

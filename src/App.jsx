@@ -1,3 +1,4 @@
+// --- Datei: src/App.jsx ---
 import React, { useRef, useContext } from 'react';
 import { CprProvider, CprContext } from './context/CprContext.jsx';
 import MedicalDisclaimer from './MedicalDisclaimer.jsx';
@@ -23,6 +24,10 @@ function MainApp() {
     }
   };
 
+  // KORREKTUR: Das Dashboard erscheint erst, wenn die Phase 'RUNNING' erreicht ist!
+  // Nicht schon, wenn der Timer (isRunning) anspringt.
+  const isDashboardActive = state.isRunning;
+
   return (
     <div className="max-w-md mx-auto h-[100dvh] overflow-hidden bg-slate-50 relative flex flex-col select-none">
       <header className="flex items-center justify-between bg-white px-4 py-3 border-b border-slate-200 shadow-sm z-[70] relative shrink-0">
@@ -40,7 +45,8 @@ function MainApp() {
       <PatientSetupModal /> 
 
       <main className="flex-1 flex flex-col items-center justify-center relative z-10 w-full h-full">
-         {state.isRunning ? <DashboardShell /> : <CenterDisplay />}
+         {/* Hier ist der Fix: */}
+         {isDashboardActive ? <DashboardShell /> : <CenterDisplay />}
       </main>
     </div>
   );
