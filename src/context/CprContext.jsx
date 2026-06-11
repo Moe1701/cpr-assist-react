@@ -6,20 +6,29 @@ const initialState = {
   appPhase: CPR_CONFIG.PHASES.ONBOARDING,
   isPediatric: false,
   patientWeight: null,
-  cprMode: 'continuous', // Startet jetzt wie in deiner alten App immer mit KONT
+  cprMode: 'continuous', 
   
   startTime: null,         
   isGridVisible: false,    
-  
-  missionSeconds: 0, 
-  cprSeconds: 0,     
-  isCompressing: false,
   isPatientModalOpen: false, 
+  
+  // Timer & Einsatz-Zeiten
+  missionSeconds: 0, 
+  cprSeconds: 0, // Für das große Center-Display (reine CPR-Dauer)
+  cycleSeconds: 0, // 120s Rhythmuscheck-Loop
+  
+  // Ping-Pong & CCF State
+  isCompressing: false,
+  isVentilationPhase: false,
+  compressionCount: 0,
+  airwayEstablished: null,
+  compressingSeconds: 0, // Zähler für CCF
+  arrestSeconds: 0,      // Nenner für CCF
+  currentCcfPercent: 100,
   
   events: [],      
   reminders: [],
   
-  // DEINE ALTEN, DETAILLIERTEN BROSELOW DATEN!
   broselowData: [
     {color:'grau', minKg:3, maxKg:5, avgKg:4, cm:55, ageStr: '< 1 J.', airway:{tubus:'3.0-3.5', tiefe:'9-10', sga:'1', guedel:'000', wendel:'12 CH'}},
     {color:'rosa', minKg:6, maxKg:7, avgKg:6.5, cm:65, ageStr: '< 1 J.', airway:{tubus:'3.5', tiefe:'10-11', sga:'1.5', guedel:'00', wendel:'14 CH'}},
@@ -60,12 +69,11 @@ function cprReducer(state, action) {
         ...state, 
         isPediatric: action.payload.isPediatric,
         patientWeight: action.payload.patientWeight,
-        // Startet nach Auswahl automatisch im KONT-Modus (wie im alten Code)
         cprMode: 'continuous', 
         startTime: state.startTime || new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
       };
 
-    case 'SET_CPR_MODE': // <--- NEU: Der Umschalter
+    case 'SET_CPR_MODE':
       return { ...state, cprMode: action.payload };
 
     case 'TOGGLE_PATIENT_MODAL':
@@ -74,20 +82,47 @@ function cprReducer(state, action) {
     case 'TOGGLE_GRID':
       return { ...state, isGridVisible: !state.isGridVisible };
 
-    case 'START_REA_LOGIC':
-      return { ...state, appPhase: CPR_CONFIG.PHASES.RUNNING };
-
     case 'LOG_EVENT':
       return { ...state, events: [...state.events, action.payload] };
 
+    // --- Ping-Pong & Steuerungs-Aktionen ---
     case 'TOGGLE_COMPRESSION':
       return { ...state, isCompressing: action.payload };
+      
+    case 'SET_COMPRESSION_COUNT':
+      return { ...state, compressionCount: action.payload };
+      
+    case 'SET_VENTILATION_PHASE':
+      return { ...state, isVentilationPhase: action.payload };
+      
+    case 'SET_AIRWAY':
+      return { ...state, airwayEstablished: action.payload };
 
+    // --- Timer Ticks ---
     case 'TICK_MISSION':
       return { ...state, missionSeconds: state.missionSeconds + 1 };
+      
+    case 'TICK_CYCLE':
+      return { ...state, cycleSeconds: state.cycleSeconds + 1 };
 
-    case 'TICK_CPR':
-      return { ...state, cprSeconds: state.cprSeconds + 1 };
+    case 'TICK_CCF_ARREST': {
+      // Nenner: Läuft unerbittlich jede Sekunde (CCF sinkt in Pausen)
+      const newArrest = state.arrestSeconds + 1;
+      const rawCcf = (state.compressingSeconds / newArrest) * 100;
+      return { 
+        ...state, 
+        arrestSeconds: newArrest,
+        currentCcfPercent: Math.min(100, Math.round(rawCcf))
+      };
+    }
+      
+    case 'TICK_CCF_COMPRESSING':
+      // Zähler: Läuft nur, wenn Hände auf dem Thorax sind (isCompressing === true)
+      return { 
+        ...state, 
+        compressingSeconds: state.compressingSeconds + 1,
+        cprSeconds: state.cprSeconds + 1 
+      };
 
     case 'RESET_ALL':
       return initialState;
@@ -111,10 +146,14 @@ export function CprProvider({ children }) {
       startTime: state.startTime,
       missionSeconds: state.missionSeconds,
       cprSeconds: state.cprSeconds,
+      cycleSeconds: state.cycleSeconds,
       isCompressing: state.isCompressing,
       events: state.events,
       reminders: state.reminders,
-      broselowData: state.broselowData
+      broselowData: state.broselowData,
+      currentCcfPercent: state.currentCcfPercent,
+      compressingSeconds: state.compressingSeconds,
+      arrestSeconds: state.arrestSeconds
     };
     localStorage.setItem('cprAssist_db', JSON.stringify(stateToSave));
   }, [state]);
