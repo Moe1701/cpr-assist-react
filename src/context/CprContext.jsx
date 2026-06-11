@@ -1,19 +1,20 @@
 // --- Datei: src/context/CprContext.jsx ---
 import React, { createContext, useReducer, useEffect, useCallback } from 'react';
+import { CPR_CONFIG } from '../config/cprConfig.js';
 
 const initialState = {
-  appPhase: 'ONBOARDING',
+  appPhase: CPR_CONFIG.PHASES.ONBOARDING, // <-- Nutzt jetzt die saubere Konstante
   isPediatric: false,
   patientWeight: null,
   cprMode: '30:2',
   
-  startTime: null,         // <--- NEU: Speichert die Start-Uhrzeit
-  isGridVisible: false,    // <--- NEU: Status für das Layout Grid
+  startTime: null,         
+  isGridVisible: false,    // UI Flag
   
   missionSeconds: 0, 
   cprSeconds: 0,     
   isCompressing: false,
-  isPatientModalOpen: false, 
+  isPatientModalOpen: false, // UI Flag
   
   events: [],      
   reminders: [],
@@ -36,8 +37,15 @@ const loadState = () => {
     const saved = localStorage.getItem('cprAssist_db');
     if (saved) {
        const parsed = JSON.parse(saved);
-       if (parsed.appPhase === 'SETUP') parsed.appPhase = 'ONBOARDING';
+       
+       // Fallback für ganz alte Versionen
+       if (parsed.appPhase === 'SETUP') parsed.appPhase = CPR_CONFIG.PHASES.ONBOARDING;
        if (!parsed.broselowData) parsed.broselowData = initialState.broselowData;
+       
+       // UI-FLAGS ZWANGSWEISE ZURÜCKSETZEN BEIM LADEN
+       parsed.isGridVisible = false;
+       parsed.isPatientModalOpen = false;
+       
        return parsed;
     }
     return initialState;
@@ -57,7 +65,6 @@ function cprReducer(state, action) {
         isPediatric: action.payload.isPediatric,
         patientWeight: action.payload.patientWeight,
         cprMode: action.payload.isPediatric ? '15:2' : '30:2',
-        // Die Startzeit wird beim allerersten Klick geloggt
         startTime: state.startTime || new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
       };
 
@@ -68,7 +75,7 @@ function cprReducer(state, action) {
       return { ...state, isGridVisible: !state.isGridVisible };
 
     case 'START_REA_LOGIC':
-      return { ...state, appPhase: 'RUNNING' };
+      return { ...state, appPhase: CPR_CONFIG.PHASES.RUNNING };
 
     case 'LOG_EVENT':
       return { ...state, events: [...state.events, action.payload] };
@@ -95,8 +102,22 @@ export const CprContext = createContext();
 export function CprProvider({ children }) {
   const [state, dispatch] = useReducer(cprReducer, initialState, loadState);
 
+  // NEU: SMARTER SPEICHER (Filtert UI-Flags aus!)
   useEffect(() => {
-    localStorage.setItem('cprAssist_db', JSON.stringify(state));
+    const stateToSave = {
+      appPhase: state.appPhase,
+      isPediatric: state.isPediatric,
+      patientWeight: state.patientWeight,
+      cprMode: state.cprMode,
+      startTime: state.startTime,
+      missionSeconds: state.missionSeconds,
+      cprSeconds: state.cprSeconds,
+      isCompressing: state.isCompressing,
+      events: state.events,
+      reminders: state.reminders,
+      broselowData: state.broselowData
+    };
+    localStorage.setItem('cprAssist_db', JSON.stringify(stateToSave));
   }, [state]);
 
   const logEvent = useCallback((type, detail = "") => {

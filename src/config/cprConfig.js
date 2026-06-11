@@ -3,37 +3,47 @@
 export const CPR_CONFIG = {
   // 1. ZYKLUS & TIMER (Alle Angaben in exakten Sekunden)
   TIMERS: {
-    MASTER_LOOP: 120,          // 2 Minuten Rhythmus-Check
-    DEFI_WARNING: 105,         // 15 Sekunden VOR der Analyse: "Defi laden!" (bei Sekunde 105)
-    ADRENALIN_INTERVAL: 240,   // 4 Minuten (3-5 Min laut Guidelines) ab Erstgabe
-    VENTILATION_CONT: 6,       // Kontinuierliche Beatmung: 1 Atemhub alle 6 Sekunden
+    MASTER_LOOP: 120,          
+    DEFI_WARNING: 105,         
+    ADRENALIN_INTERVAL: 240,   
+    VENTILATION_CONT: 6,       
   },
 
   // 2. STANDARD-MEDIKAMENTE (Erwachsene)
   DRUGS_ADULT: {
     ADRENALIN: "1 mg",
-    AMIO_D1: "300 mg",         // 1. Dosis nach 3. Schock
-    AMIO_D2: "150 mg",         // 2. Dosis nach 5. Schock
+    AMIO_D1: "300 mg",         
+    AMIO_D2: "150 mg",         
   },
 
   // 3. PÄDIATRIE-BERECHNUNG (Gewichtsadaptiert)
-  // Hier hinterlegen wir die Formeln/Faktoren pro KG Körpergewicht
   DRUGS_PEDS_FACTORS: {
-    ADRENALIN_MCG_PER_KG: 10,  // 10 µg pro kg Körpergewicht
-    AMIO_MG_PER_KG: 5,         // 5 mg pro kg Körpergewicht
-    JOULE_PER_KG: 4,           // 4 Joule pro kg (für Defibrillation)
+    ADRENALIN_MCG_PER_KG: 10,  
+    AMIO_MG_PER_KG: 5,         
+    JOULE_PER_KG: 4,           
   },
 
-  // 4. EVENT-TYPEN FÜR DIE DATENBANK (Verhindert Tippfehler im Code)
-  // Nutze IMMER diese Konstanten, wenn du logEvent() aufrufst!
+  // 4. EVENT-TYPEN FÜR DIE DATENBANK
   EVENTS: {
-    PHASE_CHANGE: "PHASE_CHANGE", // z.B. "Start Kompression", "ROSC"
-    DRUG: "DRUG",                 // z.B. "Adrenalin gegeben"
-    SHOCK: "SHOCK",               // z.B. "150J geschockt", "Kein Schock"
-    AIRWAY: "AIRWAY",             // z.B. "Intubiert", "Larynxtubus"
-    PAUSE: "PAUSE",               // Unterbrechung der CPR
-    RESUME: "RESUME",             // Fortsetzen der CPR
-    WARNING: "WARNING",           // Vom System generierte Alarme (z.B. "Pausen-Warnung")
+    PHASE_CHANGE: "PHASE_CHANGE", 
+    DRUG: "DRUG",                 
+    SHOCK: "SHOCK",               
+    AIRWAY: "AIRWAY",             
+    PAUSE: "PAUSE",               
+    RESUME: "RESUME",             
+    WARNING: "WARNING",           
+  },
+
+  // 5. NEU: PHASEN ALS KONSTANTEN (Verhindert Tippfehler im Code)
+  PHASES: {
+    ONBOARDING: 'ONBOARDING',
+    OB_INITIAL_BREATHS: 'OB_INITIAL_BREATHS',
+    OB_COMPRESSIONS: 'OB_COMPRESSIONS',
+    OB_ANALYZE: 'OB_ANALYZE',
+    DECISION: 'DECISION',
+    JOULE: 'JOULE',
+    WAITING_CPR_RESUME: 'WAITING_CPR_RESUME',
+    RUNNING: 'RUNNING'
   }
 };
 
