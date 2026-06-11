@@ -16,28 +16,30 @@ export default function DashboardShell() {
     return `${m}:${s}`;
   };
 
-  const ccfValue = "--"; // Berechnen wir spÃ¤ter live
-  
-  const ccfColorClass = 'text-slate-800';
-  const patientLabel = state.isPediatric ? `${state.patientWeight || '?'} KG` : 'ERW.';
-  const modeLabel = state.cprMode === 'continuous' ? 'KONT' : state.cprMode;
-
+  // Satelliten auf 78px angepasst
   const SatelliteBtn = ({ icon, label, colorClass = "bg-white text-slate-500 border-slate-200" }) => (
-    <button className={`w-[78px] h-[78px] rounded-full shadow-sm border flex flex-col items-center justify-center gap-1 hover:bg-slate-50 active:scale-95 transition-all ${colorClass}`}>
+    <button className={`w-[78px] h-[78px] rounded-full shadow-sm border-[3px] flex flex-col items-center justify-center gap-1 hover:bg-slate-50 active:scale-95 transition-all ${colorClass}`}>
       <i className={`fa-solid ${icon} text-[21px] mb-0.5`}></i>
-      <span className="text-[8px] font-black uppercase tracking-wider leading-none text-center px-1">
+      <span className="text-[8.5px] font-black uppercase tracking-wider leading-none text-center px-1">
         {label}
       </span>
     </button>
   );
 
-  const MainBtn = ({ icon, label, colorClass = "bg-white text-slate-500 border-slate-200" }) => (
-    <button className={`w-[85px] h-[85px] rounded-full shadow-md border flex flex-col items-center justify-center gap-1 hover:bg-slate-50 active:scale-95 transition-all ${colorClass}`}>
-      <i className={`fa-solid ${icon} text-[26px] mb-1`}></i>
-      <span className="text-[8.5px] font-black uppercase tracking-wider leading-none text-center px-1">
-        {label}
-      </span>
-    </button>
+  const MainBtn = ({ icon, label, colorClass = "bg-white text-slate-500 border-slate-200", badge }) => (
+    <div className="relative">
+      <button className={`w-[100px] h-[100px] rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.1)] border-2 flex flex-col items-center justify-center gap-1.5 hover:bg-slate-50 active:scale-95 transition-all ${colorClass}`}>
+        <i className={`fa-solid ${icon} text-[32px]`}></i>
+        <span className="text-[10px] font-black uppercase tracking-widest leading-none text-center px-1">
+          {label}
+        </span>
+      </button>
+      {badge && (
+        <div className="absolute -top-1 -right-1 bg-[#E3000F] text-white text-[12px] font-black w-7 h-7 rounded-full flex items-center justify-center shadow-md border-[3px] border-white">
+          !!!
+        </div>
+      )}
+    </div>
   );
 
   const OrbitPosition = ({ x, y, children, zIndex = 20 }) => (
@@ -51,79 +53,116 @@ export default function DashboardShell() {
     </div>
   );
 
-  // Ist wahr, sobald wir aus den ersten beiden Onboarding-Screens heraus sind
-  const isRunningPhase = state.appPhase !== 'ONBOARDING' && state.appPhase !== 'OB_INITIAL_BREATHS';
+  const showTopStats = state.appPhase !== 'ONBOARDING' && state.appPhase !== 'OB_INITIAL_BREATHS';
+  const showBottomButtons = state.appPhase !== 'ONBOARDING' && state.appPhase !== 'OB_INITIAL_BREATHS' && state.appPhase !== 'OB_COMPRESSIONS';
+  const showSatellites = state.appPhase === 'RUNNING';
+  
   const orbitShiftClass = state.isCompressing ? '-translate-y-[20px]' : 'translate-y-[0px]';
 
   return (
-    // 1. DER Ã„USSERE RAHMEN (Zentriert die App auf breiten Monitoren)
-    <div className="absolute inset-0 w-full h-full flex justify-center bg-slate-200/40 pointer-events-none">
-      
-      {/* 2. DAS VIRTUELLE SMARTPHONE (Maximal 430px breit, fÃ¤ngt alle Klicks ab) */}
-      <div className="relative w-full max-w-[430px] h-full flex flex-col bg-slate-50 animate-in fade-in duration-500 overflow-hidden shadow-2xl pointer-events-auto">
+    <div className="absolute inset-0 w-full h-full flex flex-col bg-slate-50 animate-in fade-in duration-500 overflow-hidden">
         
-        {/* 1. DIE DECKE (Wird im Onboarding unsichtbar gemacht, damit CenterDisplay Platz hat) */}
-        <div className={`flex items-stretch justify-between gap-2 p-4 shrink-0 z-40 relative transition-opacity duration-300 ${!isRunningPhase ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-          <div className="bg-white rounded-2xl p-2.5 shadow-sm border border-slate-200 flex-1 flex flex-col justify-between">
-            <div className="flex justify-between items-center w-full">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Zeit</span>
-            </div>
-            <div className="text-3xl font-black text-slate-800 leading-none mt-1 font-mono tracking-tighter">
-              {formatTime(state.missionSeconds)}
-            </div>
-          </div>
-
-          <div className="bg-white rounded-2xl p-2.5 shadow-sm border border-slate-200 flex-1 flex flex-col items-center justify-center gap-1.5">
-            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest w-full text-left">Patient/Modus</span>
-            <div className="flex gap-1 w-full">
-              <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase flex items-center gap-1 ${state.isPediatric ? 'bg-pink-100 text-pink-600' : 'bg-slate-100 text-slate-600'}`}>
-                {state.isPediatric && <i className="fa-solid fa-weight-scale"></i>} {patientLabel}
+      <div className={`flex items-stretch justify-between gap-2 px-3 py-2 shrink-0 z-40 relative transition-opacity duration-300 ${!showTopStats ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+        
+        <div className="bg-white rounded-[14px] px-3 py-2 shadow-sm border border-slate-200 flex-1 flex flex-col justify-between">
+          <div className="flex justify-between items-center w-full mb-0.5">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Zeit</span>
+            {state.startTime && (
+              <span className="text-[10px] font-bold text-slate-500">
+                Start: {state.startTime}
               </span>
-              <span className="bg-amber-100 text-amber-700 text-[10px] font-bold px-2 py-0.5 rounded uppercase">
-                {modeLabel}
+            )}
+          </div>
+          <div className="text-[30px] font-black text-slate-800 leading-none font-mono tracking-tighter mt-0.5">
+            {formatTime(state.missionSeconds)}
+          </div>
+        </div>
+
+        <div className="bg-white rounded-[14px] p-2 shadow-sm border border-slate-200 flex-[1.2] flex justify-between items-center">
+          <div className="flex flex-col items-start justify-center h-full">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Patient/Modus</span>
+            <div className="flex rounded-full border border-amber-300 overflow-hidden shadow-sm">
+              <span className={`text-[10px] font-black px-2.5 py-0.5 uppercase ${state.cprMode !== 'continuous' ? 'bg-amber-100 text-amber-700' : 'bg-white text-slate-400'}`}>
+                30:2
+              </span>
+              <span className={`text-[10px] font-black px-2.5 py-0.5 uppercase border-l border-amber-200 ${state.cprMode === 'continuous' ? 'bg-amber-100 text-amber-700' : 'bg-white text-slate-400'}`}>
+                KONT
               </span>
             </div>
           </div>
-
-          <div className="bg-white rounded-2xl p-2.5 shadow-sm border border-slate-200 flex-1 flex flex-col justify-between items-end">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">CCF</span>
-            <div className={`text-3xl font-black leading-none mt-1 ${ccfColorClass}`}>
-              {ccfValue}<span className="text-lg">%</span>
+          <div className="flex flex-col items-end justify-center h-full pl-2 border-l border-slate-100">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">CCF</span>
+            <div className="text-[28px] font-black leading-none text-emerald-500 tracking-tighter mt-1">
+              99<span className="text-sm">%</span>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* 2. DAS SONNENSYSTEM */}
-        <div className={`flex-1 relative w-full transition-transform duration-500 ${orbitShiftClass}`}>
-          
-          {/* Das Zentrum (Immer sichtbar) */}
-          <OrbitPosition x={0} y={0} zIndex={10}>
-            <CenterDisplay />
-          </OrbitPosition>
+      <div className={`flex-1 relative w-full flex items-center justify-center transition-transform duration-500 z-30 overflow-visible ${orbitShiftClass}`}>
+        
+        {state.isGridVisible && (
+          <div className="absolute top-1/2 left-1/2 w-[800px] h-[800px] -translate-x-1/2 -translate-y-1/2 pointer-events-none z-[100] opacity-50">
+            
+            <div className="absolute top-0 left-1/2 w-[2px] h-full bg-[#ff00ff] -translate-x-1/2"></div>
+            <div className="absolute top-1/2 left-0 w-full h-[2px] bg-[#ff00ff] -translate-y-1/2"></div>
+            
+            {/* R = 167px Kreis (Durchmesser 334) */}
+            <div className="absolute top-1/2 left-1/2 w-[334px] h-[334px] border-[2px] border-blue-500 border-dashed rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+            
+            {Array.from({ length: 17 }).map((_, i) => {
+              const val = (i - 8) * 50;
+              if (val === 0) return null;
+              return (
+                <React.Fragment key={i}>
+                  <div className="absolute top-1/2 w-[8px] h-[2px] bg-[#ff00ff] -translate-y-1/2" style={{ left: `calc(50% + ${val}px - 4px)` }}></div>
+                  <div className="absolute top-1/2 text-[10px] font-bold text-[#ff00ff] -translate-y-[14px]" style={{ left: `calc(50% + ${val}px + 2px)` }}>{val > 0 ? `+${val}` : val}</div>
+                  
+                  <div className="absolute left-1/2 w-[2px] h-[8px] bg-[#ff00ff] -translate-x-1/2" style={{ top: `calc(50% + ${val}px - 4px)` }}></div>
+                  <div className="absolute left-1/2 text-[10px] font-bold text-[#ff00ff] translate-x-[6px]" style={{ top: `calc(50% + ${val}px - 6px)` }}>{val > 0 ? `+${val}` : val}</div>
+                </React.Fragment>
+              );
+            })}
+          </div>
+        )}
 
-          {/* Die 6 Satelliten (Versteckt bis das Onboarding durch ist!) */}
-          {isRunningPhase && (
-            <>
-              <OrbitPosition x={0} y={-150}><SatelliteBtn icon="fa-syringe" label="40 Âµg" /></OrbitPosition>
-              <OrbitPosition x={130} y={-75}><SatelliteBtn icon="fa-syringe" label="Amio. 20 MG" colorClass="bg-purple-50 text-purple-600 border-purple-200" /></OrbitPosition>
-              <OrbitPosition x={130} y={75}><SatelliteBtn icon="fa-heart-circle-check" label="Hits Anamnese" /></OrbitPosition>
-              <OrbitPosition x={0} y={150}><SatelliteBtn icon="fa-flag-checkered" label="Ende ROSC" /></OrbitPosition>
-              <OrbitPosition x={-130} y={75}><SatelliteBtn icon="fa-file-lines" label="Log" /></OrbitPosition>
-              <OrbitPosition x={-130} y={-75}><SatelliteBtn icon="fa-droplet" label="Zugang" colorClass="bg-blue-50 text-blue-600 border-blue-200" /></OrbitPosition>
-            </>
-          )}
+        <OrbitPosition x={0} y={0} zIndex={10}>
+          <CenterDisplay />
+        </OrbitPosition>
+
+        {/* Die 6 Satelliten (Auf dem neu berechneten R=167 Radius) */}
+        {showSatellites && (
+          <>
+            <OrbitPosition x={0} y={-167}><SatelliteBtn icon="fa-syringe" label="1 mg" colorClass="bg-white text-emerald-600 border-emerald-400" /></OrbitPosition>
+            <OrbitPosition x={145} y={-84}><SatelliteBtn icon="fa-syringe" label="Amio. 300 mg" colorClass="bg-white text-purple-600 border-purple-400" /></OrbitPosition>
+            <OrbitPosition x={145} y={84}><SatelliteBtn icon="fa-clipboard-list" label="Hits Anamnese" colorClass="bg-white text-slate-600 border-slate-300" /></OrbitPosition>
+            <OrbitPosition x={0} y={167}><SatelliteBtn icon="fa-flag-checkered" label="Ende ROSC" colorClass="bg-white text-slate-700 border-slate-300" /></OrbitPosition>
+            <OrbitPosition x={-145} y={84}><SatelliteBtn icon="fa-file-lines" label="Log" colorClass="bg-white text-slate-500 border-slate-300" /></OrbitPosition>
+            <OrbitPosition x={-145} y={-84}><SatelliteBtn icon="fa-droplet" label="Zugang" colorClass="bg-white text-slate-500 border-slate-300" /></OrbitPosition>
+          </>
+        )}
+      </div>
+
+      <div className="absolute bottom-0 w-full h-40 bg-gradient-to-t from-slate-200/90 to-transparent z-10 pointer-events-none"></div>
+
+      <div className={`shrink-0 w-full flex justify-between items-end px-5 pb-8 pt-2 z-50 transition-opacity duration-300 pointer-events-none ${!showBottomButtons ? 'opacity-0' : 'opacity-100'}`}>
+        
+        <div className="pointer-events-auto">
+          <MainBtn 
+            icon="fa-lungs" label="Atemweg" badge={true}
+            colorClass="bg-white text-[#E3000F] border-[#E3000F] shadow-[0_0_25px_rgba(227,0,15,0.3)]" 
+          />
         </div>
 
-        {/* 3. DER BODEN (Versteckt im Onboarding) */}
-        <div className={`absolute bottom-6 left-5 z-50 transition-opacity duration-300 ${!isRunningPhase ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'}`}>
-          <MainBtn icon="fa-lungs" label="Atemweg" colorClass="bg-amber-50 text-amber-600 border-amber-400 ring-4 ring-amber-100 shadow-[0_0_15px_rgba(251,191,36,0.5)]" />
-        </div>
-
-        <div className={`absolute bottom-6 right-5 z-50 transition-opacity duration-300 ${!isRunningPhase ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'}`}>
-          <MainBtn icon="fa-pause" label="CPR Pausieren" />
+        <div className="pointer-events-auto">
+          <MainBtn 
+            icon="fa-pause" label="CPR Pausieren" 
+            colorClass="bg-white text-slate-500 border-slate-200 shadow-[0_10px_25px_rgba(0,0,0,0.05)]"
+          />
         </div>
 
       </div>
+
     </div>
   );
 }
@@ -410,9 +449,17 @@ import PatientSelection from './PatientSelection.jsx';
 export default function CenterDisplay() {
   const { state } = useContext(CprContext);
 
-  // KORREKTUR DER PROPORTIONEN: 210px fÃ¼r das kompakte Dashboard
   const isDashboard = state.appPhase === 'RUNNING';
-  const circleSize = isDashboard ? '210px' : '330px';
+  
+  // Neue GrÃ¶ÃŸe: 240px im Dashboard, 340px im Onboarding
+  const circleSize = isDashboard ? '240px' : '340px';
+
+  const formatCprTime = (seconds) => {
+    if (isNaN(seconds) || seconds === null) return "00:00";
+    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  };
 
   const renderPhase = () => {
     switch (state.appPhase) {
@@ -427,14 +474,26 @@ export default function CenterDisplay() {
       
       case 'RUNNING':
         return (
-          <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-white rounded-full">
-             <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">
+          <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-white rounded-full shadow-[inset_0_0_20px_rgba(0,0,0,0.02)]">
+            
+            <div className="absolute top-5 w-10 h-1.5 bg-cyan-500 rounded-full"></div>
+
+            <div className="text-[11px] font-bold text-slate-500 uppercase tracking-[0.15em] mb-1">
                Bei Analyse DrÃ¼cken
-             </div>
-             {/* TextgrÃ¶ÃŸe leicht angepasst fÃ¼r den 210px Kreis */}
-             <div className="text-[60px] font-black text-slate-800 tracking-tighter leading-none">
-               119
-             </div>
+            </div>
+            
+            <div className="text-[72px] font-black text-slate-800 tracking-tighter leading-none mb-3 font-mono">
+               {formatCprTime(state.cprSeconds)}
+            </div>
+
+            <div className="flex items-center gap-3 text-[14px] font-black tracking-widest mt-1">
+              <span className="text-amber-500 flex items-center gap-1.5">
+                <i className="fa-solid fa-bolt"></i> 1
+              </span>
+              <span className="text-slate-200">|</span>
+              <span className="text-[#E3000F]">150 J</span>
+            </div>
+
           </div>
         );
 
@@ -451,7 +510,7 @@ export default function CenterDisplay() {
   return (
     <div 
       style={{ width: circleSize, height: circleSize }}
-      className="rounded-full shadow-[0_20px_60px_rgba(0,0,0,0.05)] border border-slate-100 flex items-center justify-center relative overflow-hidden bg-white shrink-0 transition-all duration-300 mx-auto"
+      className="rounded-full shadow-[0_15px_40px_rgba(0,0,0,0.08)] border-4 border-slate-50 flex items-center justify-center relative overflow-hidden bg-white shrink-0 transition-all duration-500 mx-auto"
     >
       {renderPhase()}
     </div>
@@ -730,18 +789,19 @@ export default function PatientSetupModal() {
 
 === C:\Users\Gaumard\Desktop\cpr-assist\src\components\SettingsModal.jsx ===
 // --- Datei: src/components/SettingsModal.jsx ---
-import React from 'react';
+import React, { useContext } from 'react';
+import { CprContext } from '../context/CprContext.jsx';
 
 export default function SettingsModal({ isOpen, onClose }) {
+  const { state, dispatch } = useContext(CprContext);
+
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-[100] flex flex-col justify-end bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
       
-      {/* Das Modal / Bottom Sheet */}
       <div className="bg-white w-full rounded-t-3xl p-6 shadow-2xl animate-in slide-in-from-bottom-8 duration-300">
         
-        {/* Header */}
         <div className="flex items-center justify-center gap-2 mb-8">
           <i className="fa-solid fa-sliders text-slate-400"></i>
           <h2 className="text-sm font-black text-slate-800 tracking-widest uppercase">
@@ -749,60 +809,50 @@ export default function SettingsModal({ isOpen, onClose }) {
           </h2>
         </div>
 
-        {/* Metronom Geschwindigkeit */}
         <div className="mb-8">
           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center mb-3">
             Metronom Geschwindigkeit
           </p>
           <div className="flex bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
-            <button className="flex-1 py-3 text-slate-400 font-bold text-lg rounded-xl transition-all">
-              100
-            </button>
-            <button className="flex-1 py-3 bg-white text-slate-800 font-black text-lg rounded-xl shadow-sm border border-slate-200 transition-all">
-              110
-            </button>
-            <button className="flex-1 py-3 text-slate-400 font-bold text-lg rounded-xl transition-all">
-              120
-            </button>
+            <button className="flex-1 py-3 text-slate-400 font-bold text-lg rounded-xl transition-all">100</button>
+            <button className="flex-1 py-3 bg-white text-slate-800 font-black text-lg rounded-xl shadow-sm border border-slate-200 transition-all">110</button>
+            <button className="flex-1 py-3 text-slate-400 font-bold text-lg rounded-xl transition-all">120</button>
           </div>
         </div>
 
-        {/* System Diagnose */}
         <div className="mb-8">
           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center mb-3">
             System Diagnose
           </p>
-          <div className="flex flex-col gap-3 p-4 bg-red-50/50 border border-red-100 rounded-2xl">
+          <div className="flex flex-col gap-3 p-4 bg-slate-50/50 border border-slate-100 rounded-2xl">
             
             <button className="w-full bg-white border border-slate-200 py-3.5 rounded-xl font-bold text-slate-700 shadow-sm flex items-center justify-center gap-2 hover:bg-slate-50 transition-all">
               <i className="fa-solid fa-bug text-slate-400"></i> Fehlerprotokoll einsehen
             </button>
             
-            <button className="w-full bg-white border border-slate-200 py-3.5 rounded-xl font-bold text-slate-700 shadow-sm flex items-center justify-center gap-2 hover:bg-slate-50 transition-all uppercase text-[12px] tracking-wider">
-              <i className="fa-solid fa-border-all text-slate-400"></i> Layout Grid (An / Aus)
-            </button>
-            
-            <button className="w-full bg-red-600 border border-red-700 py-3.5 rounded-xl font-bold text-white shadow-md shadow-red-600/20 flex items-center justify-center gap-2 active:scale-95 transition-all mt-2">
-              <i className="fa-solid fa-triangle-exclamation"></i> Hard Reset (Daten lÃ¶schen)
+            {/* HIER IST DEIN NEUER GRID BUTTON */}
+            <button 
+              onClick={() => dispatch({ type: 'TOGGLE_GRID' })}
+              className={`w-full border py-3.5 rounded-xl font-bold shadow-sm flex items-center justify-center gap-2 transition-all uppercase text-[12px] tracking-wider mt-2 ${state.isGridVisible ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'}`}
+            >
+              <i className="fa-solid fa-border-all text-slate-400"></i> Layout Grid ({state.isGridVisible ? 'An' : 'Aus'})
             </button>
 
+            <button className="w-full bg-red-600 border border-red-700 py-3.5 rounded-xl font-bold text-white shadow-md shadow-red-600/20 flex items-center justify-center gap-2 active:scale-95 transition-all mt-6">
+              <i className="fa-solid fa-triangle-exclamation"></i> Hard Reset (Daten lÃ¶schen)
+            </button>
           </div>
         </div>
 
-        {/* Version Info */}
         <div className="text-center mb-6">
           <p className="font-bold text-slate-800 tracking-widest text-xs">
             CPR ASSIST <span className="text-red-600">VFINAL</span>
           </p>
-          <p className="text-[10px] text-slate-400 mt-0.5">
-            Nutzung auf eigene Gefahr.
-          </p>
         </div>
 
-        {/* Close Button */}
         <button 
           onClick={onClose}
-          className="w-full bg-slate-50 border border-slate-200 py-4 rounded-2xl font-bold text-slate-600 uppercase tracking-wider shadow-sm flex items-center justify-center gap-2 active:scale-95 transition-all"
+          className="w-full bg-slate-100 border border-slate-200 py-4 rounded-2xl font-bold text-slate-600 uppercase tracking-wider shadow-sm flex items-center justify-center gap-2 active:scale-95 transition-all"
         >
           <i className="fa-solid fa-rotate-left"></i> ZurÃ¼ck zum Einsatz
         </button>
@@ -864,13 +914,17 @@ export const calculatePedsDose = (weightKg) => {
 
 
 === C:\Users\Gaumard\Desktop\cpr-assist\src\context\CprContext.jsx ===
+// --- Datei: src/context/CprContext.jsx ---
 import React, { createContext, useReducer, useEffect, useCallback } from 'react';
 
 const initialState = {
-  appPhase: 'ONBOARDING', // Startet korrekt in deiner ersten View!
+  appPhase: 'ONBOARDING',
   isPediatric: false,
   patientWeight: null,
   cprMode: '30:2',
+  
+  startTime: null,         // <--- NEU: Speichert die Start-Uhrzeit
+  isGridVisible: false,    // <--- NEU: Status fÃ¼r das Layout Grid
   
   missionSeconds: 0, 
   cprSeconds: 0,     
@@ -880,7 +934,6 @@ const initialState = {
   events: [],      
   reminders: [],
   
-  // Die Broselow-Daten fÃ¼r dein Pedi-Modal
   broselowData: [
     {color:'grau', minKg:3, maxKg:5, avgKg:4, ageStr: '< 1 J.'},
     {color:'rosa', minKg:6, maxKg:7, avgKg:6.5, ageStr: '< 1 J.'},
@@ -897,7 +950,13 @@ const initialState = {
 const loadState = () => {
   try {
     const saved = localStorage.getItem('cprAssist_db');
-    return saved ? JSON.parse(saved) : initialState;
+    if (saved) {
+       const parsed = JSON.parse(saved);
+       if (parsed.appPhase === 'SETUP') parsed.appPhase = 'ONBOARDING';
+       if (!parsed.broselowData) parsed.broselowData = initialState.broselowData;
+       return parsed;
+    }
+    return initialState;
   } catch (e) {
     return initialState;
   }
@@ -913,14 +972,19 @@ function cprReducer(state, action) {
         ...state, 
         isPediatric: action.payload.isPediatric,
         patientWeight: action.payload.patientWeight,
-        cprMode: action.payload.isPediatric ? '15:2' : '30:2'
+        cprMode: action.payload.isPediatric ? '15:2' : '30:2',
+        // Die Startzeit wird beim allerersten Klick geloggt
+        startTime: state.startTime || new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
       };
 
     case 'TOGGLE_PATIENT_MODAL':
       return { ...state, isPatientModalOpen: action.payload };
 
+    case 'TOGGLE_GRID':
+      return { ...state, isGridVisible: !state.isGridVisible };
+
     case 'START_REA_LOGIC':
-      return state; // Timer reagiert jetzt automatisch auf die Phase
+      return { ...state, appPhase: 'RUNNING' };
 
     case 'LOG_EVENT':
       return { ...state, events: [...state.events, action.payload] };
@@ -1007,7 +1071,8 @@ export function useGlobalTimer() {
 
 
 === C:\Users\Gaumard\Desktop\cpr-assist\src\App.jsx ===
-import React, { useContext } from 'react';
+// --- Datei: src/App.jsx ---
+import React, { useContext, useState } from 'react';
 import { CprProvider, CprContext } from './context/CprContext.jsx';
 import { useGlobalTimer } from './hooks/useGlobalTimer.js';
 
@@ -1021,39 +1086,68 @@ import './App.css';
 
 function MainApp() {
   const { state } = useContext(CprContext);
+  
+  // 1. NEU: Der State fÃ¼r das EinstellungsmenÃ¼
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  
   useGlobalTimer();
 
+  // 2. NEU: Die "Brechstange" (Triple-Click Hard Reset)
+  // LÃ¶scht den gesamten fehlerhaften Browser-Speicher und lÃ¤dt die App frisch
+  const handleTripleClick = (e) => {
+    if (e.detail === 3) {
+      localStorage.clear();
+      window.location.reload();
+    }
+  };
+
   return (
-    <div className="bg-slate-50 text-slate-900 font-sans h-[100dvh] flex flex-col m-0 overflow-hidden select-none relative">
-      
-      <header className="flex items-center justify-between bg-white px-4 py-3 border-b border-slate-200 shadow-sm z-[70] relative shrink-0">
-        <div className="flex items-center gap-3 p-1 cursor-pointer">
-          <div className="w-10 h-10 flex items-center justify-center shrink-0 text-[#E3000F]">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"/></svg>
+    <div className="bg-slate-200/50 w-full h-[100dvh] flex justify-center items-center overflow-hidden relative">
+      <div className="w-full max-w-[430px] h-full bg-slate-50 flex flex-col relative shadow-2xl overflow-hidden text-slate-900 select-none">
+        
+        {/* HEADER */}
+        <header className="flex items-center justify-between bg-white px-4 py-3 border-b border-slate-200 shadow-sm z-[70] relative shrink-0">
+          
+          {/* HIER LIEGT DER TRIPLE-CLICK: Einfach 3x schnell auf das Logo/den Namen tippen! */}
+          <div className="flex items-center gap-3 p-1 cursor-pointer" onClick={handleTripleClick}>
+            <div className="w-10 h-10 flex items-center justify-center shrink-0 text-[#E3000F]">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"/></svg>
+            </div>
+            <div className="flex flex-col justify-center leading-none pointer-events-none">
+              <span className="text-lg font-black text-slate-900 uppercase tracking-tight">CPR Assist</span>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-0.5">by Moe</span>
+            </div>
           </div>
-          <div className="flex flex-col justify-center leading-none">
-            <span className="text-lg font-black text-slate-900 uppercase tracking-tight">CPR Assist</span>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-0.5">by Moe</span>
+
+          <div className="flex items-center gap-2">
+            <button className="text-slate-400 text-xl p-2 active:scale-90 transition-transform"><i className="fa-solid fa-circle-question"></i></button>
+            <button className="text-slate-400 text-xl p-2 active:scale-90 transition-transform"><i className="fa-solid fa-volume-high"></i></button>
+            
+            {/* 3. NEU: Der Settings-Button ist jetzt scharf geschaltet! */}
+            <button 
+              onClick={() => setIsSettingsOpen(true)} 
+              className="text-slate-600 text-xl p-2 active:scale-90 transition-transform ml-1"
+            >
+              <i className="fa-solid fa-gear"></i>
+            </button>
           </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <button className="text-slate-400 text-xl p-2 active:scale-90 transition-transform"><i className="fa-solid fa-circle-question"></i></button>
-          <button className="text-slate-400 text-xl p-2 active:scale-90 transition-transform"><i className="fa-solid fa-volume-high"></i></button>
-          <button className="text-slate-600 text-xl p-2 active:scale-90 transition-transform ml-1"><i className="fa-solid fa-gear"></i></button>
-        </div>
-      </header>
+        </header>
 
-      <MedicalDisclaimer />
+        <MedicalDisclaimer />
 
-      {/* HAUPTBEREICH (CenterDisplay ist hier jetzt sauber in die DashboardShell integriert!) */}
-      <main className="flex-1 relative z-20 w-full flex flex-col">
-        <DashboardShell />
-      </main>
+        {/* HAUPTBEREICH */}
+        <main className="flex-1 relative z-20 w-full flex flex-col">
+          <DashboardShell />
+        </main>
 
-      <PatientSetupModal />
-      <SettingsModal />
-      <HelpOverlay />
+        <PatientSetupModal />
+        
+        {/* 4. NEU: Das Modal bekommt mitgeteilt, ob es offen sein soll */}
+        <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+        
+        <HelpOverlay />
 
+      </div>
     </div>
   );
 }

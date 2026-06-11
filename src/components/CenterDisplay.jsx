@@ -6,9 +6,17 @@ import PatientSelection from './PatientSelection.jsx';
 export default function CenterDisplay() {
   const { state } = useContext(CprContext);
 
-  // KORREKTUR DER PROPORTIONEN: 210px für das kompakte Dashboard
   const isDashboard = state.appPhase === 'RUNNING';
-  const circleSize = isDashboard ? '210px' : '330px';
+  
+  // Neue Größe: 240px im Dashboard, 340px im Onboarding
+  const circleSize = isDashboard ? '240px' : '340px';
+
+  const formatCprTime = (seconds) => {
+    if (isNaN(seconds) || seconds === null) return "00:00";
+    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  };
 
   const renderPhase = () => {
     switch (state.appPhase) {
@@ -23,14 +31,26 @@ export default function CenterDisplay() {
       
       case 'RUNNING':
         return (
-          <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-white rounded-full">
-             <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">
+          <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-white rounded-full shadow-[inset_0_0_20px_rgba(0,0,0,0.02)]">
+            
+            <div className="absolute top-5 w-10 h-1.5 bg-cyan-500 rounded-full"></div>
+
+            <div className="text-[11px] font-bold text-slate-500 uppercase tracking-[0.15em] mb-1">
                Bei Analyse Drücken
-             </div>
-             {/* Textgröße leicht angepasst für den 210px Kreis */}
-             <div className="text-[60px] font-black text-slate-800 tracking-tighter leading-none">
-               119
-             </div>
+            </div>
+            
+            <div className="text-[72px] font-black text-slate-800 tracking-tighter leading-none mb-3 font-mono">
+               {formatCprTime(state.cprSeconds)}
+            </div>
+
+            <div className="flex items-center gap-3 text-[14px] font-black tracking-widest mt-1">
+              <span className="text-amber-500 flex items-center gap-1.5">
+                <i className="fa-solid fa-bolt"></i> 1
+              </span>
+              <span className="text-slate-200">|</span>
+              <span className="text-[#E3000F]">150 J</span>
+            </div>
+
           </div>
         );
 
@@ -47,7 +67,7 @@ export default function CenterDisplay() {
   return (
     <div 
       style={{ width: circleSize, height: circleSize }}
-      className="rounded-full shadow-[0_20px_60px_rgba(0,0,0,0.05)] border border-slate-100 flex items-center justify-center relative overflow-hidden bg-white shrink-0 transition-all duration-300 mx-auto"
+      className="rounded-full shadow-[0_15px_40px_rgba(0,0,0,0.08)] border-4 border-slate-50 flex items-center justify-center relative overflow-hidden bg-white shrink-0 transition-all duration-500 mx-auto"
     >
       {renderPhase()}
     </div>
