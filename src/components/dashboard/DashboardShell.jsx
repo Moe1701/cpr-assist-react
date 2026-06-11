@@ -2,9 +2,13 @@
 import React, { useContext } from 'react';
 import { CprContext } from '../../context/CprContext.jsx';
 import CenterDisplay from '../CenterDisplay.jsx';
+import { usePatientLogic } from '../../hooks/usePatientLogic.js';
 
 export default function DashboardShell() {
   const { state } = useContext(CprContext);
+  
+  // WIR HOLEN DEN UMSCHALTER AUS UNSEREM HOOK
+  const { toggleCprMode } = usePatientLogic();
 
   const formatTime = (seconds) => {
     if (isNaN(seconds) || seconds === null) return "00:00";
@@ -13,7 +17,6 @@ export default function DashboardShell() {
     return `${m}:${s}`;
   };
 
-  // Satelliten auf 86px angepasst
   const SatelliteBtn = ({ icon, label, colorClass = "bg-white text-slate-500 border-slate-200" }) => (
     <button className={`w-[86px] h-[86px] rounded-full shadow-sm border-[3px] flex flex-col items-center justify-center gap-1 hover:bg-slate-50 active:scale-95 transition-all ${colorClass}`}>
       <i className={`fa-solid ${icon} text-[24px] mb-0.5`}></i>
@@ -78,14 +81,17 @@ export default function DashboardShell() {
         <div className="bg-white rounded-[14px] p-2 shadow-sm border border-slate-200 flex-[1.2] flex justify-between items-center">
           <div className="flex flex-col items-start justify-center h-full">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Patient/Modus</span>
-            <div className="flex rounded-full border border-amber-300 overflow-hidden shadow-sm">
+            
+            {/* HIER IST DEIN NEUER DYNAMISCHER BUTTON */}
+            <button onClick={toggleCprMode} className="flex rounded-full border border-amber-300 overflow-hidden shadow-sm active:scale-95 transition-transform cursor-pointer">
               <span className={`text-[10px] font-black px-2.5 py-0.5 uppercase ${state.cprMode !== 'continuous' ? 'bg-amber-100 text-amber-700' : 'bg-white text-slate-400'}`}>
-                30:2
+                {state.isPediatric ? '15:2' : '30:2'}
               </span>
               <span className={`text-[10px] font-black px-2.5 py-0.5 uppercase border-l border-amber-200 ${state.cprMode === 'continuous' ? 'bg-amber-100 text-amber-700' : 'bg-white text-slate-400'}`}>
                 KONT
               </span>
-            </div>
+            </button>
+
           </div>
           <div className="flex flex-col items-end justify-center h-full pl-2 border-l border-slate-100">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">CCF</span>
@@ -100,13 +106,9 @@ export default function DashboardShell() {
         
         {state.isGridVisible && (
           <div className="absolute top-1/2 left-1/2 w-[800px] h-[800px] -translate-x-1/2 -translate-y-1/2 pointer-events-none z-[100] opacity-50">
-            
             <div className="absolute top-0 left-1/2 w-[2px] h-full bg-[#ff00ff] -translate-x-1/2"></div>
             <div className="absolute top-1/2 left-0 w-full h-[2px] bg-[#ff00ff] -translate-y-1/2"></div>
-            
-            {/* R = 163px Kreis (Durchmesser 326) */}
             <div className="absolute top-1/2 left-1/2 w-[326px] h-[326px] border-[2px] border-blue-500 border-dashed rounded-full -translate-x-1/2 -translate-y-1/2"></div>
-            
             {Array.from({ length: 17 }).map((_, i) => {
               const val = (i - 8) * 50;
               if (val === 0) return null;
@@ -114,7 +116,6 @@ export default function DashboardShell() {
                 <React.Fragment key={i}>
                   <div className="absolute top-1/2 w-[8px] h-[2px] bg-[#ff00ff] -translate-y-1/2" style={{ left: `calc(50% + ${val}px - 4px)` }}></div>
                   <div className="absolute top-1/2 text-[10px] font-bold text-[#ff00ff] -translate-y-[14px]" style={{ left: `calc(50% + ${val}px + 2px)` }}>{val > 0 ? `+${val}` : val}</div>
-                  
                   <div className="absolute left-1/2 w-[2px] h-[8px] bg-[#ff00ff] -translate-x-1/2" style={{ top: `calc(50% + ${val}px - 4px)` }}></div>
                   <div className="absolute left-1/2 text-[10px] font-bold text-[#ff00ff] translate-x-[6px]" style={{ top: `calc(50% + ${val}px - 6px)` }}>{val > 0 ? `+${val}` : val}</div>
                 </React.Fragment>
@@ -127,7 +128,6 @@ export default function DashboardShell() {
           <CenterDisplay />
         </OrbitPosition>
 
-        {/* Die 6 Satelliten (Auf dem neu berechneten R=163 Radius) */}
         {showSatellites && (
           <>
             <OrbitPosition x={0} y={-163}><SatelliteBtn icon="fa-syringe" label="1 mg" colorClass="bg-white text-emerald-600 border-emerald-400" /></OrbitPosition>
@@ -143,21 +143,12 @@ export default function DashboardShell() {
       <div className="absolute bottom-0 w-full h-40 bg-gradient-to-t from-slate-200/90 to-transparent z-10 pointer-events-none"></div>
 
       <div className={`shrink-0 w-full flex justify-between items-end px-5 pb-8 pt-2 z-50 transition-opacity duration-300 pointer-events-none ${!showBottomButtons ? 'opacity-0' : 'opacity-100'}`}>
-        
         <div className="pointer-events-auto">
-          <MainBtn 
-            icon="fa-lungs" label="Atemweg" badge={true}
-            colorClass="bg-white text-[#E3000F] border-[#E3000F] shadow-[0_0_25px_rgba(227,0,15,0.3)]" 
-          />
+          <MainBtn icon="fa-lungs" label="Atemweg" badge={true} colorClass="bg-white text-[#E3000F] border-[#E3000F] shadow-[0_0_25px_rgba(227,0,15,0.3)]" />
         </div>
-
         <div className="pointer-events-auto">
-          <MainBtn 
-            icon="fa-pause" label="CPR Pausieren" 
-            colorClass="bg-white text-slate-500 border-slate-200 shadow-[0_10px_25px_rgba(0,0,0,0.05)]"
-          />
+          <MainBtn icon="fa-pause" label="CPR Pausieren" colorClass="bg-white text-slate-500 border-slate-200 shadow-[0_10px_25px_rgba(0,0,0,0.05)]" />
         </div>
-
       </div>
 
     </div>

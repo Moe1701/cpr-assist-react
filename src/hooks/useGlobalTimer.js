@@ -1,3 +1,4 @@
+// --- Datei: src/hooks/useGlobalTimer.js ---
 import { useEffect, useContext, useRef } from 'react';
 import { CprContext } from '../context/CprContext.jsx';
 
@@ -14,11 +15,13 @@ export function useGlobalTimer() {
 
   useEffect(() => {
     const masterTick = setInterval(() => {
-      // Die Uhr tickt, sobald wir das Setup (Onboarding) verlassen haben
-      if (phaseRef.current !== 'ONBOARDING' && phaseRef.current !== 'OB_INITIAL_BREATHS') {
+      // FIX: Die Einsatzuhr startet JETZT sofort, wenn der Patient gewählt wurde 
+      // (also sobald wir nicht mehr im allerersten ONBOARDING Screen sind)
+      if (phaseRef.current !== 'ONBOARDING') {
         dispatch({ type: 'TICK_MISSION' });
       }
 
+      // Die CPR-Uhr (Mitte) läuft nur, wenn auch wirklich gedrückt wird
       if (compressingRef.current === true) {
         dispatch({ type: 'TICK_CPR' });
       }
