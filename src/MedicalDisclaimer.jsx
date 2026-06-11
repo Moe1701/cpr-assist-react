@@ -1,45 +1,39 @@
-import React, { useContext } from 'react';
-import { CprContext } from './context/CprContext.jsx';
+// --- Datei: src/components/MedicalDisclaimer.jsx ---
+import React, { useState } from 'react';
 
-const MedicalDisclaimer = () => {
-  const { hasAcceptedDisclaimer, acceptDisclaimer } = useContext(CprContext);
+export default function MedicalDisclaimer() {
+  // Lokaler State: Wurde der Disclaimer in dieser Sitzung schon bestätigt?
+  const [isAccepted, setIsAccepted] = useState(false);
 
-  // 1. Wenn noch nicht akzeptiert -> Bildfüllendes Overlay (Blur)
-  if (!hasAcceptedDisclaimer) {
-    return (
-      <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl p-6 max-w-sm w-full text-center shadow-2xl animate-in fade-in zoom-in duration-300">
-          <h2 className="text-red-600 font-black uppercase text-lg mb-2">
-            <i className="fa-solid fa-triangle-exclamation mr-2"></i>
-            Nur für Training
-          </h2>
-          <p className="text-slate-600 text-sm font-bold mb-6">
-            Diese App dient ausschließlich der Überwachung von Trainingsszenarien. 
-            Sie ist für den klinischen Live-Einsatz nicht validiert oder zugelassen. 
-            Nutzung auf eigene Gefahr.
-          </p>
-          <button
-            onClick={acceptDisclaimer}
-            className="w-full bg-blue-50 text-blue-600 border border-blue-200 py-3 rounded-xl font-black uppercase text-sm shadow-sm active:scale-95 transition-transform"
-          >
-            Ich verstehe & akzeptiere
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // Wenn er bestätigt wurde, verschwindet die Komponente komplett aus dem DOM
+  if (isAccepted) return null;
 
-  // 2. Wenn akzeptiert -> Kleines, rotes Banner ganz oben
   return (
-    <div className="absolute top-4 left-0 right-0 w-full px-4 z-[65] pointer-events-none">
-      <div className="w-full max-w-sm mx-auto bg-red-50/95 backdrop-blur-sm border-2 border-red-500 rounded-2xl p-2 shadow-sm text-center pointer-events-auto">
-        <h2 className="text-red-700 font-black uppercase tracking-widest text-[10px]">
-          <i className="fa-solid fa-triangle-exclamation mr-2"></i>
-          Nur für Training
-        </h2>
+    <div className="fixed inset-0 z-[100] bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl flex flex-col text-center border-2 border-red-500">
+        
+        <div className="flex justify-center mb-4">
+          <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center text-3xl shadow-sm border border-red-100">
+            <i className="fa-solid fa-triangle-exclamation"></i>
+          </div>
+        </div>
+        
+        <h3 className="text-lg font-black text-slate-800 uppercase tracking-wide mb-2">
+          Wichtiger Hinweis
+        </h3>
+        
+        <p className="text-sm font-bold text-slate-600 mb-6 text-left p-3 bg-slate-50 rounded-lg border border-slate-100 leading-relaxed">
+          Diese App dient ausschließlich der Überwachung von <span className="text-[#E3000F] font-black">Trainingsszenarien</span>. Sie ist für den klinischen Live-Einsatz nicht validiert oder zugelassen. Alle Dosierungen sind eigenverantwortlich zu prüfen. Nutzung auf eigene Gefahr.
+        </p>
+        
+        <button 
+          onClick={() => setIsAccepted(true)}
+          className="w-full bg-[#E3000F] text-white py-4 rounded-xl font-black uppercase tracking-widest text-sm active:scale-95 shadow-md transition-transform"
+        >
+          Ich verstehe
+        </button>
+        
       </div>
     </div>
   );
-};
-
-export default MedicalDisclaimer;
+}

@@ -1,30 +1,30 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useContext, useRef } from 'react';
+import { CprContext } from '../context/CprContext.jsx';
 
-export function useGlobalTimer(state, dispatch) {
-  const timerRef = useRef(null);
-  const lastTickRef = useRef(Date.now());
+export function useGlobalTimer() {
+  const { state, dispatch } = useContext(CprContext);
+  
+  const phaseRef = useRef(state.appPhase);
+  const compressingRef = useRef(state.isCompressing);
 
   useEffect(() => {
-    if (!state.isRunning) {
-      if (timerRef.current) clearInterval(timerRef.current);
-      return;
-    }
+    phaseRef.current = state.appPhase;
+    compressingRef.current = state.isCompressing;
+  }, [state.appPhase, state.isCompressing]);
 
-    lastTickRef.current = Date.now();
-
-    timerRef.current = setInterval(() => {
-      const now = Date.now();
-      const deltaMs = now - lastTickRef.current;
-      const deltaSeconds = Math.round(deltaMs / 1000);
-
-      if (deltaSeconds >= 1) {
-        lastTickRef.current = now;
-        dispatch({ type: 'TICK', payload: deltaSeconds });
+  useEffect(() => {
+    const masterTick = setInterval(() => {
+      // Die Uhr tickt, sobald wir das Setup (Onboarding) verlassen haben
+      if (phaseRef.current !== 'ONBOARDING' && phaseRef.current !== 'OB_INITIAL_BREATHS') {
+        dispatch({ type: 'TICK_MISSION' });
       }
-    }, 200);
 
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [state.isRunning, dispatch]);
+      if (compressingRef.current === true) {
+        dispatch({ type: 'TICK_CPR' });
+      }
+
+    }, 1000);
+
+    return () => clearInterval(masterTick);
+  }, [dispatch]);
 }
