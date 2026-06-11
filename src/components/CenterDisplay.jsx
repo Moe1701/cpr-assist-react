@@ -8,8 +8,8 @@ export default function CenterDisplay() {
 
   const isDashboard = state.appPhase === 'RUNNING';
   
-  // Neue Größe: 240px im Dashboard, 340px im Onboarding
-  const circleSize = isDashboard ? '240px' : '340px';
+  // Neue Größe: 224px im Dashboard, 340px im Onboarding
+  const circleSize = isDashboard ? '224px' : '340px';
 
   const formatCprTime = (seconds) => {
     if (isNaN(seconds) || seconds === null) return "00:00";
@@ -35,15 +35,15 @@ export default function CenterDisplay() {
             
             <div className="absolute top-5 w-10 h-1.5 bg-cyan-500 rounded-full"></div>
 
-            <div className="text-[11px] font-bold text-slate-500 uppercase tracking-[0.15em] mb-1">
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em] mb-1">
                Bei Analyse Drücken
             </div>
             
-            <div className="text-[72px] font-black text-slate-800 tracking-tighter leading-none mb-3 font-mono">
+            <div className="text-[64px] font-black text-slate-800 tracking-tighter leading-none mb-3 font-mono">
                {formatCprTime(state.cprSeconds)}
             </div>
 
-            <div className="flex items-center gap-3 text-[14px] font-black tracking-widest mt-1">
+            <div className="flex items-center gap-3 text-[13px] font-black tracking-widest mt-1">
               <span className="text-amber-500 flex items-center gap-1.5">
                 <i className="fa-solid fa-bolt"></i> 1
               </span>

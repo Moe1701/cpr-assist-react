@@ -13,11 +13,11 @@ export default function DashboardShell() {
     return `${m}:${s}`;
   };
 
-  // Satelliten auf 78px angepasst
+  // Satelliten auf 86px angepasst
   const SatelliteBtn = ({ icon, label, colorClass = "bg-white text-slate-500 border-slate-200" }) => (
-    <button className={`w-[78px] h-[78px] rounded-full shadow-sm border-[3px] flex flex-col items-center justify-center gap-1 hover:bg-slate-50 active:scale-95 transition-all ${colorClass}`}>
-      <i className={`fa-solid ${icon} text-[21px] mb-0.5`}></i>
-      <span className="text-[8.5px] font-black uppercase tracking-wider leading-none text-center px-1">
+    <button className={`w-[86px] h-[86px] rounded-full shadow-sm border-[3px] flex flex-col items-center justify-center gap-1 hover:bg-slate-50 active:scale-95 transition-all ${colorClass}`}>
+      <i className={`fa-solid ${icon} text-[24px] mb-0.5`}></i>
+      <span className="text-[9px] font-black uppercase tracking-wider leading-none text-center px-1">
         {label}
       </span>
     </button>
@@ -104,8 +104,8 @@ export default function DashboardShell() {
             <div className="absolute top-0 left-1/2 w-[2px] h-full bg-[#ff00ff] -translate-x-1/2"></div>
             <div className="absolute top-1/2 left-0 w-full h-[2px] bg-[#ff00ff] -translate-y-1/2"></div>
             
-            {/* R = 167px Kreis (Durchmesser 334) */}
-            <div className="absolute top-1/2 left-1/2 w-[334px] h-[334px] border-[2px] border-blue-500 border-dashed rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+            {/* R = 163px Kreis (Durchmesser 326) */}
+            <div className="absolute top-1/2 left-1/2 w-[326px] h-[326px] border-[2px] border-blue-500 border-dashed rounded-full -translate-x-1/2 -translate-y-1/2"></div>
             
             {Array.from({ length: 17 }).map((_, i) => {
               const val = (i - 8) * 50;
@@ -127,15 +127,15 @@ export default function DashboardShell() {
           <CenterDisplay />
         </OrbitPosition>
 
-        {/* Die 6 Satelliten (Auf dem neu berechneten R=167 Radius) */}
+        {/* Die 6 Satelliten (Auf dem neu berechneten R=163 Radius) */}
         {showSatellites && (
           <>
-            <OrbitPosition x={0} y={-167}><SatelliteBtn icon="fa-syringe" label="1 mg" colorClass="bg-white text-emerald-600 border-emerald-400" /></OrbitPosition>
-            <OrbitPosition x={145} y={-84}><SatelliteBtn icon="fa-syringe" label="Amio. 300 mg" colorClass="bg-white text-purple-600 border-purple-400" /></OrbitPosition>
-            <OrbitPosition x={145} y={84}><SatelliteBtn icon="fa-clipboard-list" label="Hits Anamnese" colorClass="bg-white text-slate-600 border-slate-300" /></OrbitPosition>
-            <OrbitPosition x={0} y={167}><SatelliteBtn icon="fa-flag-checkered" label="Ende ROSC" colorClass="bg-white text-slate-700 border-slate-300" /></OrbitPosition>
-            <OrbitPosition x={-145} y={84}><SatelliteBtn icon="fa-file-lines" label="Log" colorClass="bg-white text-slate-500 border-slate-300" /></OrbitPosition>
-            <OrbitPosition x={-145} y={-84}><SatelliteBtn icon="fa-droplet" label="Zugang" colorClass="bg-white text-slate-500 border-slate-300" /></OrbitPosition>
+            <OrbitPosition x={0} y={-163}><SatelliteBtn icon="fa-syringe" label="1 mg" colorClass="bg-white text-emerald-600 border-emerald-400" /></OrbitPosition>
+            <OrbitPosition x={141} y={-81.5}><SatelliteBtn icon="fa-syringe" label="Amio. 300 mg" colorClass="bg-white text-purple-600 border-purple-400" /></OrbitPosition>
+            <OrbitPosition x={141} y={81.5}><SatelliteBtn icon="fa-clipboard-list" label="Hits Anamnese" colorClass="bg-white text-slate-600 border-slate-300" /></OrbitPosition>
+            <OrbitPosition x={0} y={163}><SatelliteBtn icon="fa-flag-checkered" label="Ende ROSC" colorClass="bg-white text-slate-700 border-slate-300" /></OrbitPosition>
+            <OrbitPosition x={-141} y={81.5}><SatelliteBtn icon="fa-file-lines" label="Log" colorClass="bg-white text-slate-500 border-slate-300" /></OrbitPosition>
+            <OrbitPosition x={-141} y={-81.5}><SatelliteBtn icon="fa-droplet" label="Zugang" colorClass="bg-white text-slate-500 border-slate-300" /></OrbitPosition>
           </>
         )}
       </div>
