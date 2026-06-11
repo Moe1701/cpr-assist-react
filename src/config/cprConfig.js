@@ -34,7 +34,7 @@ export const CPR_CONFIG = {
     WARNING: "WARNING",           
   },
 
-  // 5. NEU: PHASEN ALS KONSTANTEN (Verhindert Tippfehler im Code)
+  // 5. PHASEN ALS KONSTANTEN (Verhindert Tippfehler im Code)
   PHASES: {
     ONBOARDING: 'ONBOARDING',
     OB_INITIAL_BREATHS: 'OB_INITIAL_BREATHS',

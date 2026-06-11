@@ -1,34 +1,43 @@
+// --- Datei: src/components/views/ViewObInitialBreaths.jsx ---
 import React, { useContext } from 'react';
 import { CprContext } from '../../context/CprContext.jsx';
+import { CPR_CONFIG } from '../../config/cprConfig.js';
 
 export default function ViewObInitialBreaths() {
-  const { dispatch } = useContext(CprContext);
+  const { dispatch, logEvent } = useContext(CprContext);
 
-  const handleBreathsDone = (skipped = false) => {
-    dispatch({ type: 'SET_PHASE', payload: 'OB_COMPRESSIONS' });
+  const handleAction = (performed) => {
+    // 1. Ab ins Protokoll!
+    const detail = performed ? "5 Initiale Beatmungen DURCHGEFÜHRT" : "5 Initiale Beatmungen ÜBERSPRUNGEN";
+    logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, detail);
+    
+    // 2. Weiter zum nächsten Screen
+    dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.OB_COMPRESSIONS });
   };
 
   return (
-    <div className="absolute inset-0 w-full h-full bg-white flex flex-col items-center justify-center animate-in scale-in duration-300">
-      <div className="absolute top-[25px] w-full flex justify-center">
-        <span className="text-[16px] font-black text-slate-700 uppercase tracking-[0.25em] text-center leading-tight drop-shadow-sm">
-          5 Initiale<br/>Beatmungen
-        </span>
+    <div className="flex flex-col items-center justify-center w-full h-full p-4 animate-in fade-in zoom-in-95 duration-300">
+      <div className="w-16 h-16 bg-blue-100 text-blue-500 rounded-full flex items-center justify-center mb-3">
+        <i className="fa-solid fa-lungs text-3xl"></i>
       </div>
-      <div className="absolute top-[75px] w-full flex justify-center">
-        <div className="w-12 h-12 bg-cyan-50 border border-cyan-100 text-cyan-600 rounded-full flex items-center justify-center shadow-sm">
-          <i className="fa-solid fa-lungs text-xl"></i>
-        </div>
-      </div>
-      <div className="absolute top-[135px] w-full flex justify-center">
-        <button onClick={() => handleBreathsDone(false)} className="w-[85%] max-w-[300px] h-[60px] bg-cyan-50/80 text-cyan-700 rounded-full font-black uppercase tracking-[0.15em] text-[15px] shadow-[0_8px_25px_rgba(6,182,212,0.04)] border border-cyan-200 active:scale-95 transition-all flex items-center justify-center gap-3">
-          <i className="fa-solid fa-lungs text-2xl text-cyan-400"></i>
-          <span>Durchgeführt</span>
+      
+      <h2 className="text-xl font-black text-slate-800 uppercase tracking-wider text-center leading-tight mb-6">
+        5 Initiale<br/>Beatmungen
+      </h2>
+
+      <div className="flex flex-col gap-3 w-full px-4">
+        <button 
+          onClick={() => handleAction(true)}
+          className="w-full bg-blue-500 text-white py-3 rounded-2xl font-black uppercase tracking-widest text-sm shadow-[0_5px_15px_rgba(59,130,246,0.3)] active:scale-95 transition-all"
+        >
+          Durchgeführt
         </button>
-      </div>
-      <div className="absolute top-[205px] w-full flex justify-center">
-        <button onClick={() => handleBreathsDone(true)} className="w-[85%] max-w-[300px] h-[60px] bg-white text-slate-400 rounded-full font-bold uppercase tracking-[0.25em] text-[13px] shadow-[0_5px_15px_rgba(0,0,0,0.03)] border border-slate-100 active:scale-95 transition-all flex items-center justify-center gap-2">
-          <span>Überspringen</span>
+        
+        <button 
+          onClick={() => handleAction(false)}
+          className="w-full bg-white text-slate-400 border-2 border-slate-200 py-3 rounded-2xl font-bold uppercase tracking-widest text-sm active:scale-95 transition-all hover:bg-slate-50"
+        >
+          Überspringen
         </button>
       </div>
     </div>
