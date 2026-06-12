@@ -5,7 +5,6 @@ import { useGlobalTimer } from './hooks/useGlobalTimer.js';
 
 import MedicalDisclaimer from './MedicalDisclaimer.jsx';
 import DashboardShell from './components/dashboard/DashboardShell.jsx';
-import PatientSetupModal from './components/PatientSetupModal.jsx';
 import SettingsModal from './components/SettingsModal.jsx';
 import HelpOverlay from './components/HelpOverlay.jsx';
 
@@ -66,8 +65,6 @@ function MainApp() {
         <main className="flex-1 relative z-20 w-full flex flex-col">
           <DashboardShell />
         </main>
-
-        <PatientSetupModal />
         
         {/* 4. NEU: Das Modal bekommt mitgeteilt, ob es offen sein soll */}
         <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
