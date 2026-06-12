@@ -1,25 +1,46 @@
+// --- Datei: src/components/views/ViewObAnalyze.jsx ---
 import React, { useContext } from 'react';
 import { CprContext } from '../../context/CprContext.jsx';
+import { CPR_CONFIG } from '../../config/cprConfig.js';
 
 export default function ViewObAnalyze() {
-  const { dispatch } = useContext(CprContext);
+  const { dispatch, logEvent } = useContext(CprContext);
 
-  const handleAnalyseClick = () => {
-    dispatch({ type: 'SET_PHASE', payload: 'DECISION' });
+  const handleShockable = () => {
+    logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, "Analyse: Schockbar");
+    // Bei "Schockbar" müssen wir als Nächstes die Joule-Zahl wählen
+    dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.JOULE });
+  };
+
+  const handleNonShockable = () => {
+    logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, "Analyse: Nicht Schockbar");
+    // Bei "Nicht Schockbar" überspringen wir die Joule-Wahl und gehen direkt zum "CPR Fortsetzen" Screen
+    dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.WAITING_CPR_RESUME });
   };
 
   return (
-    <div className="absolute inset-0 w-full h-full bg-white flex flex-col items-center justify-center overflow-hidden animate-in fade-in duration-300">
-      <div className="absolute inset-0 w-full h-full z-0 opacity-80" style={{clipPath:'polygon(70% 0%, 15% 55%, 45% 55%, 30% 100%, 85% 45%, 55% 45%)', background:'repeating-linear-gradient(-45deg, rgba(227,0,15,0.08) 0px, rgba(227,0,15,0.08) 4px, transparent 4px, transparent 8px)', transform:'scale(1.5)'}}></div>
+    <div className="flex flex-col items-center justify-center w-full h-full p-4 animate-in fade-in zoom-in-95 duration-300">
+      <div className="w-16 h-16 bg-amber-100 text-amber-500 rounded-full flex items-center justify-center mb-4">
+        <i className="fa-solid fa-heart-crack text-3xl"></i>
+      </div>
       
-      <div className="z-10 flex flex-col items-center justify-center gap-5 w-full h-full">
-        <span className="text-[13px] font-black text-slate-700 uppercase tracking-[0.2em] bg-white/95 px-4 py-1.5 rounded-full drop-shadow-sm text-center leading-tight">
-          Initiale Analyse
-        </span>
+      <h2 className="text-xl font-black text-slate-800 uppercase tracking-wider text-center leading-tight mb-6">
+        Rhythmus-<br/>Analyse
+      </h2>
+
+      <div className="flex flex-col gap-3 w-full max-w-[250px]">
+        <button 
+          onClick={handleShockable}
+          className="w-full bg-[#E3000F] text-white py-4 rounded-2xl font-black uppercase tracking-widest text-sm shadow-[0_5px_15px_rgba(227,0,15,0.3)] active:scale-95 transition-all"
+        >
+          Schockbar
+        </button>
         
-        <button onClick={handleAnalyseClick} className="w-[85%] max-w-[190px] h-[55px] bg-white text-[#E3000F] rounded-full font-black uppercase tracking-[0.1em] text-[13px] shadow-[0_8px_25px_rgba(227,0,15,0.08)] border border-red-100 transition-all flex items-center justify-center gap-3 animate-pulse active:scale-95 hover:bg-red-50">
-          <i className="fa-solid fa-bolt text-xl text-red-300"></i> 
-          <span>Hier drücken</span>
+        <button 
+          onClick={handleNonShockable}
+          className="w-full bg-slate-800 text-white py-4 rounded-2xl font-black uppercase tracking-widest text-sm shadow-[0_5px_15px_rgba(30,41,59,0.3)] active:scale-95 transition-all"
+        >
+          Nicht Schockbar
         </button>
       </div>
     </div>

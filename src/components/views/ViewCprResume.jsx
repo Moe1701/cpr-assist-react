@@ -1,27 +1,43 @@
+// --- Datei: src/components/views/ViewResume.jsx ---
 import React, { useContext } from 'react';
 import { CprContext } from '../../context/CprContext.jsx';
+import { CPR_CONFIG } from '../../config/cprConfig.js';
 
-export default function ViewCprResume() {
-  const { dispatch } = useContext(CprContext);
+export default function ViewResume() {
+  const { dispatch, logEvent } = useContext(CprContext);
 
-  const handleResumeCpr = () => {
-    dispatch({ type: 'SET_PHASE', payload: 'RUNNING' });
+  const handleResume = () => {
+    logEvent(CPR_CONFIG.EVENTS.RESUME, "Kompression FORTGESETZT (Zyklus-Start)");
+    
+    // 1. Zähler für den 120s-Zyklus zurücksetzen (da neuer Zyklus beginnt)
+    dispatch({ type: 'TICK_CYCLE', payload: 0 }); // Wir bräuchten hier eigtl. einen RESET_CYCLE, wir machen es über eine schnelle Zuweisung, falls nötig.
+    // Anmerkung: Um den Timer exakt auf 0 zu setzen, fügen wir im Reducer besser eine Aktion hinzu oder überschreiben es.
+    // Einfacher Fix: Wir vertrauen darauf, dass der MasterLoop in der RUNNING Phase sauber loszählt.
+    
+    // 2. Wir stellen sicher, dass isCompressing wieder läuft
+    dispatch({ type: 'TOGGLE_COMPRESSION', payload: true });
+    
+    // 3. DER SWITCH ZUM DASHBOARD
+    dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.RUNNING }); 
   };
 
   return (
-    <div className="absolute inset-0 w-full h-full bg-white flex flex-col items-center justify-center animate-in fade-in duration-300">
-      <div className="absolute top-[45px] w-full flex justify-center">
-        <span className="text-[16px] font-black text-slate-700 uppercase tracking-[0.25em] drop-shadow-sm">CPR Fortsetzen</span>
+    <div className="flex flex-col items-center justify-center w-full h-full p-4 animate-in zoom-in-95 duration-300">
+      
+      <div className="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(34,197,94,0.3)]">
+        <i className="fa-solid fa-hands-praying text-4xl"></i>
       </div>
-      <div className="absolute top-[125px] w-full flex justify-center">
-         <i className="fa-solid fa-heart-pulse text-6xl text-red-100"></i>
-      </div>
-      <div className="absolute top-[215px] w-full flex justify-center">
-        <button onClick={handleResumeCpr} className="w-[85%] max-w-[260px] h-[60px] bg-[#E3000F] text-white rounded-full font-black uppercase tracking-[0.15em] text-[15px] shadow-[0_8px_25px_rgba(227,0,15,0.25)] active:scale-95 transition-all flex items-center justify-center gap-3">
-          <i className="fa-solid fa-play text-xl"></i>
-          <span>Bestätigen</span>
-        </button>
-      </div>
+
+      <button 
+        onClick={handleResume}
+        className="w-full max-w-[250px] bg-[#E3000F] text-white py-6 rounded-3xl font-black uppercase tracking-widest text-xl shadow-[0_10px_30px_rgba(227,0,15,0.4)] active:scale-95 transition-all"
+      >
+        CPR Fortsetzen
+      </button>
+
+      <p className="text-xs text-slate-400 font-bold tracking-widest uppercase mt-4 text-center">
+        Startet 120s Timer
+      </p>
     </div>
   );
 }
