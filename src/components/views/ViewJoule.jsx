@@ -1,4 +1,3 @@
-// --- Datei: src/components/views/ViewJoule.jsx ---
 import React, { useContext, useMemo } from 'react';
 import { CprContext } from '../../context/CprContext.jsx';
 import { CPR_CONFIG } from '../../config/cprConfig.js';
@@ -6,48 +5,76 @@ import { CPR_CONFIG } from '../../config/cprConfig.js';
 export default function ViewJoule() {
   const { state, dispatch, logEvent } = useContext(CprContext);
 
-  // Dynamische Joule-Berechnung (4 J/kg und 8 J/kg bei Kindern)
-  const jouleOptions = useMemo(() => {
-    if (state.isPediatric) {
-      // Fallback auf 10kg, falls kein Gewicht gewählt wurde, aber isPediatric true ist
-      const kg = state.patientWeight || 10; 
-      return [
-        { label: 'Standard (4 J/kg)', value: Math.round(kg * 4) },
-        { label: 'Eskalation (8 J/kg)', value: Math.round(kg * 8) }
-      ];
-    }
-    // Standard-Werte für Erwachsene
-    return [
-      { label: 'Standard', value: 150 },
-      { label: 'Eskalation', value: 200 },
-      { label: 'Max', value: 360 }
-    ];
-  }, [state.isPediatric, state.patientWeight]);
-
-  const handleShock = (value) => {
-    logEvent(CPR_CONFIG.EVENTS.SHOCK, `Schock abgegeben: ${value}J`);
-    // Nach der Schockabgabe geht es zum "CPR Fortsetzen" Screen
+  const handleJouleSelect = (joule) => {
+    logEvent(CPR_CONFIG.EVENTS.SHOCK, `Schock abgegeben: ${joule}J`);
     dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.WAITING_CPR_RESUME });
   };
 
+  const weight = state.patientWeight || 4;
+  const jouleLow = Math.round(weight * 4);
+  const jouleHigh = Math.round(weight * 8);
+
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full p-4 animate-in fade-in duration-300">
-      <div className="w-12 h-12 bg-amber-100 text-amber-500 rounded-full flex items-center justify-center mb-2">
-        <i className="fa-solid fa-bolt text-2xl"></i>
+    <div className="absolute inset-0 w-full h-full bg-white flex flex-col items-center justify-center animate-in fade-in duration-300">
+      <div className="absolute top-[35px] w-full flex justify-center">
+        <span className="text-[16px] font-black text-slate-700 uppercase tracking-[0.25em] drop-shadow-sm">Energie wählen</span>
       </div>
-      <h2 className="text-sm font-black text-slate-500 uppercase tracking-widest mb-6">Energie wählen</h2>
       
-      <div className="grid grid-cols-1 gap-3 w-full max-w-[250px]">
-        {jouleOptions.map((opt) => (
+      {state.isPediatric ? (
+        <div className="absolute top-[110px] w-full flex justify-center gap-3 px-4">
           <button 
-            key={opt.value}
-            onClick={() => handleShock(opt.value)}
-            className="bg-white border-2 border-amber-400 text-amber-600 py-4 rounded-2xl font-black text-xl shadow-lg active:scale-95 transition-all flex flex-col items-center justify-center"
+            onClick={() => handleJouleSelect(jouleLow)} 
+            className="flex-1 h-[75px] bg-yellow-50/30 text-yellow-600 rounded-[20px] shadow-sm border-2 border-yellow-400 active:scale-95 transition-all flex flex-col items-center justify-center"
           >
-            {opt.value} J
-            <span className="text-[10px] font-bold uppercase opacity-70 mt-1">{opt.label}</span>
+            <span className="font-black uppercase tracking-wider text-[24px] leading-none">{jouleLow} J</span>
+            <span className="text-[9px] font-bold text-yellow-600/60 uppercase tracking-widest mt-1">4 J/kg</span>
           </button>
-        ))}
+          <button 
+            onClick={() => handleJouleSelect(jouleHigh)} 
+            className="flex-1 h-[75px] bg-yellow-50/30 text-yellow-600 rounded-[20px] shadow-sm border-2 border-yellow-400 active:scale-95 transition-all flex flex-col items-center justify-center"
+          >
+            <span className="font-black uppercase tracking-wider text-[24px] leading-none">{jouleHigh} J</span>
+            <span className="text-[9px] font-bold text-yellow-600/60 uppercase tracking-widest mt-1">8 J/kg</span>
+          </button>
+        </div>
+      ) : (
+        <div className="absolute top-[90px] w-full flex flex-col items-center gap-2.5">
+          <button 
+            onClick={() => handleJouleSelect(150)} 
+            className="w-[85%] max-w-[220px] h-[50px] bg-yellow-50/30 text-yellow-600 rounded-[16px] font-black uppercase tracking-wider text-[20px] shadow-sm border-2 border-yellow-400 active:scale-95 transition-all flex items-center justify-center"
+          >
+            150 J
+          </button>
+          <div className="flex gap-2.5 w-[85%] max-w-[220px]">
+            <button 
+              onClick={() => handleJouleSelect(200)} 
+              className="flex-1 h-[50px] bg-yellow-50/30 text-yellow-600 rounded-[16px] font-black uppercase tracking-wider text-[18px] shadow-sm border-2 border-yellow-400 active:scale-95 transition-all flex items-center justify-center"
+            >
+              200 J
+            </button>
+            <button 
+              onClick={() => handleJouleSelect(360)} 
+              className="flex-1 h-[50px] bg-yellow-50/30 text-yellow-600 rounded-[16px] font-black uppercase tracking-wider text-[18px] shadow-sm border-2 border-yellow-400 active:scale-95 transition-all flex items-center justify-center"
+            >
+              360 J
+            </button>
+          </div>
+        </div>
+      )}
+
+      <div className="absolute top-[230px] w-full flex justify-center">
+        <span className="text-[10px] font-bold text-[#E3000F] uppercase tracking-widest flex items-center gap-2 animate-pulse">
+           <i className="fa-solid fa-bolt"></i> Nach Schock bestätigen
+        </span>
+      </div>
+      
+      <div className="absolute top-[270px] w-full flex justify-center">
+        <button 
+          onClick={() => dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.DECISION })} 
+          className="px-8 h-[36px] bg-white text-slate-400 rounded-full font-bold uppercase tracking-[0.2em] text-[10px] shadow-sm border border-slate-100 active:scale-95 transition-all"
+        >
+          Zurück
+        </button>
       </div>
     </div>
   );

@@ -1,0 +1,137 @@
+--- CPR ASSIST - CODE TEIL 4 ---
+
+
+// ==========================================
+// DATEI: src\hooks\usePatientLogic.js
+// ==========================================
+
+// --- Datei: src/hooks/usePatientLogic.js ---
+import { useContext, useCallback } from 'react';
+import { CprContext } from '../context/CprContext.jsx';
+import { CPR_CONFIG } from '../config/cprConfig.js';
+import { BROSELOW_DATA } from '../config/broselowData.js'; 
+
+export function usePatientLogic() {
+  const { state, dispatch, logEvent } = useContext(CprContext);
+
+  const setAdult = useCallback(() => {
+    dispatch({ type: 'SET_PEDIATRIC_DATA', payload: { isPediatric: false, patientWeight: null } });
+    dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.OB_COMPRESSIONS });
+    logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, "Einsatz Start: Erwachsener | Modus: KONT");
+  }, [dispatch, logEvent]);
+
+  const setChild = useCallback((weight) => {
+    dispatch({ type: 'SET_PEDIATRIC_DATA', payload: { isPediatric: true, patientWeight: weight } });
+    dispatch({ type: 'TOGGLE_PATIENT_MODAL', payload: false });
+    dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.OB_INITIAL_BREATHS });
+    
+    const weightInfo = weight ? `${weight}kg` : 'Gewicht später ermitteln';
+    logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, `Einsatz Start: Kind (${weightInfo}) | Modus: KONT`);
+  }, [dispatch, logEvent]);
+
+  const calculateVitals = useCallback((source, value) => {
+    let age, kg, cm;
+    const numVal = parseFloat(value);
+    
+    if (source === 'age') {
+        age = numVal;
+        kg = age === 0 ? 6 : 2 * (age + 4);
+        cm = Math.round((age * 6) + 77); 
+    } else if (source === 'kg') {
+        kg = numVal;
+        age = kg < 10 ? 0 : Math.max(1, Math.round((kg / 2) - 4));
+        cm = Math.round((age * 6) + 77); 
+    } else if (source === 'cm') {
+        cm = numVal;
+        age = Math.max(0, Math.round((cm - 77) / 6));
+        kg = age === 0 ? 6 : 2 * (age + 4);
+    }
+    return { age, kg, cm };
+  }, []);
+
+  const getBroselowZone = useCallback((kg) => {
+    if (!BROSELOW_DATA || BROSELOW_DATA.length === 0) return null;
+    return BROSELOW_DATA.find(z => kg >= z.minKg && kg <= z.maxKg) || BROSELOW_DATA[BROSELOW_DATA.length - 1];
+  }, []);
+
+  const toggleCprMode = useCallback(() => {
+    const newMode = state.cprMode === 'continuous' 
+        ? (state.isPediatric ? '15:2' : '30:2') 
+        : 'continuous';
+    dispatch({ type: 'SET_CPR_MODE', payload: newMode });
+    logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, `Modus gewechselt auf: ${newMode}`);
+  }, [state.cprMode, state.isPediatric, dispatch, logEvent]);
+
+  return { setAdult, setChild, calculateVitals, getBroselowZone, toggleCprMode };
+}
+
+
+// ==========================================
+// DATEI: src\index.css
+// ==========================================
+
+@import "tailwindcss";
+
+/* Das ist alles was Tailwind v4 braucht */
+
+
+// ==========================================
+// DATEI: src\main.jsx
+// ==========================================
+
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App.jsx'
+import './index.css' // <--- DIESE ZEILE MUSS DA SEIN!
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+)
+
+
+// ==========================================
+// DATEI: src\MedicalDisclaimer.jsx
+// ==========================================
+
+// --- Datei: src/components/MedicalDisclaimer.jsx ---
+import React, { useState } from 'react';
+
+export default function MedicalDisclaimer() {
+  // Lokaler State: Wurde der Disclaimer in dieser Sitzung schon bestätigt?
+  const [isAccepted, setIsAccepted] = useState(false);
+
+  // Wenn er bestätigt wurde, verschwindet die Komponente komplett aus dem DOM
+  if (isAccepted) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl flex flex-col text-center border-2 border-red-500">
+        
+        <div className="flex justify-center mb-4">
+          <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center text-3xl shadow-sm border border-red-100">
+            <i className="fa-solid fa-triangle-exclamation"></i>
+          </div>
+        </div>
+        
+        <h3 className="text-lg font-black text-slate-800 uppercase tracking-wide mb-2">
+          Wichtiger Hinweis
+        </h3>
+        
+        <p className="text-sm font-bold text-slate-600 mb-6 text-left p-3 bg-slate-50 rounded-lg border border-slate-100 leading-relaxed">
+          Diese App dient ausschließlich der Überwachung von <span className="text-[#E3000F] font-black">Trainingsszenarien</span>. Sie ist für den klinischen Live-Einsatz nicht validiert oder zugelassen. Alle Dosierungen sind eigenverantwortlich zu prüfen. Nutzung auf eigene Gefahr.
+        </p>
+        
+        <button 
+          onClick={() => setIsAccepted(true)}
+          className="w-full bg-[#E3000F] text-white py-4 rounded-xl font-black uppercase tracking-widest text-sm active:scale-95 shadow-md transition-transform"
+        >
+          Ich verstehe
+        </button>
+        
+      </div>
+    </div>
+  );
+}
+
