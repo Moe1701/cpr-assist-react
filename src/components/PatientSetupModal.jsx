@@ -1,6 +1,7 @@
-import React, { useContext } from 'react';
-import { CprContext } from '../../context/CprContext.jsx';
-import { usePatientLogic } from '../../hooks/usePatientLogic.js';
+// RICHTIG (nur ../):
+import { CprContext } from '../context/CprContext.jsx';
+import { usePatientLogic } from '../hooks/usePatientLogic.js';
+import { BROSELOW_DATA } from '../config/broselowData.js';
 
 // NEU: Wir importieren die Farben jetzt direkt aus unserer neuen Daten-Datei!
 import { BROSELOW_DATA } from '../../config/broselowData.js'; 
