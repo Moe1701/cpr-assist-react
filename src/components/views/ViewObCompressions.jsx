@@ -13,8 +13,9 @@ export default function ViewObCompressions() {
   return (
     <div className="absolute inset-0 w-full h-full bg-white flex flex-col items-center justify-center animate-in fade-in duration-300">
       <div className="absolute top-[45px] w-full flex justify-center">
+        {/* HIER IST DER FIX: Echter HTML-Umbruch mit <br/> */}
         <span className="text-[15px] font-black text-slate-700 uppercase tracking-[0.25em] text-center leading-tight drop-shadow-sm">
-          {"Kompression\ngestartet?"}
+          Kompression<br/>gestartet?
         </span>
       </div>
       

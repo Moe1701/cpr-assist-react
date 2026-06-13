@@ -1,35 +1,26 @@
-// --- Datei: src/hooks/useMasterLoop.js ---
 import { useEffect, useContext, useRef, useCallback } from 'react';
 import { CprContext } from '../context/CprContext.jsx';
 import { CPR_CONFIG } from '../config/cprConfig.js';
 
 export function useMasterLoop() {
   const { state, dispatch, logEvent } = useContext(CprContext);
-
-  // Ref auf den State, damit Intervalle keine Re-Renders auslösen, 
-  // aber trotzdem immer den aktuellsten Wert kennen.
   const stateRef = useRef(state);
   useEffect(() => { stateRef.current = state; }, [state]);
 
-  // ==========================================
-  // 1. CPR BUTTON (Play / Pause)
-  // ==========================================
   const toggleCpr = useCallback(() => {
     const isComp = !stateRef.current.isCompressing;
     dispatch({ type: 'TOGGLE_COMPRESSION', payload: isComp });
     dispatch({ type: 'SET_COMPRESSION_COUNT', payload: 0 }); 
-    
     logEvent(CPR_CONFIG.EVENTS.PAUSE, isComp ? "Kompression FORTGESETZT" : "Kompression PAUSE");
   }, [dispatch, logEvent]);
 
-  // ==========================================
-  // 2. ATEMWEG SICHERN
-  // ==========================================
-  const setAirway = useCallback((airwayType) => {
-    dispatch({ type: 'SET_AIRWAY', payload: airwayType });
-    logEvent(CPR_CONFIG.EVENTS.AIRWAY, `Atemweg gesichert: ${airwayType}`);
+  // --- ATEMWEGS-WEICHE (Pfad A, B, C) ---
+  const selectAirway = useCallback((type) => {
+    dispatch({ type: 'SET_AIRWAY', payload: { established: true, type } });
+    logEvent(CPR_CONFIG.EVENTS.AIRWAY, `Atemweg gesichert: ${type}`);
+    dispatch({ type: 'SET_COMPRESSION_COUNT', payload: 0 }); 
 
-    if (airwayType === 'Beutel-Maske') {
+    if (type === 'Beutel-Maske') {
       const mode = stateRef.current.isPediatric ? '15:2' : '30:2';
       dispatch({ type: 'SET_CPR_MODE', payload: mode });
       logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, `Modus: ${mode} (Beutel-Maske)`);
@@ -39,84 +30,98 @@ export function useMasterLoop() {
     }
   }, [dispatch, logEvent]);
 
-  // ==========================================
-  // 3. AUTOMATISCHES PING-PONG (30:2 Beatmung)
-  // ==========================================
+  const removeAirway = useCallback(() => {
+    dispatch({ type: 'SET_AIRWAY', payload: { established: false, type: null } });
+    logEvent(CPR_CONFIG.EVENTS.AIRWAY, "Atemweg: entfernt");
+    if (stateRef.current.cprMode === 'continuous') {
+      const mode = stateRef.current.isPediatric ? '15:2' : '30:2';
+      dispatch({ type: 'SET_CPR_MODE', payload: mode });
+      logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, `Modus: ${mode} (Auto-Switch)`);
+    }
+  }, [dispatch, logEvent]);
+
+  // --- PING-PONG (30:2) ---
   const triggerVentilationPhase = useCallback(() => {
     dispatch({ type: 'SET_VENTILATION_PHASE', payload: true });
     dispatch({ type: 'TOGGLE_COMPRESSION', payload: false });
     dispatch({ type: 'SET_COMPRESSION_COUNT', payload: 0 });
 
-    logEvent(CPR_CONFIG.EVENTS.PAUSE, "Automatische Beatmungspause (2x)");
-
-    // 2.5 Sekunden warten (2x Beatmen a 1s + 0.5s Puffer)
     setTimeout(() => {
-      // Nur automatisch fortsetzen, wenn nicht gerade manuell pausiert oder analysiert wird
-      if (stateRef.current.appPhase === CPR_CONFIG.PHASES.RUNNING) {
-        dispatch({ type: 'SET_VENTILATION_PHASE', payload: false });
-        dispatch({ type: 'TOGGLE_COMPRESSION', payload: true });
-        logEvent(CPR_CONFIG.EVENTS.RESUME, "Kompression nach Beatmung automatisch fortgesetzt");
-      }
-    }, 2500);
-  }, [dispatch, logEvent]);
+      setTimeout(() => {
+        if (stateRef.current.appPhase === CPR_CONFIG.PHASES.RUNNING) {
+           dispatch({ type: 'SET_VENTILATION_PHASE', payload: false });
+           dispatch({ type: 'TOGGLE_COMPRESSION', payload: true });
+        }
+      }, 1500);
+    }, 1500);
+  }, [dispatch]);
 
-  // ==========================================
-  // 4. DER GLOBALE TICKER (100ms Auflösung)
-  // ==========================================
+  // --- DER GLOBALE TICKER ---
   useEffect(() => {
     let lastTick = Date.now();
+    let cycleStartTime = Date.now();
+    let hasPlayedSound = false;
 
     const masterTimer = setInterval(() => {
-      // Timer tickt nur in der aktiven Reanimationsphase oder nach dem ersten Onboarding
       if (stateRef.current.appPhase === 'ONBOARDING') return;
-
       const now = Date.now();
       const deltaMs = now - lastTick;
 
       if (deltaMs >= 1000) {
         lastTick += 1000;
-        
-        // 1. Gesamteinsatzzeit (läuft ab Patientenwahl)
         dispatch({ type: 'TICK_MISSION' });
 
-        // 2. Ticks nur während echter CPR (nicht im Onboarding-Menü)
         if (stateRef.current.appPhase === CPR_CONFIG.PHASES.RUNNING) {
-          // 120s Loop Timer
           dispatch({ type: 'TICK_CYCLE' });
-
-          // CCF Logik (Leitliniengetreu: Jede Pause senkt den Wert)
           dispatch({ type: 'TICK_CCF_ARREST' });
           if (stateRef.current.isCompressing) {
               dispatch({ type: 'TICK_CCF_COMPRESSING' });
+          } else if (!stateRef.current.isVentilationPhase) {
+              // Pausen-Warnung hochzählen, wenn nicht gerade beatmet wird!
+              dispatch({ type: 'TICK_PAUSE' });
           }
         }
       }
-    }, 100);
 
+      // KONT-TIMER
+      if (stateRef.current.appPhase === CPR_CONFIG.PHASES.RUNNING && stateRef.current.cprMode === 'continuous' && stateRef.current.airwayEstablished) {
+          const cycleDuration = stateRef.current.isPediatric ? 2400 : 6000; 
+          const fillDuration = cycleDuration - 1000;
+          let elapsed = now - cycleStartTime;
+
+          if (elapsed >= cycleDuration) { cycleStartTime = now; elapsed = 0; hasPlayedSound = false; }
+
+          if (elapsed < fillDuration) {
+              const remaining = Math.ceil((fillDuration - elapsed) / 1000);
+              if (stateRef.current.breathCountdown !== remaining) {
+                  dispatch({ type: 'SET_BREATH_COUNTDOWN', payload: remaining });
+              }
+          } else if (!hasPlayedSound) {
+              dispatch({ type: 'SET_BREATH_COUNTDOWN', payload: "HUB" });
+              hasPlayedSound = true;
+          }
+      } else if (stateRef.current.breathCountdown !== null) {
+          dispatch({ type: 'SET_BREATH_COUNTDOWN', payload: null });
+          cycleStartTime = Date.now();
+      }
+    }, 100);
     return () => clearInterval(masterTimer);
   }, [dispatch]);
 
-  // ==========================================
-  // 5. DAS 100 BPM METRONOM (Zähler für 30:2)
-  // ==========================================
+  // --- METRONOM ZÄHLER ---
   useEffect(() => {
-    // Nur aktiv, wenn gedrückt wird UND wir nicht im KONT-Modus sind
     if (!state.isCompressing || state.cprMode === 'continuous') return;
-
-    // 100 Kompressionen pro Minute = alle 600ms ein Tick
     const metronome = setInterval(() => {
       const currentCount = stateRef.current.compressionCount;
       const limit = stateRef.current.isPediatric ? 15 : 30;
-
       if (currentCount >= limit - 1) {
         triggerVentilationPhase();
       } else {
         dispatch({ type: 'SET_COMPRESSION_COUNT', payload: currentCount + 1 });
       }
     }, 600);
-
     return () => clearInterval(metronome);
   }, [state.isCompressing, state.cprMode, triggerVentilationPhase, dispatch]);
 
-  return { toggleCpr, setAirway };
+  return { toggleCpr, selectAirway, removeAirway };
 }
