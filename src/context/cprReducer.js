@@ -9,20 +9,17 @@ export const initialState = {
   startTime: null,         
   isGridVisible: false,    
   isPatientModalOpen: false, 
-  isAirwayModalOpen: false, // NEU: Steuert das Atemweg-Menü
   
   missionSeconds: 0, 
   cprSeconds: 0, 
   cycleSeconds: 0, 
   
   isCompressing: false,
-  pauseSeconds: 0,          // NEU: Zählt die Sekunden der CPR-Pause
+  pauseSeconds: 0, // NEU: Hier merkt sich die App die Pausenzeit!
   isVentilationPhase: false,
   compressionCount: 0,
   
-  airwayEstablished: false, 
-  airwayType: null,         // NEU: 'Beutel-Maske' oder 'Invasiv'
-  breathCountdown: null,
+  airwayEstablished: null,
   
   compressingSeconds: 0, 
   arrestSeconds: 0,      
@@ -34,29 +31,43 @@ export const initialState = {
 export function cprReducer(state, action) {
   switch (action.type) {
     case 'SET_PHASE': return { ...state, appPhase: action.payload };
-    case 'SET_PEDIATRIC_DATA': return { ...state, isPediatric: action.payload.isPediatric, patientWeight: action.payload.patientWeight, cprMode: 'continuous', startTime: state.startTime || new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) };
+    
+    case 'SET_PEDIATRIC_DATA': return { 
+        ...state, 
+        isPediatric: action.payload.isPediatric,
+        patientWeight: action.payload.patientWeight,
+        cprMode: 'continuous', 
+        startTime: state.startTime || new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
+      };
+      
     case 'SET_CPR_MODE': return { ...state, cprMode: action.payload };
     case 'TOGGLE_PATIENT_MODAL': return { ...state, isPatientModalOpen: action.payload };
-    case 'TOGGLE_AIRWAY_MODAL': return { ...state, isAirwayModalOpen: action.payload };
     case 'TOGGLE_GRID': return { ...state, isGridVisible: !state.isGridVisible };
     case 'LOG_EVENT': return { ...state, events: [...state.events, action.payload] };
     
-    case 'TOGGLE_COMPRESSION': return { ...state, isCompressing: action.payload, pauseSeconds: action.payload ? 0 : state.pauseSeconds };
-    case 'TICK_PAUSE': return { ...state, pauseSeconds: state.isCompressing ? 0 : state.pauseSeconds + 1 };
+    // --- CPR & STEUERUNG ---
+    case 'TOGGLE_COMPRESSION': 
+      // NEU: Wenn CPR fortgesetzt wird (true), setze Pause sofort auf 0 zurück!
+      return { ...state, isCompressing: action.payload, pauseSeconds: action.payload ? 0 : state.pauseSeconds };
+      
     case 'SET_COMPRESSION_COUNT': return { ...state, compressionCount: action.payload };
     case 'SET_VENTILATION_PHASE': return { ...state, isVentilationPhase: action.payload };
+    case 'SET_AIRWAY': return { ...state, airwayEstablished: action.payload };
     
-    case 'SET_AIRWAY': return { ...state, airwayEstablished: action.payload.established, airwayType: action.payload.type };
-    case 'SET_BREATH_COUNTDOWN': return { ...state, breathCountdown: action.payload };
-
+    // --- TIMER & SEKUNDEN ---
     case 'TICK_MISSION': return { ...state, missionSeconds: state.missionSeconds + 1 };
     case 'TICK_CYCLE': return { ...state, cycleSeconds: state.cycleSeconds + 1 };
+    
+    // NEU: Der Befehl zum Hochzählen der Pause
+    case 'TICK_PAUSE': return { ...state, pauseSeconds: state.pauseSeconds + 1 };
+    
     case 'TICK_CCF_ARREST': {
       const newArrest = state.arrestSeconds + 1;
       const rawCcf = (state.compressingSeconds / newArrest) * 100;
       return { ...state, arrestSeconds: newArrest, currentCcfPercent: Math.min(100, Math.round(rawCcf)) };
     }
     case 'TICK_CCF_COMPRESSING': return { ...state, compressingSeconds: state.compressingSeconds + 1, cprSeconds: state.cprSeconds + 1 };
+    
     case 'RESET_ALL': return initialState;
     default: return state;
   }
