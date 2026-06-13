@@ -4,13 +4,17 @@ import { CPR_CONFIG } from '../../config/cprConfig.js';
 
 import CenterDisplay from '../CenterDisplay.jsx';
 import PatientSetupModal from '../PatientSetupModal.jsx'; 
-import CprButton from './CprButton.jsx'; // Unser neues, isoliertes CPR-Modul!
+import CprButton from './CprButton.jsx'; 
 
 import { usePatientLogic } from '../../hooks/usePatientLogic.js';
+import { useMasterLoop } from '../../hooks/useMasterLoop.js'; 
 
 export default function DashboardShell() {
-  const { state, dispatch } = useContext(CprContext);
+  const { state } = useContext(CprContext);
   const { toggleCprMode } = usePatientLogic();
+  
+  // Hook wird nur EINMAL hier aufgerufen und die Action an den Button durchgereicht!
+  const { toggleCpr } = useMasterLoop(); 
 
   const formatTime = (seconds) => {
     if (isNaN(seconds) || seconds === null) return "00:00";
@@ -107,20 +111,18 @@ export default function DashboardShell() {
 
       <div className="absolute bottom-0 w-full h-40 bg-gradient-to-t from-slate-200/90 to-transparent z-10 pointer-events-none"></div>
 
-      {/* 3. UNTERE LEISTE (Atemweg & CPR Pause) */}
+      {/* 3. UNTERE LEISTE */}
       <div className={`shrink-0 w-full flex justify-between items-end px-5 pb-8 pt-2 z-50 transition-opacity duration-300 pointer-events-none ${!showBottomButtons ? 'opacity-0' : 'opacity-100'}`}>
         
-        {/* Atemweg-Platzhalter (temporär passiv) */}
         <MainBtn 
-            onClick={() => console.log("Atemweg kommt später!")}
+            onClick={() => console.log("Atemweg kommt bald!")}
             icon="fa-lungs" 
             label="Atemweg" 
             badge={!state.airwayEstablished} 
             colorClass="bg-white text-[#E3000F] border-[#E3000F] shadow-[0_0_25px_rgba(227,0,15,0.3)]"
         />
         
-        {/* HIER ARBEITET UNSER NEUER CPR-BUTTON */}
-        <CprButton />
+        <CprButton toggleCpr={toggleCpr} />
         
       </div>
 

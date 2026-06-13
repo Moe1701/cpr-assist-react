@@ -6,11 +6,10 @@ export default function ViewObAnalyze() {
   const { dispatch, logEvent } = useContext(CprContext);
 
   const handleAnalyseClick = () => {
-    // 1. AUTO-PAUSE: Für die Rhythmusanalyse müssen die Hände weg vom Patienten!
+    // SETZT DEN CPR-BUTTON AUF PAUSE / ROT
     dispatch({ type: 'TOGGLE_COMPRESSION', payload: false });
     logEvent(CPR_CONFIG.EVENTS.PAUSE, "Rhythmusanalyse: Kompression PAUSE");
     
-    // 2. Weiter zur Entscheidung
     dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.DECISION });
   };
 

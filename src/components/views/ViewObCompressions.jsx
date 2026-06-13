@@ -6,9 +6,8 @@ export default function ViewObCompressions() {
   const { dispatch, logEvent } = useContext(CprContext);
 
   const handleConfirmCompressions = () => {
-    // 1. HIER STARTET DIE MAGIE: Wir schalten das Metronom und den Zähler scharf!
+    // STARTET DAS METRONOM & DEN ZÄHLER DES CPR-BUTTONS
     dispatch({ type: 'TOGGLE_COMPRESSION', payload: true }); 
-    
     logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, "Reanimation offiziell gestartet");
     dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.OB_ANALYZE });
   };

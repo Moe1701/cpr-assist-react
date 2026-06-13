@@ -15,11 +15,11 @@ export const initialState = {
   cycleSeconds: 0, 
   
   isCompressing: false,
-  pauseSeconds: 0, // NEU: Hier merkt sich die App die Pausenzeit!
+  pauseSeconds: 0, // NEU: Der Zähler für den Button
   isVentilationPhase: false,
   compressionCount: 0,
   
-  airwayEstablished: null,
+  airwayEstablished: false,
   
   compressingSeconds: 0, 
   arrestSeconds: 0,      
@@ -45,20 +45,21 @@ export function cprReducer(state, action) {
     case 'TOGGLE_GRID': return { ...state, isGridVisible: !state.isGridVisible };
     case 'LOG_EVENT': return { ...state, events: [...state.events, action.payload] };
     
-    // --- CPR & STEUERUNG ---
     case 'TOGGLE_COMPRESSION': 
-      // NEU: Wenn CPR fortgesetzt wird (true), setze Pause sofort auf 0 zurück!
-      return { ...state, isCompressing: action.payload, pauseSeconds: action.payload ? 0 : state.pauseSeconds };
+      return { 
+        ...state, 
+        isCompressing: action.payload, 
+        pauseSeconds: action.payload ? 0 : state.pauseSeconds 
+      };
       
     case 'SET_COMPRESSION_COUNT': return { ...state, compressionCount: action.payload };
     case 'SET_VENTILATION_PHASE': return { ...state, isVentilationPhase: action.payload };
     case 'SET_AIRWAY': return { ...state, airwayEstablished: action.payload };
     
-    // --- TIMER & SEKUNDEN ---
     case 'TICK_MISSION': return { ...state, missionSeconds: state.missionSeconds + 1 };
     case 'TICK_CYCLE': return { ...state, cycleSeconds: state.cycleSeconds + 1 };
     
-    // NEU: Der Befehl zum Hochzählen der Pause
+    // NEU: Hochzählen der CPR-Pausen-Dauer
     case 'TICK_PAUSE': return { ...state, pauseSeconds: state.pauseSeconds + 1 };
     
     case 'TICK_CCF_ARREST': {
@@ -66,7 +67,12 @@ export function cprReducer(state, action) {
       const rawCcf = (state.compressingSeconds / newArrest) * 100;
       return { ...state, arrestSeconds: newArrest, currentCcfPercent: Math.min(100, Math.round(rawCcf)) };
     }
-    case 'TICK_CCF_COMPRESSING': return { ...state, compressingSeconds: state.compressingSeconds + 1, cprSeconds: state.cprSeconds + 1 };
+    case 'TICK_CCF_COMPRESSING': 
+      return { 
+        ...state, 
+        compressingSeconds: state.compressingSeconds + 1, 
+        cprSeconds: state.cprSeconds + 1 
+      };
     
     case 'RESET_ALL': return initialState;
     default: return state;
