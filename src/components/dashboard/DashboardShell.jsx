@@ -4,9 +4,7 @@ import { CPR_CONFIG } from '../../config/cprConfig.js';
 
 import CenterDisplay from '../CenterDisplay.jsx';
 import PatientSetupModal from '../PatientSetupModal.jsx'; 
-import AirwayModal from '../AirwayModal.jsx'; 
-// NEU: Wir importieren unser Modul!
-import CprButton from './CprButton.jsx'; 
+import CprButton from './CprButton.jsx'; // Unser neues, isoliertes CPR-Modul!
 
 import { usePatientLogic } from '../../hooks/usePatientLogic.js';
 
@@ -28,17 +26,13 @@ export default function DashboardShell() {
     </button>
   );
 
-  const MainBtn = ({ icon, label, colorClass, badge, onClick, customContent }) => (
+  const MainBtn = ({ icon, label, colorClass, badge, onClick }) => (
     <div className="relative pointer-events-auto">
       <button onClick={onClick} className={`w-[100px] h-[100px] rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.1)] border-2 flex flex-col items-center justify-center gap-1.5 hover:bg-slate-50 active:scale-95 transition-all ${colorClass}`}>
-        {customContent ? customContent : (
-           <>
-             <i className={`fa-solid ${icon} text-[32px]`}></i>
-             <span className="text-[10px] font-black uppercase tracking-widest leading-none text-center px-1">{label}</span>
-           </>
-        )}
+         <i className={`fa-solid ${icon} text-[32px]`}></i>
+         <span className="text-[10px] font-black uppercase tracking-widest leading-none text-center px-1">{label}</span>
       </button>
-      {badge && !customContent && (
+      {badge && (
         <div className="absolute -top-1 -right-1 bg-[#E3000F] text-white text-[12px] font-black w-7 h-7 rounded-full flex items-center justify-center shadow-md border-[3px] border-white">
           !!!
         </div>
@@ -59,22 +53,6 @@ export default function DashboardShell() {
   const showSatellites = isRunning;
   const showBottomButtons = !isSetup; 
   const orbitShiftClass = state.isCompressing ? '-translate-y-[20px]' : 'translate-y-[0px]';
-
-  // UI für den Atemweg-Kreis
-  const airwayContent = (state.airwayEstablished && state.cprMode === 'continuous') ? (
-    <div className="flex flex-col items-center justify-center w-full h-full">
-        {state.breathCountdown === "HUB" ? (
-            <span className="text-[26px] font-black text-cyan-600 animate-ping">HUB!</span>
-        ) : (
-            <>
-              <span className="text-[36px] font-black text-cyan-600 leading-none mb-0.5">{state.breathCountdown || "-"}</span>
-              <span className="text-[9px] font-black text-cyan-500 uppercase tracking-widest leading-none text-center">
-                {state.airwayType === 'Beutel-Maske' ? 'Maske' : 'Tubus'}
-              </span>
-            </>
-        )}
-    </div>
-  ) : null;
 
   return (
     <div className="absolute inset-0 w-full h-full flex flex-col bg-slate-50 animate-in fade-in duration-500 overflow-hidden">
@@ -132,24 +110,21 @@ export default function DashboardShell() {
       {/* 3. UNTERE LEISTE (Atemweg & CPR Pause) */}
       <div className={`shrink-0 w-full flex justify-between items-end px-5 pb-8 pt-2 z-50 transition-opacity duration-300 pointer-events-none ${!showBottomButtons ? 'opacity-0' : 'opacity-100'}`}>
         
-        {/* Der Atemweg Button nutzt weiterhin die lokale MainBtn Komponente */}
+        {/* Atemweg-Platzhalter (temporär passiv) */}
         <MainBtn 
-            onClick={() => dispatch({ type: 'TOGGLE_AIRWAY_MODAL', payload: true })}
+            onClick={() => console.log("Atemweg kommt später!")}
             icon="fa-lungs" 
-            label={state.airwayType || "Atemweg"} 
+            label="Atemweg" 
             badge={!state.airwayEstablished} 
-            colorClass={state.airwayEstablished ? "bg-cyan-50 border-cyan-400 text-cyan-600 shadow-[0_0_20px_rgba(6,182,212,0.3)]" : "bg-white text-[#E3000F] border-[#E3000F] shadow-[0_0_25px_rgba(227,0,15,0.3)]"} 
-            customContent={airwayContent}
+            colorClass="bg-white text-[#E3000F] border-[#E3000F] shadow-[0_0_25px_rgba(227,0,15,0.3)]"
         />
         
-        {/* HIER WIRD UNSER NEUER, INTELLIGENTER CPR-BUTTON EINGEBUNDEN */}
+        {/* HIER ARBEITET UNSER NEUER CPR-BUTTON */}
         <CprButton />
         
       </div>
 
-      {/* MODALS */}
       {state.isPatientModalOpen && <PatientSetupModal />}
-      <AirwayModal />
       
     </div>
   );

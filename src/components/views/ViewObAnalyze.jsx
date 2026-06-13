@@ -3,16 +3,19 @@ import { CprContext } from '../../context/CprContext.jsx';
 import { CPR_CONFIG } from '../../config/cprConfig.js';
 
 export default function ViewObAnalyze() {
-  const { dispatch } = useContext(CprContext);
+  const { dispatch, logEvent } = useContext(CprContext);
 
   const handleAnalyseClick = () => {
-    // Wechselt sauber in das Weichen-Menü
+    // 1. AUTO-PAUSE: Für die Rhythmusanalyse müssen die Hände weg vom Patienten!
+    dispatch({ type: 'TOGGLE_COMPRESSION', payload: false });
+    logEvent(CPR_CONFIG.EVENTS.PAUSE, "Rhythmusanalyse: Kompression PAUSE");
+    
+    // 2. Weiter zur Entscheidung
     dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.DECISION });
   };
 
   return (
     <div className="absolute inset-0 w-full h-full bg-white flex flex-col items-center justify-center overflow-hidden animate-in fade-in duration-300">
-      {/* Der originale animierte Deko-Blitz im Hintergrund */}
       <div 
         className="absolute inset-0 w-full h-full z-0 opacity-80" 
         style={{

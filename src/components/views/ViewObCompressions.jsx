@@ -6,6 +6,9 @@ export default function ViewObCompressions() {
   const { dispatch, logEvent } = useContext(CprContext);
 
   const handleConfirmCompressions = () => {
+    // 1. HIER STARTET DIE MAGIE: Wir schalten das Metronom und den Zähler scharf!
+    dispatch({ type: 'TOGGLE_COMPRESSION', payload: true }); 
+    
     logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, "Reanimation offiziell gestartet");
     dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.OB_ANALYZE });
   };
@@ -13,7 +16,6 @@ export default function ViewObCompressions() {
   return (
     <div className="absolute inset-0 w-full h-full bg-white flex flex-col items-center justify-center animate-in fade-in duration-300">
       <div className="absolute top-[45px] w-full flex justify-center">
-        {/* HIER IST DER FIX: Echter HTML-Umbruch mit <br/> */}
         <span className="text-[15px] font-black text-slate-700 uppercase tracking-[0.25em] text-center leading-tight drop-shadow-sm">
           Kompression<br/>gestartet?
         </span>
