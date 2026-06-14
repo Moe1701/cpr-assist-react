@@ -4,9 +4,13 @@ import { CPR_CONFIG } from '../config/cprConfig.js';
 
 export function useMasterLoop() {
   const { state, dispatch, logEvent } = useContext(CprContext);
-  const stateRef = useRef(state);
   
-  useEffect(() => { stateRef.current = state; }, [state]);
+  // ========================================================
+  // HIER IST DER FIX FÜR DEN MUTE-BUTTON: 
+  // Das Update passiert jetzt in Echtzeit, nicht mehr verzögert!
+  // ========================================================
+  const stateRef = useRef(state);
+  stateRef.current = state; 
 
   const toggleCpr = useCallback(() => {
     if (!window.CPR_AudioCtx) {
@@ -20,9 +24,11 @@ export function useMasterLoop() {
     logEvent(CPR_CONFIG.EVENTS.PAUSE, isComp ? "Kompression FORTGESETZT" : "Kompression PAUSE");
   }, [dispatch, logEvent]);
 
-  // DER SYNTHETISCHE BEATMUNGSTON (Jetzt mit direktem Mute-Check!)
+  // DER SYNTHETISCHE BEATMUNGSTON
   const playVentSound = useCallback(() => {
-    if (state.isMuted || !window.CPR_AudioCtx) return;
+    // Greift in Echtzeit auf den stumm-Status zu!
+    if (stateRef.current.isMuted || !window.CPR_AudioCtx) return;
+    
     const ctx = window.CPR_AudioCtx;
     const bufferSize = ctx.sampleRate * 1.0;
     const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
@@ -47,7 +53,7 @@ export function useMasterLoop() {
     gain.connect(ctx.destination);
     source.start();
     source.stop(ctx.currentTime + 1.0);
-  }, [state.isMuted]);
+  }, []);
 
   const triggerVentilationPhase = useCallback(() => {
     dispatch({ type: 'SET_VENTILATION_PHASE', payload: true });
@@ -105,8 +111,8 @@ export function useMasterLoop() {
     const scheduler = () => {
         while (nextNoteTime < ctx.currentTime + 0.1) {
             
-            // HIER IST DER FIX: Wir greifen jetzt direkt auf state.isMuted zu!
-            if (!state.isMuted) {
+            // Greift in Echtzeit auf den stumm-Status zu!
+            if (!stateRef.current.isMuted) {
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
                 osc.type = 'sine';
@@ -136,8 +142,7 @@ export function useMasterLoop() {
                 }
             }, timeUntilNote);
 
-            // Takt aus der einstellbaren BPM berechnen (zieht ebenfalls den direkten state!)
-            const secondsPerBeat = 60.0 / state.bpm;
+            const secondsPerBeat = 60.0 / stateRef.current.bpm;
             nextNoteTime += secondsPerBeat;
         }
         
@@ -147,8 +152,7 @@ export function useMasterLoop() {
     scheduler();
     return () => clearTimeout(timerID);
     
-  // HIER IST DER SCHLÜSSEL: state.isMuted und state.bpm zwingen die Engine zum sofortigen Update!
-  }, [state.isCompressing, state.isMuted, state.bpm, triggerVentilationPhase, dispatch]);
+  }, [state.isCompressing, triggerVentilationPhase, dispatch]);
 
   return { toggleCpr };
 }
