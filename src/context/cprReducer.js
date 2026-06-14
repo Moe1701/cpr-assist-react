@@ -6,6 +6,8 @@ export const initialState = {
   patientWeight: null,
   cprMode: 'continuous', 
   
+  bpm: 100, // NEU: Die Standard-Kompressionfrequenz
+  
   startTime: null,         
   isGridVisible: false,    
   isPatientModalOpen: false, 
@@ -15,7 +17,7 @@ export const initialState = {
   cycleSeconds: 0, 
   
   isCompressing: false,
-  pauseSeconds: 0, // NEU: Der Zähler für den Button
+  pauseSeconds: 0, 
   isVentilationPhase: false,
   compressionCount: 0,
   
@@ -31,6 +33,7 @@ export const initialState = {
 export function cprReducer(state, action) {
   switch (action.type) {
     case 'SET_PHASE': return { ...state, appPhase: action.payload };
+    case 'SET_BPM': return { ...state, bpm: action.payload }; // NEU: Frequenz ändern
     
     case 'SET_PEDIATRIC_DATA': return { 
         ...state, 
@@ -58,8 +61,6 @@ export function cprReducer(state, action) {
     
     case 'TICK_MISSION': return { ...state, missionSeconds: state.missionSeconds + 1 };
     case 'TICK_CYCLE': return { ...state, cycleSeconds: state.cycleSeconds + 1 };
-    
-    // NEU: Hochzählen der CPR-Pausen-Dauer
     case 'TICK_PAUSE': return { ...state, pauseSeconds: state.pauseSeconds + 1 };
     
     case 'TICK_CCF_ARREST': {
