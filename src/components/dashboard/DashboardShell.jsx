@@ -66,6 +66,7 @@ export default function DashboardShell() {
         <div className="bg-white rounded-[14px] px-3 py-2 shadow-sm border border-slate-200 flex-[0.8] flex flex-col justify-between">
           <div className="flex justify-between items-center w-full mb-0.5">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Zeit</span>
+            {/* HIER GREIFT JETZT DER REDUCER-BEFEHL SAUBER */}
             <button 
               onClick={() => dispatch({ type: 'TOGGLE_MUTE' })}
               className="text-slate-300 active:scale-95 transition-all p-1 -mr-1"
@@ -123,6 +124,7 @@ export default function DashboardShell() {
       {/* 3. UNTERE LEISTE */}
       <div className={`shrink-0 w-full flex justify-between items-end px-5 pb-8 pt-2 z-50 transition-opacity duration-300 pointer-events-none ${!showBottomButtons ? 'opacity-0' : 'opacity-100'}`}>
         
+        {/* Platzhalter für den Atemweg-Button */}
         <MainBtn 
             onClick={() => console.log("Atemweg kommt als nächstes!")}
             icon="fa-lungs" 
@@ -131,6 +133,7 @@ export default function DashboardShell() {
             colorClass="bg-white text-[#E3000F] border-[#E3000F] shadow-[0_0_25px_rgba(227,0,15,0.3)]"
         />
         
+        {/* Unser CPR-Button */}
         <CprButton toggleCpr={toggleCpr} />
         
       </div>
