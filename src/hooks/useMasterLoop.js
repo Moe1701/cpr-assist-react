@@ -73,37 +73,37 @@ export function useMasterLoop() {
     return () => clearInterval(masterTimer);
   }, [dispatch]);
 
-  // METRONOM ZÄHLER (Das Herzstück für den Flash)
+  // METRONOM ZÄHLER (Jetzt mit dynamischen BPM!)
   useEffect(() => {
     if (!state.isCompressing) return;
+
+    // MAGIE: Wir berechnen die Dauer eines Schlags in Millisekunden!
+    // Bei 100 BPM = 600ms. Bei 120 BPM = 500ms.
+    const intervalMs = Math.round(60000 / state.bpm);
 
     const metronome = setInterval(() => {
       const currentCount = stateRef.current.compressionCount;
       
-      // Im KONT-Modus zählen wir unsichtbar hoch, damit der Flash-Effekt getriggert wird
       if (stateRef.current.cprMode === 'continuous') {
          dispatch({ type: 'SET_COMPRESSION_COUNT', payload: currentCount === 99 ? 1 : currentCount + 1 });
          return;
       }
 
-      // Im Verhältnis-Modus zählen wir normal hoch
       const limit = stateRef.current.isPediatric ? 15 : 30;
       const nextCount = currentCount + 1;
       
       dispatch({ type: 'SET_COMPRESSION_COUNT', payload: nextCount });
 
       if (nextCount >= limit) {
-         // 200ms Delay, damit das UI die letzte Zahl (15 oder 30) kurz flashen kann, bevor die Lunge kommt!
          setTimeout(() => {
             triggerVentilationPhase();
          }, 200);
       }
       
-    }, 600);
+    }, intervalMs);
 
     return () => clearInterval(metronome);
-  }, [state.isCompressing, triggerVentilationPhase, dispatch]);
+  }, [state.isCompressing, state.bpm, triggerVentilationPhase, dispatch]);
 
-  // WICHTIG: Wenn das hier fehlt, gibt es einen White Screen!
   return { toggleCpr };
 }
