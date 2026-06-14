@@ -6,7 +6,8 @@ export const initialState = {
   patientWeight: null,
   cprMode: 'continuous', 
   
-  bpm: 100, // NEU: Die Standard-Kompressionfrequenz
+  bpm: 100,         // NEU: Einstellbare Frequenz
+  isMuted: false,   // NEU: Mute-Status
   
   startTime: null,         
   isGridVisible: false,    
@@ -33,7 +34,8 @@ export const initialState = {
 export function cprReducer(state, action) {
   switch (action.type) {
     case 'SET_PHASE': return { ...state, appPhase: action.payload };
-    case 'SET_BPM': return { ...state, bpm: action.payload }; // NEU: Frequenz ändern
+    case 'SET_BPM': return { ...state, bpm: action.payload };
+    case 'TOGGLE_MUTE': return { ...state, isMuted: !state.isMuted };
     
     case 'SET_PEDIATRIC_DATA': return { 
         ...state, 
