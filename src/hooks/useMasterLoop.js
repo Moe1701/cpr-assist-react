@@ -9,15 +9,20 @@ export function useMasterLoop() {
   useEffect(() => { stateRef.current = state; }, [state]);
 
   const toggleCpr = useCallback(() => {
+    if (!window.CPR_AudioCtx) {
+        window.CPR_AudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (window.CPR_AudioCtx.state === 'suspended') window.CPR_AudioCtx.resume();
+
     const isComp = !stateRef.current.isCompressing;
     dispatch({ type: 'TOGGLE_COMPRESSION', payload: isComp });
     dispatch({ type: 'SET_COMPRESSION_COUNT', payload: 0 }); 
     logEvent(CPR_CONFIG.EVENTS.PAUSE, isComp ? "Kompression FORTGESETZT" : "Kompression PAUSE");
   }, [dispatch, logEvent]);
 
-  // DER SYNTHETISCHE BEATMUNGSTON (White Noise + BandPass Filter aus deinem alten Code)
+  // DER SYNTHETISCHE BEATMUNGSTON (Jetzt mit direktem Mute-Check!)
   const playVentSound = useCallback(() => {
-    if (stateRef.current.isMuted || !window.CPR_AudioCtx) return;
+    if (state.isMuted || !window.CPR_AudioCtx) return;
     const ctx = window.CPR_AudioCtx;
     const bufferSize = ctx.sampleRate * 1.0;
     const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
@@ -42,14 +47,13 @@ export function useMasterLoop() {
     gain.connect(ctx.destination);
     source.start();
     source.stop(ctx.currentTime + 1.0);
-  }, []);
+  }, [state.isMuted]);
 
   const triggerVentilationPhase = useCallback(() => {
     dispatch({ type: 'SET_VENTILATION_PHASE', payload: true });
     dispatch({ type: 'TOGGLE_COMPRESSION', payload: false });
     dispatch({ type: 'SET_COMPRESSION_COUNT', payload: 0 });
 
-    // Ping-Pong Beatmung mit 1.5s Pause
     playVentSound();
     setTimeout(() => {
       playVentSound();
@@ -63,7 +67,7 @@ export function useMasterLoop() {
     }, 1500);
   }, [dispatch, playVentSound]);
 
-  // DER GLOBALE TICKER (Für Einsatzzeit und Pausen)
+  // DER GLOBALE TICKER
   useEffect(() => {
     let lastTick = Date.now();
     const masterTimer = setInterval(() => {
@@ -85,13 +89,10 @@ export function useMasterLoop() {
     return () => clearInterval(masterTimer);
   }, [dispatch]);
 
-  // =======================================================
-  // DIE WEB-AUDIO LOOKAHEAD ENGINE (Metronom + UI Sync)
-  // =======================================================
+  // DIE WEB-AUDIO LOOKAHEAD ENGINE
   useEffect(() => {
     if (!state.isCompressing) return;
 
-    // Audio Context zünden (erlaubt, da isCompressing durch Button-Klick kam!)
     if (!window.CPR_AudioCtx) {
         window.CPR_AudioCtx = new (window.AudioContext || window.webkitAudioContext)();
     }
@@ -102,11 +103,10 @@ export function useMasterLoop() {
     let timerID;
 
     const scheduler = () => {
-        // Lookahead Loop
         while (nextNoteTime < ctx.currentTime + 0.1) {
             
-            // 1. AUDIO SPIELEN (Falls nicht stumm)
-            if (!stateRef.current.isMuted) {
+            // HIER IST DER FIX: Wir greifen jetzt direkt auf state.isMuted zu!
+            if (!state.isMuted) {
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
                 osc.type = 'sine';
@@ -120,7 +120,6 @@ export function useMasterLoop() {
                 osc.stop(nextNoteTime + 0.05);
             }
 
-            // 2. UI-STATE UPDATEN (Exakt getimt mit der Ton-Ausgabe!)
             const timeUntilNote = Math.max(0, (nextNoteTime - ctx.currentTime) * 1000);
             setTimeout(() => {
                 const currentCount = stateRef.current.compressionCount;
@@ -137,19 +136,19 @@ export function useMasterLoop() {
                 }
             }, timeUntilNote);
 
-            // Nächsten Takt berechnen (mit der flexiblen BPM Einstellung!)
-            const secondsPerBeat = 60.0 / stateRef.current.bpm;
+            // Takt aus der einstellbaren BPM berechnen (zieht ebenfalls den direkten state!)
+            const secondsPerBeat = 60.0 / state.bpm;
             nextNoteTime += secondsPerBeat;
         }
         
-        // Loop fortsetzen alle 25ms
         timerID = setTimeout(scheduler, 25);
     };
 
     scheduler();
-
     return () => clearTimeout(timerID);
-  }, [state.isCompressing, triggerVentilationPhase, dispatch]);
+    
+  // HIER IST DER SCHLÜSSEL: state.isMuted und state.bpm zwingen die Engine zum sofortigen Update!
+  }, [state.isCompressing, state.isMuted, state.bpm, triggerVentilationPhase, dispatch]);
 
   return { toggleCpr };
 }
