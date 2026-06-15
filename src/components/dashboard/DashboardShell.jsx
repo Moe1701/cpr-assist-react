@@ -1,14 +1,16 @@
+// --- Datei: src/components/dashboard/DashboardShell.jsx ---
 import React, { useContext } from 'react';
 import { CprContext } from '../../context/CprContext.jsx';
 import { CPR_CONFIG } from '../../config/cprConfig.js';
 
 import CenterDisplay from '../CenterDisplay.jsx';
 import PatientSetupModal from '../PatientSetupModal.jsx'; 
+import AirwayModal from '../AirwayModal.jsx';
 import CprButton from './CprButton.jsx'; 
 
 import { usePatientLogic } from '../../hooks/usePatientLogic.js';
 import { useMasterLoop } from '../../hooks/useMasterLoop.js'; 
-import AirwayModal from '../AirwayModal.jsx';
+
 export default function DashboardShell() {
   const { state, dispatch } = useContext(CprContext);
   const { toggleCprMode } = usePatientLogic();
@@ -66,7 +68,6 @@ export default function DashboardShell() {
           <div className="flex justify-between items-center w-full mb-0.5">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Zeit</span>
             
-            {/* DER SAUBERE MUTE-BUTTON IM DASHBOARD */}
             <button 
               type="button"
               onClick={() => dispatch({ type: 'TOGGLE_MUTE' })}
@@ -130,5 +131,10 @@ export default function DashboardShell() {
         <CprButton toggleCpr={toggleCpr} />
       </div>
 
+      {/* MODALS (Diese müssen strikt VOR dem schließenden div liegen) */}
       {state.isPatientModalOpen && <PatientSetupModal />}
       <AirwayModal />
+
+    </div>
+  );
+}
