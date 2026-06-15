@@ -6,12 +6,13 @@ export const initialState = {
   patientWeight: null,
   cprMode: 'continuous', 
   
-  bpm: 110,         // <--- NEU: Das Gehirn kennt jetzt die Geschwindigkeit
-  isMuted: false,   // <--- NEU: Das Gehirn weiß, ob Ton an oder aus ist
+  bpm: 110,         
+  isMuted: false,   
   
   startTime: null,         
   isGridVisible: false,    
   isPatientModalOpen: false, 
+  isAirwayModalOpen: false, // <--- NEU: Modal Status
   
   missionSeconds: 0, 
   cprSeconds: 0, 
@@ -23,6 +24,7 @@ export const initialState = {
   compressionCount: 0,
   
   airwayEstablished: false,
+  airwayType: null,         // <--- NEU: Beutel-Maske oder Invasiv
   
   compressingSeconds: 0, 
   arrestSeconds: 0,      
@@ -34,8 +36,8 @@ export const initialState = {
 export function cprReducer(state, action) {
   switch (action.type) {
     case 'SET_PHASE': return { ...state, appPhase: action.payload };
-    case 'SET_BPM': return { ...state, bpm: action.payload };       // <--- NEU: Ändert die BPM
-    case 'TOGGLE_MUTE': return { ...state, isMuted: !state.isMuted }; // <--- NEU: Schaltet stumm
+    case 'SET_BPM': return { ...state, bpm: action.payload };
+    case 'TOGGLE_MUTE': return { ...state, isMuted: !state.isMuted };
     
     case 'SET_PEDIATRIC_DATA': return { 
         ...state, 
@@ -47,6 +49,7 @@ export function cprReducer(state, action) {
       
     case 'SET_CPR_MODE': return { ...state, cprMode: action.payload };
     case 'TOGGLE_PATIENT_MODAL': return { ...state, isPatientModalOpen: action.payload };
+    case 'TOGGLE_AIRWAY_MODAL': return { ...state, isAirwayModalOpen: action.payload }; // <--- NEU
     case 'TOGGLE_GRID': return { ...state, isGridVisible: !state.isGridVisible };
     case 'LOG_EVENT': return { ...state, events: [...state.events, action.payload] };
     
@@ -59,7 +62,9 @@ export function cprReducer(state, action) {
       
     case 'SET_COMPRESSION_COUNT': return { ...state, compressionCount: action.payload };
     case 'SET_VENTILATION_PHASE': return { ...state, isVentilationPhase: action.payload };
+    
     case 'SET_AIRWAY': return { ...state, airwayEstablished: action.payload };
+    case 'SET_AIRWAY_TYPE': return { ...state, airwayType: action.payload }; // <--- NEU
     
     case 'TICK_MISSION': return { ...state, missionSeconds: state.missionSeconds + 1 };
     case 'TICK_CYCLE': return { ...state, cycleSeconds: state.cycleSeconds + 1 };

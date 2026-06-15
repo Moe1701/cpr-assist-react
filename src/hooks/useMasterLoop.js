@@ -20,7 +20,24 @@ export function useMasterLoop() {
     logEvent(CPR_CONFIG.EVENTS.PAUSE, isComp ? "Kompression FORTGESETZT" : "Kompression PAUSE");
   }, [dispatch, logEvent]);
 
-  // DER SYNTHETISCHE BEATMUNGSTON
+  // ========================================================
+  // NEU: DIE ATEMWEG-LOGIK (Beutel-Maske vs. Invasiv)
+  // ========================================================
+  const setAirway = useCallback((airwayType) => {
+    dispatch({ type: 'SET_AIRWAY', payload: !!airwayType });
+    dispatch({ type: 'SET_AIRWAY_TYPE', payload: airwayType });
+    logEvent(CPR_CONFIG.EVENTS.AIRWAY, airwayType ? `Atemweg gesichert: ${airwayType}` : "Atemweg entfernt");
+
+    if (airwayType === 'Beutel-Maske') {
+      const mode = stateRef.current.isPediatric ? '15:2' : '30:2';
+      dispatch({ type: 'SET_CPR_MODE', payload: mode });
+      logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, `Modus: ${mode} (Beutel-Maske)`);
+    } else if (airwayType === 'Invasiv') {
+      dispatch({ type: 'SET_CPR_MODE', payload: 'continuous' });
+      logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, `Modus: KONT (Invasiv)`);
+    }
+  }, [dispatch, logEvent]);
+
   const playVentSound = useCallback(() => {
     if (stateRef.current.isMuted || !window.CPR_AudioCtx) return;
     
@@ -68,7 +85,6 @@ export function useMasterLoop() {
     }, 1500);
   }, [dispatch, playVentSound]);
 
-  // DER GLOBALE TICKER
   useEffect(() => {
     let lastTick = Date.now();
     const masterTimer = setInterval(() => {
@@ -90,7 +106,6 @@ export function useMasterLoop() {
     return () => clearInterval(masterTimer);
   }, [dispatch]);
 
-  // DIE WEB-AUDIO LOOKAHEAD ENGINE (Gesteuert durch BPM & Mute)
   useEffect(() => {
     if (!state.isCompressing) return;
 
@@ -106,7 +121,6 @@ export function useMasterLoop() {
     const scheduler = () => {
         while (nextNoteTime < ctx.currentTime + 0.1) {
             
-            // TON NUR WENN NICHT GEMUTET
             if (!stateRef.current.isMuted) {
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
@@ -121,7 +135,6 @@ export function useMasterLoop() {
                 osc.stop(nextNoteTime + 0.05);
             }
 
-            // VISUELLES UPDATE (Läuft immer synchron weiter)
             const timeUntilNote = Math.max(0, (nextNoteTime - ctx.currentTime) * 1000);
             setTimeout(() => {
                 const currentCount = stateRef.current.compressionCount;
@@ -138,8 +151,7 @@ export function useMasterLoop() {
                 }
             }, timeUntilNote);
 
-            // BERECHNUNG DER ZEIT BIS ZUM NÄCHSTEN SCHLAG (basierend auf BPM)
-            const secondsPerBeat = 60.0 / (stateRef.current.bpm || 100);
+            const secondsPerBeat = 60.0 / (stateRef.current.bpm || 110);
             nextNoteTime += secondsPerBeat;
         }
         
@@ -151,5 +163,5 @@ export function useMasterLoop() {
     
   }, [state.isCompressing, triggerVentilationPhase, dispatch]);
 
-  return { toggleCpr };
+  return { toggleCpr, setAirway }; // <--- Exportiert setAirway
 }

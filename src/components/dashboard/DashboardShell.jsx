@@ -8,7 +8,7 @@ import CprButton from './CprButton.jsx';
 
 import { usePatientLogic } from '../../hooks/usePatientLogic.js';
 import { useMasterLoop } from '../../hooks/useMasterLoop.js'; 
-
+import AirwayModal from '../AirwayModal.jsx';
 export default function DashboardShell() {
   const { state, dispatch } = useContext(CprContext);
   const { toggleCprMode } = usePatientLogic();
@@ -124,13 +124,11 @@ export default function DashboardShell() {
       {/* 3. UNTERE LEISTE */}
       <div className={`shrink-0 w-full flex justify-between items-end px-5 pb-8 pt-2 z-50 transition-opacity duration-300 pointer-events-none ${!showBottomButtons ? 'opacity-0' : 'opacity-100'}`}>
         <MainBtn 
-            onClick={() => console.log("Atemweg kommt als nächstes!")}
+            onClick={() => dispatch({ type: 'TOGGLE_AIRWAY_MODAL', payload: true })}
             icon="fa-lungs" label="Atemweg" badge={!state.airwayEstablished} colorClass="bg-white text-[#E3000F] border-[#E3000F] shadow-[0_0_25px_rgba(227,0,15,0.3)]"
         />
         <CprButton toggleCpr={toggleCpr} />
       </div>
 
       {state.isPatientModalOpen && <PatientSetupModal />}
-    </div>
-  );
-}
+      <AirwayModal />
