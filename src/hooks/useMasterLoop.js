@@ -5,10 +5,6 @@ import { CPR_CONFIG } from '../config/cprConfig.js';
 export function useMasterLoop() {
   const { state, dispatch, logEvent } = useContext(CprContext);
   
-  // ========================================================
-  // HIER IST DER FIX FÜR DEN MUTE-BUTTON: 
-  // Das Update passiert jetzt in Echtzeit, nicht mehr verzögert!
-  // ========================================================
   const stateRef = useRef(state);
   stateRef.current = state; 
 
@@ -26,7 +22,6 @@ export function useMasterLoop() {
 
   // DER SYNTHETISCHE BEATMUNGSTON
   const playVentSound = useCallback(() => {
-    // Greift in Echtzeit auf den stumm-Status zu!
     if (stateRef.current.isMuted || !window.CPR_AudioCtx) return;
     
     const ctx = window.CPR_AudioCtx;
@@ -95,7 +90,7 @@ export function useMasterLoop() {
     return () => clearInterval(masterTimer);
   }, [dispatch]);
 
-  // DIE WEB-AUDIO LOOKAHEAD ENGINE
+  // DIE WEB-AUDIO LOOKAHEAD ENGINE (Gesteuert durch BPM & Mute)
   useEffect(() => {
     if (!state.isCompressing) return;
 
@@ -111,7 +106,7 @@ export function useMasterLoop() {
     const scheduler = () => {
         while (nextNoteTime < ctx.currentTime + 0.1) {
             
-            // Greift in Echtzeit auf den stumm-Status zu!
+            // TON NUR WENN NICHT GEMUTET
             if (!stateRef.current.isMuted) {
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
@@ -126,6 +121,7 @@ export function useMasterLoop() {
                 osc.stop(nextNoteTime + 0.05);
             }
 
+            // VISUELLES UPDATE (Läuft immer synchron weiter)
             const timeUntilNote = Math.max(0, (nextNoteTime - ctx.currentTime) * 1000);
             setTimeout(() => {
                 const currentCount = stateRef.current.compressionCount;
@@ -142,7 +138,8 @@ export function useMasterLoop() {
                 }
             }, timeUntilNote);
 
-            const secondsPerBeat = 60.0 / stateRef.current.bpm;
+            // BERECHNUNG DER ZEIT BIS ZUM NÄCHSTEN SCHLAG (basierend auf BPM)
+            const secondsPerBeat = 60.0 / (stateRef.current.bpm || 100);
             nextNoteTime += secondsPerBeat;
         }
         

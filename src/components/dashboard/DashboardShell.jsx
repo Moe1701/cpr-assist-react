@@ -77,10 +77,9 @@ export default function DashboardShell() {
             <button 
               type="button"
               onClick={handleMute}
-              onTouchEnd={handleMute} // Fängt Mobile-Taps 100%ig ab!
+              onTouchEnd={handleMute}
               className="text-slate-300 active:scale-95 transition-all p-2 -mr-2 z-50 relative"
             >
-              {/* pointer-events-none verhindert, dass das Icon den Klick klaut! */}
               <i className={`fa-solid ${state.isMuted ? 'fa-volume-xmark text-red-500' : 'fa-volume-high text-slate-500'} pointer-events-none text-lg`}></i>
             </button>
 

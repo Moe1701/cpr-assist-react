@@ -1,4 +1,3 @@
-// --- Datei: src/context/CprContext.jsx ---
 import React, { createContext, useReducer, useEffect, useCallback } from 'react';
 import { cprReducer, initialState } from './cprReducer.js'; 
 
@@ -11,6 +10,9 @@ const loadState = () => {
        const parsed = JSON.parse(saved);
        parsed.isGridVisible = false;
        parsed.isPatientModalOpen = false;
+       // Fallbacks für ältere Speicherstände
+       if (parsed.bpm === undefined) parsed.bpm = 100;
+       if (parsed.isMuted === undefined) parsed.isMuted = false;
        return parsed;
     }
     return initialState;
@@ -28,6 +30,8 @@ export function CprProvider({ children }) {
       isPediatric: state.isPediatric,
       patientWeight: state.patientWeight,
       cprMode: state.cprMode,
+      bpm: state.bpm,
+      isMuted: state.isMuted,
       startTime: state.startTime,
       missionSeconds: state.missionSeconds,
       cprSeconds: state.cprSeconds,
