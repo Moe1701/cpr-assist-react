@@ -21,13 +21,6 @@ export default function DashboardShell() {
     return `${m}:${s}`;
   };
 
-  // KUGELSICHERER MUTE-HANDLER FÜR MOBILE GERÄTE
-  const handleMute = (e) => {
-    e.preventDefault(); 
-    e.stopPropagation();
-    dispatch({ type: 'TOGGLE_MUTE' });
-  };
-
   const SatelliteBtn = ({ icon, label, colorClass = "bg-white text-slate-500 border-slate-200" }) => (
     <button className={`w-[86px] h-[86px] rounded-full shadow-sm border-[3px] flex flex-col items-center justify-center gap-1 hover:bg-slate-50 active:scale-95 transition-all ${colorClass}`}>
       <i className={`fa-solid ${icon} text-[24px] mb-0.5 pointer-events-none`}></i>
@@ -73,12 +66,11 @@ export default function DashboardShell() {
           <div className="flex justify-between items-center w-full mb-0.5">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Zeit</span>
             
-            {/* DER NEUE, PERFEKTIONIERTE MUTE-BUTTON */}
+            {/* DER SAUBERE MUTE-BUTTON IM DASHBOARD */}
             <button 
               type="button"
-              onClick={handleMute}
-              onTouchEnd={handleMute}
-              className="text-slate-300 active:scale-95 transition-all p-2 -mr-2 z-50 relative"
+              onClick={() => dispatch({ type: 'TOGGLE_MUTE' })}
+              className="text-slate-300 active:scale-95 transition-all p-2 -mr-2 z-50 relative cursor-pointer"
             >
               <i className={`fa-solid ${state.isMuted ? 'fa-volume-xmark text-red-500' : 'fa-volume-high text-slate-500'} pointer-events-none text-lg`}></i>
             </button>
@@ -93,10 +85,10 @@ export default function DashboardShell() {
           <div className="flex flex-col items-start justify-center h-full gap-1.5">
             <div className="flex items-center gap-2">
               <button onClick={toggleCprMode} className="flex rounded-full border border-amber-300 overflow-hidden shadow-sm active:scale-95 transition-transform cursor-pointer">
-                <span className={`text-[10px] font-black px-2.5 py-0.5 uppercase ${state.cprMode !== 'continuous' ? 'bg-amber-100 text-amber-700' : 'bg-white text-slate-400'}`}>
+                <span className={`text-[10px] font-black px-2.5 py-0.5 uppercase ${state.cprMode !== 'continuous' ? 'bg-amber-100 text-amber-700' : 'bg-white text-slate-400 pointer-events-none'}`}>
                   {state.isPediatric ? '15:2' : '30:2'}
                 </span>
-                <span className={`text-[10px] font-black px-2.5 py-0.5 uppercase border-l border-amber-200 ${state.cprMode === 'continuous' ? 'bg-amber-100 text-amber-700' : 'bg-white text-slate-400'}`}>
+                <span className={`text-[10px] font-black px-2.5 py-0.5 uppercase border-l border-amber-200 ${state.cprMode === 'continuous' ? 'bg-amber-100 text-amber-700' : 'bg-white text-slate-400 pointer-events-none'}`}>
                   KONT
                 </span>
               </button>
