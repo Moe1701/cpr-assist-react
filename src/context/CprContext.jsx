@@ -10,7 +10,7 @@ const loadState = () => {
        const parsed = JSON.parse(saved);
        parsed.isGridVisible = false;
        parsed.isPatientModalOpen = false;
-       // Fallbacks für ältere Speicherstände
+       // Fallbacks, falls alte Speicherstände im Cache hängen
        if (parsed.bpm === undefined) parsed.bpm = 100;
        if (parsed.isMuted === undefined) parsed.isMuted = false;
        return parsed;
@@ -30,8 +30,8 @@ export function CprProvider({ children }) {
       isPediatric: state.isPediatric,
       patientWeight: state.patientWeight,
       cprMode: state.cprMode,
-      bpm: state.bpm,
-      isMuted: state.isMuted,
+      bpm: state.bpm,                 // <--- Wird jetzt im Browser gespeichert!
+      isMuted: state.isMuted,         // <--- Wird jetzt im Browser gespeichert!
       startTime: state.startTime,
       missionSeconds: state.missionSeconds,
       cprSeconds: state.cprSeconds,
