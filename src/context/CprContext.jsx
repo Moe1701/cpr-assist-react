@@ -11,7 +11,7 @@ const loadState = () => {
        parsed.isGridVisible = false;
        parsed.isPatientModalOpen = false;
        // Fallbacks, falls alte Speicherstände im Cache hängen
-       if (parsed.bpm === undefined) parsed.bpm = 100;
+       if (parsed.bpm === undefined) parsed.bpm = 110;
        if (parsed.isMuted === undefined) parsed.isMuted = false;
        return parsed;
     }

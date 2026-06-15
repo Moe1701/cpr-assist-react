@@ -6,7 +6,7 @@ export const initialState = {
   patientWeight: null,
   cprMode: 'continuous', 
   
-  bpm: 100,         // <--- NEU: Das Gehirn kennt jetzt die Geschwindigkeit
+  bpm: 110,         // <--- NEU: Das Gehirn kennt jetzt die Geschwindigkeit
   isMuted: false,   // <--- NEU: Das Gehirn weiß, ob Ton an oder aus ist
   
   startTime: null,         
