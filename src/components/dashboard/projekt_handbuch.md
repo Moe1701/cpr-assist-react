@@ -96,3 +96,51 @@ Der Play/Pause-Knopf unten rechts ist eine State-Machine mit 3 Phasen:
 * **Metronom:** Nutzt einen `OscillatorNode` (800 Hz Sine Wave). Gesteuert über Lookahead-Scheduler (`setTimeout` alle 25ms + `AudioContext.currentTime`).
 * **Beatmungston:** White-Noise-Buffer mit BandPass-Filter (400 Hz) und Volume-Envelopes (1 Sekunde).
 * **Mute-Logik:** Greift als Guard (`if (stateRef.current.isMuted)`) *direkt vor* der Tonausgabe, wodurch das visuelle UI im Takt weiterläuft.
+# 🚑 CPR ASSIST - PROJEKT HANDBUCH (Single Source of Truth)
+
+Dieses Dokument dient als "externes Gedächtnis" für die KI. Es enthält alle festgelegten Regeln, Architekturentscheidungen und Abläufe, damit bei neuen Chat-Sitzungen der Kontext sofort wiederhergestellt werden kann.
+
+## 1. ARCHITEKTUR & STATE-MANAGEMENT
+* **Global State:** Die App nutzt die React Context API (`CprContext.jsx` & `cprReducer.js`).
+* **Konstanten:** Alle festen Werte (Phasen, Timer, Medikamenten-Dosierungen) liegen streng getrennt in der `src/config/cprConfig.js`. 
+* **Logik-Auslagerung:** Die Geschäftslogik ist in Custom Hooks getrennt:
+    * `useGlobalTimer.js`: Steuert die fortlaufende Einsatzzeit (missionSeconds). 
+    * `useMasterLoop.js`: Steuert die 120s-Zyklen, das hochpräzise Web-Audio Metronom und automatische 30:2 / 15:2 Pausen.
+    * `usePatientLogic.js`: Behandelt Broselow-Berechnungen und den Wechsel zwischen Erwachsenen/Kindern.
+* **Datensicherung:** `localStorage` speichert den kompletten Einsatz-State in Echtzeit. Ein "Hard Reset" Button in den Einstellungen oder ein Triple-Click auf das Header-Logo löscht diesen Cache.
+
+## 2. APP-PHASEN & ROUTING (ONBOARDING)
+Der Ablauf vom Start bis zur eigentlichen Reanimation folgt einer strikten Reihenfolge:
+1.  `ONBOARDING`: Patient wählen (Erwachsener oder Kind).
+2.  `OB_INITIAL_BREATHS`: Nur bei Kindern (5 initiale Beatmungen).
+3.  `OB_COMPRESSIONS`: Die Frage "Kompression gestartet?". **Ab hier starten die UI-Timer und das Metronom.**
+4.  `OB_ANALYZE`: "Initiale Analyse" -> Hier drücken (Pausiert CPR automatisch).
+5.  `DECISION`: Schockbar / Nicht Schockbar.
+6.  `JOULE`: Energieauswahl (wird bei Pädiatrie nach Gewicht ausgerechnet: 4 J/kg oder 8 J/kg).
+7.  `WAITING_CPR_RESUME`: "CPR Fortsetzen".
+8.  `RUNNING`: Das eigentliche Live-Dashboard mit 120s-Loop.
+
+## 3. UI & LAYOUT REGELN
+* **CenterDisplay Morphing:** Das zentrale Display ist ein perfekter Kreis (`rounded-full`). Im Onboarding hat es eine Größe von `340px`. Im Dashboard (`RUNNING`) verkleinert es sich fließend auf `224px`.
+* **Mobile Klick-Sicherheit:** Alle Buttons, die Icons (`<i>`) oder Text (`<span>`) enthalten, müssen zwingend `pointer-events-none` auf diesen inneren Elementen haben, damit Touch-Events (iOS/Android) den React-Klick nicht blockieren.
+
+## 4. AKTUELLER STATUS (Stand: Metronom & Settings 100% funktional)
+* **Erreicht:** 
+  * Der CPR-Button verfügt über eine visuelle Flash-Animation (150ms) pro Metronom-Schlag.
+  * Eine hochpräzise Web-Audio-Engine wurde in `useMasterLoop.js` implementiert (Lookahead-Scheduler).
+  * **Settings-Menü ist live:** BPM lassen sich in Echtzeit zwischen 100, 110 (Standard) und 120 umschalten. Der Mute-Button kappt den Ton sofort, ohne die visuelle Animation des CPR-Buttons zu stoppen.
+  * **Kugelsicheres UI:** Der Double-Fire Bug bei Touch-Geräten wurde eliminiert.
+
+## 5. UI-LOGIK: ATEMWEG & CPR-BUTTON (Deep Dive)
+### Der smarte Atemweg-Button & das Modal (ALS NÄCHSTES)
+* **Kein einfacher Toggle:** Der Button öffnet immer zuerst ein Modal.
+* **Pädiatrie-Integration:** Bei Kindern zeigt das Modal automatisch die material- und größenspezifischen Broselow-Werte (z.B. Tubus-Größe, Tiefe) passend zum Gewicht an.
+* **Pfad A (Beutel-Maske):** Führt sofort zum Modus `30:2` oder `15:2`. Zeigt in den letzten 5 Kompressionen einen eigenen kleinen Countdown als Vorwarnung an.
+* **Pfad B (Invasiv - Tubus/SGA):** Führt in einen sekundären Doku-Screen im Modal. Erst nach dem Speichern wechselt das System in den durchgehenden `KONT`-Modus.
+* **Der KONT-Countdown:** Im KONT-Modus läuft am Atemweg-Button ein superschneller Countdown, der bei Ablauf "HUB!" anzeigt und blau aufblitzt.
+
+### Der dynamische CPR-Button (Abgeschlossen)
+Der Play/Pause-Knopf unten rechts ist eine State-Machine mit 3 Phasen:
+1. **Laufende CPR (Weiß):** Metronom-Zähler blitzt synchron zum Audio feuerrot auf.
+2. **Beatmungs-Phase (Cyan):** Button blockiert kurzzeitig und signalisiert die Beatmung (wird künftig auf den Atemweg-Button verschoben).
+3. **Manuelle Pause (Weiß/Grün):** Zählt die Pausen-Sekunden hoch. Eskaliert ab 5 Sekunden zu Gelb (Warnung) und ab 10 Sekunden zu pulsierendem Rot (Kritisch).
