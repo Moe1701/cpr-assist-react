@@ -1,0 +1,800 @@
+﻿This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+.gitignore
+eslint.config.js
+export.mjs
+index.html
+package.json
+projekt_teil_1_korregiert.txt
+projekt_teil_2korregiert.txt
+projekt_teil_3korregiert.txt
+projekt_teil_4korregiert.txt
+projekt_teil_5.txt
+projekt_teil_6.txt
+projekt_teil_7.txt
+projekt_teil_8.txt
+projekt_vollstaendig.txt
+public/favicon.svg
+public/icon-192.png
+public/icon-512.png
+public/icon.jpg
+public/icons.svg
+README.md
+src/App.css
+src/App.jsx
+src/assets/hero.png
+src/assets/react.svg
+src/assets/vite.svg
+src/components/AirwayModal.jsx
+src/components/CenterDisplay.jsx
+src/components/dashboard/CprButton.jsx
+src/components/dashboard/DashboardShell.jsx
+src/components/dashboard/projekt_handbuch.md
+src/components/HelpOverlay.jsx
+src/components/PatientSelection.jsx
+src/components/PatientSetupModal.jsx
+src/components/SettingsModal.jsx
+src/components/views/ViewCprResume.jsx
+src/components/views/ViewDecision.jsx
+src/components/views/ViewJoule.jsx
+src/components/views/ViewObAnalyze.jsx
+src/components/views/ViewObCompressions.jsx
+src/components/views/ViewObInitialBreaths.jsx
+src/components/views/ViewObPatient.jsx
+src/config/broselowData.js
+src/config/cprConfig.js
+src/context/CprContext.jsx
+src/context/cprReducer.js
+src/hooks/useGlobalTimer.js
+src/hooks/useMasterLoop.js
+src/hooks/usePatientLogic.js
+src/index.css
+src/main.jsx
+src/MedicalDisclaimer.jsx
+struktur.txt
+vite.config.js
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path=".gitignore">
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+</file>
+
+<file path="eslint.config.js">
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import { defineConfig, globalIgnores } from 'eslint/config'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{js,jsx}'],
+    extends: [
+      js.configs.recommended,
+      reactHooks.configs.flat.recommended,
+      reactRefresh.configs.vite,
+    ],
+    languageOptions: {
+      globals: globals.browser,
+      parserOptions: { ecmaFeatures: { jsx: true } },
+    },
+  },
+])
+</file>
+
+<file path="export.mjs">
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// ES-Modul Workaround fÃ¼r __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const srcDir = path.join(__dirname, 'src');
+const outputDir = __dirname;
+// Wie viele Dateien sollen in eine Textdatei gepackt werden?
+const filesPerChunk = 7; 
+
+// Welche Dateitypen sollen ausgelesen werden? (Bilder etc. ignorieren wir)
+const allowedExtensions = ['.js', '.jsx', '.css'];
+
+function getFiles(dir, fileList = []) {
+    const files = fs.readdirSync(dir);
+    for (const file of files) {
+        const filePath = path.join(dir, file);
+        const stat = fs.statSync(filePath);
+        if (stat.isDirectory()) {
+            getFiles(filePath, fileList);
+        } else {
+            if (allowedExtensions.includes(path.extname(file))) {
+                fileList.push(filePath);
+            }
+        }
+    }
+    return fileList;
+}
+
+const allFiles = getFiles(srcDir);
+let chunkIndex = 1;
+
+for (let i = 0; i < allFiles.length; i += filesPerChunk) {
+    const chunk = allFiles.slice(i, i + filesPerChunk);
+    let outputContent = `--- CPR ASSIST - CODE TEIL ${chunkIndex} ---\n\n`;
+
+    for (const file of chunk) {
+        const relativePath = path.relative(__dirname, file);
+        const content = fs.readFileSync(file, 'utf-8');
+        outputContent += `\n// ==========================================\n`;
+        outputContent += `// DATEI: ${relativePath}\n`;
+        outputContent += `// ==========================================\n\n`;
+        outputContent += content;
+        outputContent += `\n\n`;
+    }
+
+    const outputFileName = `projekt_teil_${chunkIndex}.txt`;
+    fs.writeFileSync(path.join(outputDir, outputFileName), outputContent);
+    console.log(`âœ… Erstellt: ${outputFileName} (${chunk.length} Dateien)`);
+    chunkIndex++;
+}
+
+console.log('\nðŸš€ Fertig! Dein Code wurde erfolgreich portioniert.');
+</file>
+
+<file path="projekt_teil_1_korregiert.txt">
+--- CPR ASSIST - CODE TEIL 1 ---
+
+
+// ==========================================
+// DATEI: src\App.css
+// ==========================================
+
+
+
+
+// ==========================================
+// DATEI: src\App.jsx
+// ==========================================
+
+// --- Datei: src/App.jsx ---
+import React, { useContext, useState } from 'react';
+import { CprProvider, CprContext } from './context/CprContext.jsx';
+import { useGlobalTimer } from './hooks/useGlobalTimer.js';
+
+import MedicalDisclaimer from './MedicalDisclaimer.jsx';
+import DashboardShell from './components/dashboard/DashboardShell.jsx';
+import SettingsModal from './components/SettingsModal.jsx';
+import HelpOverlay from './components/HelpOverlay.jsx';
+
+import './App.css';
+
+function MainApp() {
+  const { state } = useContext(CprContext);
+  
+  // 1. NEU: Der State fÃ¼r das EinstellungsmenÃ¼
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  
+  useGlobalTimer();
+
+  // 2. NEU: Die "Brechstange" (Triple-Click Hard Reset)
+  // LÃ¶scht den gesamten fehlerhaften Browser-Speicher und lÃ¤dt die App frisch
+  const handleTripleClick = (e) => {
+    if (e.detail === 3) {
+      localStorage.clear();
+      window.location.reload();
+    }
+  };
+
+  return (
+    <div className="bg-slate-200/50 w-full h-[100dvh] flex justify-center items-center overflow-hidden relative">
+      <div className="w-full max-w-[430px] h-full bg-slate-50 flex flex-col relative shadow-2xl overflow-hidden text-slate-900 select-none">
+        
+        {/* HEADER */}
+        <header className="flex items-center justify-between bg-white px-4 py-3 border-b border-slate-200 shadow-sm z-[70] relative shrink-0">
+          
+          {/* HIER LIEGT DER TRIPLE-CLICK: Einfach 3x schnell auf das Logo/den Namen tippen! */}
+          <div className="flex items-center gap-3 p-1 cursor-pointer" onClick={handleTripleClick}>
+            <div className="w-10 h-10 flex items-center justify-center shrink-0 text-[#E3000F]">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"/></svg>
+            </div>
+            <div className="flex flex-col justify-center leading-none pointer-events-none">
+              <span className="text-lg font-black text-slate-900 uppercase tracking-tight">CPR Assist</span>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-0.5">by Moe</span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button className="text-slate-400 text-xl p-2 active:scale-90 transition-transform"><i className="fa-solid fa-circle-question"></i></button>
+            <button className="text-slate-400 text-xl p-2 active:scale-90 transition-transform"><i className="fa-solid fa-volume-high"></i></button>
+            
+            {/* 3. NEU: Der Settings-Button ist jetzt scharf geschaltet! */}
+            <button 
+              onClick={() => setIsSettingsOpen(true)} 
+              className="text-slate-600 text-xl p-2 active:scale-90 transition-transform ml-1"
+            >
+              <i className="fa-solid fa-gear"></i>
+            </button>
+          </div>
+        </header>
+
+        <MedicalDisclaimer />
+
+        {/* HAUPTBEREICH */}
+        <main className="flex-1 relative z-20 w-full flex flex-col">
+          <DashboardShell />
+        </main>
+        
+        {/* 4. NEU: Das Modal bekommt mitgeteilt, ob es offen sein soll */}
+        <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+        
+        <HelpOverlay />
+
+      </div>
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <CprProvider>
+      <MainApp />
+    </CprProvider>
+  );
+}
+
+
+// ==========================================
+// DATEI: src\components\CenterDisplay.jsx
+// ==========================================
+
+import React, { useContext } from 'react';
+import { CprContext } from '../context/CprContext.jsx';
+import { CPR_CONFIG } from '../config/cprConfig.js';
+import PatientSelection from './PatientSelection.jsx';
+
+export default function CenterDisplay() {
+  const { state } = useContext(CprContext);
+
+  const isDashboard = state.appPhase === CPR_CONFIG.PHASES.RUNNING;
+  // Perfekter Kreis-Morpheffekt: 340px beim Onboarding, 224px im Dashboard
+  const circleSize = isDashboard ? '224px' : '340px';
+
+  const formatCprTime = (seconds) => {
+    if (isNaN(seconds) || seconds === null) return "00:00";
+    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  };
+
+  const renderPhase = () => {
+    if (state.appPhase === CPR_CONFIG.PHASES.RUNNING) {
+      return (
+        <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-white rounded-full shadow-[inset_0_0_20px_rgba(0,0,0,0.02)] animate-in zoom-in-95 duration-500 relative">
+          <div className="absolute top-5 w-10 h-1.5 bg-cyan-500 rounded-full"></div>
+          <div className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em] mb-1">
+            NÃ¤chste Analyse
+          </div>
+          
+          {/* 120s Countdown im Dashboard */}
+          <div className="text-[64px] font-black text-slate-800 tracking-tighter leading-none mb-3 font-mono">
+             {formatCprTime(120 - (state.cycleSeconds || 0))}
+          </div>
+          
+          <div className="flex items-center gap-3 text-[13px] font-black tracking-widest mt-1">
+            <span className="text-amber-500 flex items-center gap-1.5">
+              <i className="fa-solid fa-bolt"></i> {state.shockCount || 0}
+            </span>
+            <span className="text-slate-200">|</span>
+            <span className="text-[#E3000F]">
+              {state.isPediatric && state.patientWeight ? Math.round(state.patientWeight * 4) : 150} J
+            </span>
+          </div>
+        </div>
+      );
+    }
+
+    // Leitet alle anderen Phasen an den Onboarding-Router weiter
+    return <PatientSelection />;
+  };
+
+  return (
+    <div className="relative flex flex-col items-center justify-center transition-all duration-500">
+      
+      {/* Ãœberschrift beim Onboarding Ã¼ber dem Kreis schwebend */}
+      {state.appPhase === CPR_CONFIG.PHASES.ONBOARDING && (
+        <div className="absolute -top-[75px] w-full flex flex-col items-center justify-center text-center animate-in fade-in slide-in-from-bottom-4 duration-500 z-10">
+           <h1 className="text-[26px] font-black text-slate-800 uppercase tracking-[0.2em] drop-shadow-sm leading-none mb-1">
+             Einsatz Starten
+           </h1>
+           <div className="w-12 h-[3px] bg-[#E3000F] rounded-full opacity-80 mt-2"></div>
+        </div>
+      )}
+
+      {/* Das absolut runde, sich anpassende Hauptfenster */}
+      <div 
+        style={{ width: circleSize, height: circleSize }}
+        className="rounded-full shadow-[0_15px_40px_rgba(0,0,0,0.08)] border-4 border-slate-100 flex items-center justify-center relative overflow-hidden bg-white shrink-0 transition-all duration-500 mx-auto z-20"
+      >
+        {renderPhase()}
+      </div>
+    </div>
+  );
+}
+
+
+// ==========================================
+// DATEI: src\components\dashboard\DashboardShell.jsx
+// ==========================================
+
+// --- Datei: src/components/dashboard/DashboardShell.jsx ---
+import React, { useContext } from 'react';
+import { CprContext } from '../../context/CprContext.jsx';
+import { CPR_CONFIG } from '../../config/cprConfig.js';
+
+import CenterDisplay from '../CenterDisplay.jsx';
+import PatientSetupModal from '../PatientSetupModal.jsx'; 
+import { usePatientLogic } from '../../hooks/usePatientLogic.js';
+import { useMasterLoop } from '../../hooks/useMasterLoop.js'; 
+
+export default function DashboardShell() {
+  const { state } = useContext(CprContext);
+  
+  // Wir holen uns unsere Logik-Haken (Hooks)
+  const { toggleCprMode } = usePatientLogic();
+  const { toggleCpr } = useMasterLoop(); // Der Play/Pause Schalter fÃ¼r die Kompression
+
+  const formatTime = (seconds) => {
+    if (isNaN(seconds) || seconds === null) return "00:00";
+    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  };
+
+  // Hilfs-Komponente fÃ¼r die kleinen Satelliten (Medikamente, Log, etc.)
+  const SatelliteBtn = ({ icon, label, colorClass = "bg-white text-slate-500 border-slate-200" }) => (
+    <button className={`w-[86px] h-[86px] rounded-full shadow-sm border-[3px] flex flex-col items-center justify-center gap-1 hover:bg-slate-50 active:scale-95 transition-all ${colorClass}`}>
+      <i className={`fa-solid ${icon} text-[24px] mb-0.5`}></i>
+      <span className="text-[9px] font-black uppercase tracking-wider leading-none text-center px-1">
+        {label}
+      </span>
+    </button>
+  );
+
+  // Hilfs-Komponente fÃ¼r die groÃŸen unteren KnÃ¶pfe (Atemweg, CPR Pausieren)
+  const MainBtn = ({ icon, label, colorClass, badge, onClick }) => (
+    <div className="relative">
+      <button onClick={onClick} className={`w-[100px] h-[100px] rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.1)] border-2 flex flex-col items-center justify-center gap-1.5 hover:bg-slate-50 active:scale-95 transition-all ${colorClass}`}>
+        <i className={`fa-solid ${icon} text-[32px]`}></i>
+        <span className="text-[10px] font-black uppercase tracking-widest leading-none text-center px-1">
+          {label}
+        </span>
+      </button>
+      {badge && (
+        <div className="absolute -top-1 -right-1 bg-[#E3000F] text-white text-[12px] font-black w-7 h-7 rounded-full flex items-center justify-center shadow-md border-[3px] border-white">
+          !!!
+        </div>
+      )}
+    </div>
+  );
+
+  // Der clevere Wrapper, der die Buttons exakt im Kreis positioniert
+  const OrbitPosition = ({ x, y, children }) => (
+    <div className="absolute pointer-events-none z-20" style={{ top: '50%', left: '50%', marginLeft: `${x}px`, marginTop: `${y}px`, transform: 'translate(-50%, -50%)' }}>
+      <div className="pointer-events-auto">{children}</div>
+    </div>
+  );
+
+  // Sichtbarkeits-Regeln fÃ¼r das UI
+  const isRunning = state.appPhase === CPR_CONFIG.PHASES.RUNNING;
+  const isSetup = state.appPhase === CPR_CONFIG.PHASES.ONBOARDING || state.appPhase === CPR_CONFIG.PHASES.OB_INITIAL_BREATHS;
+  
+  const showTopStats = !isSetup;
+  const showSatellites = isRunning;
+  
+  // Der Kreis wippt beim Komprimieren leicht nach oben, um Platz fÃ¼r die Daumen zu machen
+  const orbitShiftClass = state.isCompressing ? '-translate-y-[20px]' : 'translate-y-[0px]';
+
+  return (
+    <div className="absolute inset-0 w-full h-full flex flex-col bg-slate-50 animate-in fade-in duration-500 overflow-hidden">
+        
+      {/* 1. OBERE LEISTE (Top Stats, CCF, Modus) */}
+      <div className={`flex items-stretch justify-between gap-2 px-3 py-2 shrink-0 z-40 relative transition-opacity duration-300 ${!showTopStats ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+        
+        <div className="bg-white rounded-[14px] px-3 py-2 shadow-sm border border-slate-200 flex-1 flex flex-col justify-between">
+          <div className="flex justify-between items-center w-full mb-0.5">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Zeit</span>
+          </div>
+          <div className="text-[30px] font-black text-slate-800 leading-none font-mono tracking-tighter mt-0.5">
+            {formatTime(state.missionSeconds)}
+          </div>
+        </div>
+
+        <div className="bg-white rounded-[14px] p-2 shadow-sm border border-slate-200 flex-[1.2] flex justify-between items-center">
+          <div className="flex flex-col items-start justify-center h-full">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Modus</span>
+            <button onClick={toggleCprMode} className="flex rounded-full border border-amber-300 overflow-hidden shadow-sm active:scale-95 transition-transform cursor-pointer">
+              <span className={`text-[10px] font-black px-2.5 py-0.5 uppercase ${state.cprMode !== 'continuous' ? 'bg-amber-100 text-amber-700' : 'bg-white text-slate-400'}`}>
+                {state.isPediatric ? '15:2' : '30:2'}
+              </span>
+              <span className={`text-[10px] font-black px-2.5 py-0.5 uppercase border-l border-amber-200 ${state.cprMode === 'continuous' ? 'bg-amber-100 text-amber-700' : 'bg-white text-slate-400'}`}>
+                KONT
+              </span>
+            </button>
+          </div>
+          <div className="flex flex-col items-end justify-center h-full pl-2 border-l border-slate-100">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">CCF</span>
+            <div className={`text-[28px] font-black leading-none tracking-tighter mt-1 ${state.currentCcfPercent < 80 ? 'text-red-500' : 'text-emerald-500'}`}>
+              {state.currentCcfPercent || 100}<span className="text-sm">%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 2. MITTLERER BEREICH (Center Display + Satelliten Orbit) */}
+      <div className={`flex-1 relative w-full flex items-center justify-center transition-transform duration-500 z-30 overflow-visible ${orbitShiftClass}`}>
+        
+        {/* Unser Center Display (Router + CPR Kreis) in der exakten Mitte */}
+        <OrbitPosition x={0} y={0}>
+          <CenterDisplay />
+        </OrbitPosition>
+
+        {/* Die Medikamenten-Satelliten tauchen auf, sobald das Dashboard lÃ¤dt */}
+        {showSatellites && (
+          <>
+            <OrbitPosition x={0} y={-163}><SatelliteBtn icon="fa-syringe" label="1 mg" colorClass="bg-white text-emerald-600 border-emerald-400" /></OrbitPosition>
+            <OrbitPosition x={141} y={-81.5}><SatelliteBtn icon="fa-syringe" label="Amio. 300 mg" colorClass="bg-white text-purple-600 border-purple-400" /></OrbitPosition>
+            <OrbitPosition x={141} y={81.5}><SatelliteBtn icon="fa-clipboard-list" label="Hits Anamnese" colorClass="bg-white text-slate-600 border-slate-300" /></OrbitPosition>
+            <OrbitPosition x={0} y={163}><SatelliteBtn icon="fa-flag-checkered" label="Ende ROSC" colorClass="bg-white text-slate-700 border-slate-300" /></OrbitPosition>
+            <OrbitPosition x={-141} y={81.5}><SatelliteBtn icon="fa-file-lines" label="Log" colorClass="bg-white text-slate-500 border-slate-300" /></OrbitPosition>
+            <OrbitPosition x={-141} y={-81.5}><SatelliteBtn icon="fa-droplet" label="Zugang" colorClass="bg-white text-slate-500 border-slate-300" /></OrbitPosition>
+          </>
+        )}
+      </div>
+
+      <div className="absolute bottom-0 w-full h-40 bg-gradient-to-t from-slate-200/90 to-transparent z-10 pointer-events-none"></div>
+
+      {/* 3. UNTERE LEISTE (Atemweg & CPR Pause) */}
+      <div className={`shrink-0 w-full flex justify-between items-end px-5 pb-8 pt-2 z-50 transition-opacity duration-300 pointer-events-none ${!isRunning ? 'opacity-0' : 'opacity-100'}`}>
+        <div className="pointer-events-auto">
+          {/* Badge leuchtet auf, wenn noch kein Atemweg gesichert ist! */}
+          <MainBtn icon="fa-lungs" label="Atemweg" badge={!state.airwayEstablished} colorClass="bg-white text-[#E3000F] border-[#E3000F] shadow-[0_0_25px_rgba(227,0,15,0.3)]" />
+        </div>
+        <div className="pointer-events-auto">
+          {/* Der dynamische Play / Pause Button fÃ¼r die Kompression */}
+          <MainBtn 
+             onClick={toggleCpr} 
+             icon={state.isCompressing ? "fa-pause" : "fa-play"} 
+             label={state.isCompressing ? "CPR Pausieren" : "CPR Starten"} 
+             colorClass={state.isCompressing ? "bg-white text-slate-500 border-slate-200 shadow-[0_10px_25px_rgba(0,0,0,0.05)]" : "bg-emerald-500 text-white border-emerald-600 shadow-[0_10px_25px_rgba(16,185,129,0.3)]"} 
+          />
+        </div>
+      </div>
+
+      {/* PÃ¤diatrie Modal */}
+      {state.isPatientModalOpen && <PatientSetupModal />}
+      
+    </div>
+  );
+}
+
+
+// ==========================================
+// DATEI: src\components\HelpOverlay.jsx
+// ==========================================
+
+// --- Datei: src/components/HelpOverlay.jsx ---
+import React, { useContext } from 'react';
+import { CprContext } from '../context/CprContext.jsx';
+
+export default function HelpOverlay({ isActive }) {
+  const { state } = useContext(CprContext);
+
+  if (!isActive) return null;
+
+  // Hier kÃ¶nnen wir spÃ¤ter je nach Phase (z.B. ONBOARDING vs. RUNNING) 
+  // andere Hilfetexte anzeigen.
+  const isDashboard = state.appPhase === 'RUNNING';
+
+  // Kleine Hilfs-Komponente fÃ¼r die dunklen Info-Boxen
+  const InfoBox = ({ children, className = "" }) => (
+    <div className={`bg-slate-800 border border-slate-600 rounded-xl p-3 text-slate-100 text-[11px] font-bold text-center shadow-lg leading-tight flex items-center justify-center ${className}`}>
+      {children}
+    </div>
+  );
+
+  return (
+    <div className="fixed inset-0 z-[200] bg-slate-900/90 backdrop-blur-sm flex flex-col animate-in fade-in duration-150 pointer-events-none">
+      
+      {/* Hinweis zum Loslassen - Oben zentriert */}
+      <div className="pt-24 w-full text-center">
+        <span className="text-slate-400 font-bold tracking-widest text-xs uppercase">
+          Loslassen zum Schliessen
+        </span>
+      </div>
+
+      {/* Das Flowchart / Cheat-Sheet in der Mitte */}
+      {isDashboard ? (
+        <div className="flex-1 relative flex items-center justify-center w-full max-w-[400px] mx-auto">
+          
+          {/* Zentrum: Red Box & ROSC */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-3">
+            <i className="fa-solid fa-arrow-up text-slate-400 text-xl"></i>
+            <InfoBox>Adrenalin<br/>(3-5 Min)</InfoBox>
+            
+            <div className="bg-red-600 text-white font-black text-sm text-center p-4 rounded-2xl shadow-[0_0_20px_rgba(220,38,38,0.4)] my-1 w-[220px]">
+              MASTER-ZYKLUS<br/>& RHYTHMUS-CHECK
+            </div>
+            
+            <InfoBox>ROSC-BÃ¼ndel<br/>& Ende</InfoBox>
+            <i className="fa-solid fa-arrow-down text-slate-400 text-xl"></i>
+          </div>
+
+          {/* Links (Protokoll & Zugang) */}
+          <div className="absolute top-1/2 left-4 -translate-y-1/2 flex flex-col gap-3 w-[100px]">
+            <InfoBox>Protokoll<br/>& Zeitstrahl</InfoBox>
+            <div className="flex justify-center -my-2 z-10 relative">
+               <i className="fa-solid fa-arrow-up text-slate-400 text-lg"></i>
+            </div>
+            <InfoBox>Zugang<br/>i.v. / i.o.</InfoBox>
+          </div>
+
+          {/* Rechts (Sampler & Amio) */}
+          <div className="absolute top-1/2 right-4 -translate-y-1/2 flex flex-col gap-3 w-[100px]">
+            <InfoBox>Ursachen<br/>(SAMPLER)</InfoBox>
+            <div className="flex justify-center -my-2 z-10 relative">
+               <i className="fa-solid fa-arrow-down text-slate-400 text-lg"></i>
+            </div>
+            <InfoBox>Amiodaron<br/>& Co.</InfoBox>
+          </div>
+
+          {/* Unten Links (Atemweg) */}
+          <div className="absolute bottom-24 left-4 flex flex-col items-center gap-3 w-[120px]">
+            <InfoBox>Atemweg-Doku<br/>& Beatmung</InfoBox>
+            <i className="fa-solid fa-arrow-down text-slate-400 text-xl"></i>
+          </div>
+
+          {/* Unten Rechts (Kompression) */}
+          <div className="absolute bottom-24 right-4 flex flex-col items-center gap-3 w-[120px]">
+            <InfoBox>Kompression<br/>& Pausen-Warnung</InfoBox>
+            <i className="fa-solid fa-arrow-down text-slate-400 text-xl"></i>
+          </div>
+
+        </div>
+      ) : (
+        /* Falls man im Onboarding drÃ¼ckt */
+        <div className="flex-1 flex items-center justify-center">
+          <InfoBox className="w-[200px]">
+            Bitte wÃ¤hle zuerst den<br/>Patienten aus, um die<br/>Reanimation zu starten.
+          </InfoBox>
+        </div>
+      )}
+
+    </div>
+  );
+}
+
+
+// ==========================================
+// DATEI: src\components\PatientSelection.jsx
+// ==========================================
+
+import React, { useContext } from 'react';
+import { CprContext } from '../context/CprContext.jsx';
+import { CPR_CONFIG } from '../config/cprConfig.js';
+
+import ViewObPatient from './views/ViewObPatient.jsx';
+import ViewObInitialBreaths from './views/ViewObInitialBreaths.jsx';
+import ViewObCompressions from './views/ViewObCompressions.jsx';
+import ViewObAnalyze from './views/ViewObAnalyze.jsx';
+import ViewDecision from './views/ViewDecision.jsx';
+import ViewJoule from './views/ViewJoule.jsx';
+import ViewCprResume from './views/ViewCprResume.jsx';
+
+export default function PatientSelection() {
+  const { state } = useContext(CprContext);
+
+  switch (state.appPhase) {
+    case CPR_CONFIG.PHASES.ONBOARDING:         
+      return <ViewObPatient />;
+    case CPR_CONFIG.PHASES.OB_INITIAL_BREATHS: 
+      return <ViewObInitialBreaths />;
+    case CPR_CONFIG.PHASES.OB_COMPRESSIONS:    
+      return <ViewObCompressions />;
+    case CPR_CONFIG.PHASES.OB_ANALYZE:         
+      return <ViewObAnalyze />;
+    case CPR_CONFIG.PHASES.DECISION:           
+      return <ViewDecision />;
+    case CPR_CONFIG.PHASES.JOULE:              
+      return <ViewJoule />;
+    case CPR_CONFIG.PHASES.WAITING_CPR_RESUME: 
+      return <ViewCprResume />;
+    default:                   
+      return null;
+  }
+}
+
+
+// ==========================================
+// DATEI: src\components\PatientSetupModal.jsx
+// ==========================================
+
+import React, { useContext, useState } from 'react';
+import { CprContext } from '../context/CprContext.jsx';
+import { usePatientLogic } from '../hooks/usePatientLogic.js';
+import { BROSELOW_DATA, calculatePediatricVitals, getBroselowZone } from '../config/broselowData.js';
+
+// ==========================================
+// HILFS-KOMPONENTEN
+// ==========================================
+
+const VitalSliderBlock = ({ label, valueText, min, max, value, step = 1, readOnly = false, onChange }) => (
+  <div className="flex flex-col mb-3 px-3 py-2 bg-white rounded-[1.5rem] shadow-[0_4px_20px_rgba(0,0,0,0.04)] border border-slate-100">
+    <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest px-1 pb-1 border-b border-dashed border-slate-100 mb-2">
+      {label}
+    </div>
+    <div className="flex items-center gap-3">
+      <input 
+        type="range" 
+        min={min} 
+        max={max} 
+        step={step} 
+        value={value} 
+        readOnly={readOnly}
+        onChange={(e) => !readOnly && onChange(e.target.value)} 
+        className={`flex-1 h-2 bg-slate-200 rounded-full accent-[#E3000F] ${readOnly ? 'pointer-events-none opacity-60' : 'cursor-pointer'}`} 
+      />
+      <div className="bg-slate-50 text-slate-600 border border-slate-200 font-bold text-[9px] uppercase tracking-wider rounded-xl w-[110px] h-9 shadow-sm shrink-0 flex items-center justify-center">
+        {valueText}
+      </div>
+    </div>
+  </div>
+);
+
+// ==========================================
+// HAUPT-KOMPONENTE
+// ==========================================
+
+export default function PatientSetupModal() {
+  const { dispatch } = useContext(CprContext);
+  const { setChild } = usePatientLogic();
+  
+  // State fÃ¼r die synchronisierten Vitals (Startwert 4kg laut Vorgabe)
+  const [vitals, setVitals] = useState({ age: 0, kg: 4, cm: 55 });
+
+  const handleSync = (source, value) => {
+    setVitals(prev => ({ ...prev, ...calculatePediatricVitals(source, parseFloat(value)) }));
+  };
+
+  const handleStart = (withWeight) => {
+    setChild(withWeight ? vitals.kg : null);
+  };
+
+  const handleClose = () => {
+    dispatch({ type: 'TOGGLE_PATIENT_MODAL', payload: false });
+  };
+
+  const activeZone = getBroselowZone(vitals.kg);
+
+  // Farbschema exakt nach deinen Vorgaben
+  const broselowStyles = {
+    grau: { bg: '#9ca3af', text: '#ffffff' },
+    rosa: { bg: '#f472b6', text: '#ffffff' },
+    rot: { bg: '#ef4444', text: '#ffffff' },
+    lila: { bg: '#a855f7', text: '#ffffff' },
+    gelb: { bg: '#eab308', text: '#ffffff' },
+    weiss: { bg: '#ffffff', text: '#334155', extraClass: 'border border-slate-200' },
+    blau: { bg: '#3b82f6', text: '#ffffff' },
+    orange: { bg: '#f97316', text: '#ffffff' },
+    gruen: { bg: '#22c55e', text: '#ffffff' }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm animate-in fade-in duration-200 p-4">
+      
+      {/* Modal Container */}
+      <div className="relative bg-white w-full max-w-[420px] max-h-[98vh] rounded-[2rem] border border-slate-100 shadow-2xl flex flex-col animate-in zoom-in-95 duration-300">
+        
+        {/* SchlieÃŸen Button */}
+        <button 
+          onClick={handleClose} 
+          className="absolute top-3 right-3 w-8 h-8 bg-slate-100 rounded-full text-slate-500 flex items-center justify-center active:scale-90 transition-transform z-10"
+        >
+          <i className="fa-solid fa-xmark"></i>
+        </button>
+
+        <div className="overflow-y-auto flex-1 p-5 pb-6 custom-scrollbar">
+          
+          {/* Ãœberschrift */}
+          <h2 className="text-lg font-black text-slate-800 uppercase tracking-widest text-center mt-2 mb-6">
+            PÃ¤diatrie Setup
+          </h2>
+
+          {/* Sektion 1: Broselow-Farb-Schnellwahl */}
+          <div className="mb-6">
+            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest text-center block mb-3">
+              MaÃŸband-Farbe Schnellwahl
+            </span>
+            <div className="grid grid-cols-3 gap-1.5">
+              {BROSELOW_DATA.map((zone) => {
+                const styleDef = broselowStyles[zone.color] || broselowStyles.weiss;
+                const isActive = activeZone?.color === zone.color;
+                
+                return (
+                  <button 
+                    key={zone.color} 
+                    onClick={() => handleSync('kg', zone.avgKg)}
+                    style={{ backgroundColor: styleDef.bg, color: styleDef.text }}
+                    className={`flex flex-col items-center justify-center py-2 rounded-xl shadow-sm transition-all duration-200 
+                      ${styleDef.extraClass || ''} 
+                      ${isActive ? 'opacity-100 scale-105 border-[3px] border-slate-800' : 'opacity-40 scale-100 border-none'}`
+                    }
+                  >
+                    <span className="text-[13px] font-black tracking-wider drop-shadow-md uppercase">{zone.color}</span>
+                    <span className="text-[9px] font-extrabold tracking-wide drop-shadow-md">{zone.avgKg} kg â€¢ {zone.cm} cm</span>

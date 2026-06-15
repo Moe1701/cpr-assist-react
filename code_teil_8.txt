@@ -1,0 +1,800 @@
+﻿=== C:\Users\Gaumard\Desktop\cpr-assist\src\context\cprReducer.js ===
+// --- Datei: src/context/cprReducer.js ---
+import { CPR_CONFIG } from '../config/cprConfig.js';
+
+export const initialState = {
+  appPhase: CPR_CONFIG.PHASES.ONBOARDING,
+  isPediatric: false,
+  patientWeight: null,
+  cprMode: 'continuous', 
+  
+  startTime: null,         
+  isGridVisible: false,    
+  isPatientModalOpen: false, 
+  
+  // Timer & Einsatz-Zeiten
+  missionSeconds: 0, 
+  cprSeconds: 0, 
+  cycleSeconds: 0, 
+  
+  // Ping-Pong & CCF State
+  isCompressing: false,
+  isVentilationPhase: false,
+  compressionCount: 0,
+  airwayEstablished: null,
+  compressingSeconds: 0, 
+  arrestSeconds: 0,      
+  currentCcfPercent: 100,
+  
+  events: [],      
+  reminders: []
+};
+
+export function cprReducer(state, action) {
+  switch (action.type) {
+    case 'SET_PHASE':
+      return { ...state, appPhase: action.payload };
+
+    case 'SET_PEDIATRIC_DATA':
+      return { 
+        ...state, 
+        isPediatric: action.payload.isPediatric,
+        patientWeight: action.payload.patientWeight,
+        cprMode: 'continuous', 
+        startTime: state.startTime || new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
+      };
+
+    case 'SET_CPR_MODE':
+      return { ...state, cprMode: action.payload };
+
+    case 'TOGGLE_PATIENT_MODAL':
+      return { ...state, isPatientModalOpen: action.payload };
+
+    case 'TOGGLE_GRID':
+      return { ...state, isGridVisible: !state.isGridVisible };
+
+    case 'LOG_EVENT':
+      return { ...state, events: [...state.events, action.payload] };
+
+    // --- Ping-Pong & Steuerungs-Aktionen ---
+    case 'TOGGLE_COMPRESSION':
+      return { ...state, isCompressing: action.payload };
+      
+    case 'SET_COMPRESSION_COUNT':
+      return { ...state, compressionCount: action.payload };
+      
+    case 'SET_VENTILATION_PHASE':
+      return { ...state, isVentilationPhase: action.payload };
+      
+    case 'SET_AIRWAY':
+      return { ...state, airwayEstablished: action.payload };
+
+    // --- Timer Ticks ---
+    case 'TICK_MISSION':
+      return { ...state, missionSeconds: state.missionSeconds + 1 };
+      
+    case 'TICK_CYCLE':
+      return { ...state, cycleSeconds: state.cycleSeconds + 1 };
+
+    case 'TICK_CCF_ARREST': {
+      const newArrest = state.arrestSeconds + 1;
+      const rawCcf = (state.compressingSeconds / newArrest) * 100;
+      return { 
+        ...state, 
+        arrestSeconds: newArrest,
+        currentCcfPercent: Math.min(100, Math.round(rawCcf))
+      };
+    }
+      
+    case 'TICK_CCF_COMPRESSING':
+      return { 
+        ...state, 
+        compressingSeconds: state.compressingSeconds + 1,
+        cprSeconds: state.cprSeconds + 1 
+      };
+
+    case 'RESET_ALL':
+      return initialState;
+
+    default:
+      return state;
+  }
+}
+
+
+=== C:\Users\Gaumard\Desktop\cpr-assist\src\hooks\useGlobalTimer.js ===
+// --- Datei: src/hooks/useGlobalTimer.js ---
+import { useEffect, useContext, useRef } from 'react';
+import { CprContext } from '../context/CprContext.jsx';
+
+export function useGlobalTimer() {
+  const { state, dispatch } = useContext(CprContext);
+  
+  const phaseRef = useRef(state.appPhase);
+  const compressingRef = useRef(state.isCompressing);
+
+  useEffect(() => {
+    phaseRef.current = state.appPhase;
+    compressingRef.current = state.isCompressing;
+  }, [state.appPhase, state.isCompressing]);
+
+  useEffect(() => {
+    const masterTick = setInterval(() => {
+      // FIX: Die Einsatzuhr startet JETZT sofort, wenn der Patient gewÃƒÂ¤hlt wurde 
+      // (also sobald wir nicht mehr im allerersten ONBOARDING Screen sind)
+      if (phaseRef.current !== 'ONBOARDING') {
+        dispatch({ type: 'TICK_MISSION' });
+      }
+
+      // Die CPR-Uhr (Mitte) lÃƒÂ¤uft nur, wenn auch wirklich gedrÃƒÂ¼ckt wird
+      if (compressingRef.current === true) {
+        dispatch({ type: 'TICK_CPR' });
+      }
+
+    }, 1000);
+
+    return () => clearInterval(masterTick);
+  }, [dispatch]);
+}
+
+
+=== C:\Users\Gaumard\Desktop\cpr-assist\src\hooks\useMasterLoop.js ===
+// --- Datei: src/hooks/useMasterLoop.js ---
+import { useEffect, useContext, useRef, useCallback } from 'react';
+import { CprContext } from '../context/CprContext.jsx';
+import { CPR_CONFIG } from '../config/cprConfig.js';
+
+export function useMasterLoop() {
+  const { state, dispatch, logEvent } = useContext(CprContext);
+
+  // Ref auf den State, damit Intervalle keine Re-Renders auslÃƒÂ¶sen, 
+  // aber trotzdem immer den aktuellsten Wert kennen.
+  const stateRef = useRef(state);
+  useEffect(() => { stateRef.current = state; }, [state]);
+
+  // ==========================================
+  // 1. CPR BUTTON (Play / Pause)
+  // ==========================================
+  const toggleCpr = useCallback(() => {
+    const isComp = !stateRef.current.isCompressing;
+    dispatch({ type: 'TOGGLE_COMPRESSION', payload: isComp });
+    dispatch({ type: 'SET_COMPRESSION_COUNT', payload: 0 }); 
+    
+    logEvent(CPR_CONFIG.EVENTS.PAUSE, isComp ? "Kompression FORTGESETZT" : "Kompression PAUSE");
+  }, [dispatch, logEvent]);
+
+  // ==========================================
+  // 2. ATEMWEG SICHERN
+  // ==========================================
+  const setAirway = useCallback((airwayType) => {
+    dispatch({ type: 'SET_AIRWAY', payload: airwayType });
+    logEvent(CPR_CONFIG.EVENTS.AIRWAY, `Atemweg gesichert: ${airwayType}`);
+
+    if (airwayType === 'Beutel-Maske') {
+      const mode = stateRef.current.isPediatric ? '15:2' : '30:2';
+      dispatch({ type: 'SET_CPR_MODE', payload: mode });
+      logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, `Modus: ${mode} (Beutel-Maske)`);
+    } else {
+      dispatch({ type: 'SET_CPR_MODE', payload: 'continuous' });
+      logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, `Modus gewechselt auf: KONT (Invasiv)`);
+    }
+  }, [dispatch, logEvent]);
+
+  // ==========================================
+  // 3. AUTOMATISCHES PING-PONG (30:2 Beatmung)
+  // ==========================================
+  const triggerVentilationPhase = useCallback(() => {
+    dispatch({ type: 'SET_VENTILATION_PHASE', payload: true });
+    dispatch({ type: 'TOGGLE_COMPRESSION', payload: false });
+    dispatch({ type: 'SET_COMPRESSION_COUNT', payload: 0 });
+
+    logEvent(CPR_CONFIG.EVENTS.PAUSE, "Automatische Beatmungspause (2x)");
+
+    // 2.5 Sekunden warten (2x Beatmen a 1s + 0.5s Puffer)
+    setTimeout(() => {
+      // Nur automatisch fortsetzen, wenn nicht gerade manuell pausiert oder analysiert wird
+      if (stateRef.current.appPhase === CPR_CONFIG.PHASES.RUNNING) {
+        dispatch({ type: 'SET_VENTILATION_PHASE', payload: false });
+        dispatch({ type: 'TOGGLE_COMPRESSION', payload: true });
+        logEvent(CPR_CONFIG.EVENTS.RESUME, "Kompression nach Beatmung automatisch fortgesetzt");
+      }
+    }, 2500);
+  }, [dispatch, logEvent]);
+
+  // ==========================================
+  // 4. DER GLOBALE TICKER (100ms AuflÃƒÂ¶sung)
+  // ==========================================
+  useEffect(() => {
+    let lastTick = Date.now();
+
+    const masterTimer = setInterval(() => {
+      // Timer tickt nur in der aktiven Reanimationsphase oder nach dem ersten Onboarding
+      if (stateRef.current.appPhase === 'ONBOARDING') return;
+
+      const now = Date.now();
+      const deltaMs = now - lastTick;
+
+      if (deltaMs >= 1000) {
+        lastTick += 1000;
+        
+        // 1. Gesamteinsatzzeit (lÃƒÂ¤uft ab Patientenwahl)
+        dispatch({ type: 'TICK_MISSION' });
+
+        // 2. Ticks nur wÃƒÂ¤hrend echter CPR (nicht im Onboarding-MenÃƒÂ¼)
+        if (stateRef.current.appPhase === CPR_CONFIG.PHASES.RUNNING) {
+          // 120s Loop Timer
+          dispatch({ type: 'TICK_CYCLE' });
+
+          // CCF Logik (Leitliniengetreu: Jede Pause senkt den Wert)
+          dispatch({ type: 'TICK_CCF_ARREST' });
+          if (stateRef.current.isCompressing) {
+              dispatch({ type: 'TICK_CCF_COMPRESSING' });
+          }
+        }
+      }
+    }, 100);
+
+    return () => clearInterval(masterTimer);
+  }, [dispatch]);
+
+  // ==========================================
+  // 5. DAS 100 BPM METRONOM (ZÃƒÂ¤hler fÃƒÂ¼r 30:2)
+  // ==========================================
+  useEffect(() => {
+    // Nur aktiv, wenn gedrÃƒÂ¼ckt wird UND wir nicht im KONT-Modus sind
+    if (!state.isCompressing || state.cprMode === 'continuous') return;
+
+    // 100 Kompressionen pro Minute = alle 600ms ein Tick
+    const metronome = setInterval(() => {
+      const currentCount = stateRef.current.compressionCount;
+      const limit = stateRef.current.isPediatric ? 15 : 30;
+
+      if (currentCount >= limit - 1) {
+        triggerVentilationPhase();
+      } else {
+        dispatch({ type: 'SET_COMPRESSION_COUNT', payload: currentCount + 1 });
+      }
+    }, 600);
+
+    return () => clearInterval(metronome);
+  }, [state.isCompressing, state.cprMode, triggerVentilationPhase, dispatch]);
+
+  return { toggleCpr, setAirway };
+}
+
+
+=== C:\Users\Gaumard\Desktop\cpr-assist\src\hooks\usePatientLogic.js ===
+// --- Datei: src/hooks/usePatientLogic.js ---
+import { useContext, useCallback } from 'react';
+import { CprContext } from '../context/CprContext.jsx';
+import { CPR_CONFIG } from '../config/cprConfig.js';
+import { BROSELOW_DATA } from '../config/broselowData.js'; 
+
+export function usePatientLogic() {
+  const { state, dispatch, logEvent } = useContext(CprContext);
+
+  const setAdult = useCallback(() => {
+    dispatch({ type: 'SET_PEDIATRIC_DATA', payload: { isPediatric: false, patientWeight: null } });
+    dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.OB_COMPRESSIONS });
+    logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, "Einsatz Start: Erwachsener | Modus: KONT");
+  }, [dispatch, logEvent]);
+
+  const setChild = useCallback((weight) => {
+    dispatch({ type: 'SET_PEDIATRIC_DATA', payload: { isPediatric: true, patientWeight: weight } });
+    dispatch({ type: 'TOGGLE_PATIENT_MODAL', payload: false });
+    dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.OB_INITIAL_BREATHS });
+    
+    const weightInfo = weight ? `${weight}kg` : 'Gewicht spÃƒÂ¤ter ermitteln';
+    logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, `Einsatz Start: Kind (${weightInfo}) | Modus: KONT`);
+  }, [dispatch, logEvent]);
+
+  const calculateVitals = useCallback((source, value) => {
+    let age, kg, cm;
+    const numVal = parseFloat(value);
+    
+    if (source === 'age') {
+        age = numVal;
+        kg = age === 0 ? 6 : 2 * (age + 4);
+        cm = Math.round((age * 6) + 77); 
+    } else if (source === 'kg') {
+        kg = numVal;
+        age = kg < 10 ? 0 : Math.max(1, Math.round((kg / 2) - 4));
+        cm = Math.round((age * 6) + 77); 
+    } else if (source === 'cm') {
+        cm = numVal;
+        age = Math.max(0, Math.round((cm - 77) / 6));
+        kg = age === 0 ? 6 : 2 * (age + 4);
+    }
+    return { age, kg, cm };
+  }, []);
+
+  const getBroselowZone = useCallback((kg) => {
+    if (!BROSELOW_DATA || BROSELOW_DATA.length === 0) return null;
+    return BROSELOW_DATA.find(z => kg >= z.minKg && kg <= z.maxKg) || BROSELOW_DATA[BROSELOW_DATA.length - 1];
+  }, []);
+
+  const toggleCprMode = useCallback(() => {
+    const newMode = state.cprMode === 'continuous' 
+        ? (state.isPediatric ? '15:2' : '30:2') 
+        : 'continuous';
+    dispatch({ type: 'SET_CPR_MODE', payload: newMode });
+    logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, `Modus gewechselt auf: ${newMode}`);
+  }, [state.cprMode, state.isPediatric, dispatch, logEvent]);
+
+  return { setAdult, setChild, calculateVitals, getBroselowZone, toggleCprMode };
+}
+
+
+=== C:\Users\Gaumard\Desktop\cpr-assist\src\App.css ===
+
+
+=== C:\Users\Gaumard\Desktop\cpr-assist\src\App.jsx ===
+// --- Datei: src/App.jsx ---
+import React, { useContext, useState } from 'react';
+import { CprProvider, CprContext } from './context/CprContext.jsx';
+import { useGlobalTimer } from './hooks/useGlobalTimer.js';
+
+import MedicalDisclaimer from './MedicalDisclaimer.jsx';
+import DashboardShell from './components/dashboard/DashboardShell.jsx';
+import PatientSetupModal from './components/PatientSetupModal.jsx';
+import SettingsModal from './components/SettingsModal.jsx';
+import HelpOverlay from './components/HelpOverlay.jsx';
+
+import './App.css';
+
+function MainApp() {
+  const { state } = useContext(CprContext);
+  
+  // 1. NEU: Der State fÃƒÂ¼r das EinstellungsmenÃƒÂ¼
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  
+  useGlobalTimer();
+
+  // 2. NEU: Die "Brechstange" (Triple-Click Hard Reset)
+  // LÃƒÂ¶scht den gesamten fehlerhaften Browser-Speicher und lÃƒÂ¤dt die App frisch
+  const handleTripleClick = (e) => {
+    if (e.detail === 3) {
+      localStorage.clear();
+      window.location.reload();
+    }
+  };
+
+  return (
+    <div className="bg-slate-200/50 w-full h-[100dvh] flex justify-center items-center overflow-hidden relative">
+      <div className="w-full max-w-[430px] h-full bg-slate-50 flex flex-col relative shadow-2xl overflow-hidden text-slate-900 select-none">
+        
+        {/* HEADER */}
+        <header className="flex items-center justify-between bg-white px-4 py-3 border-b border-slate-200 shadow-sm z-[70] relative shrink-0">
+          
+          {/* HIER LIEGT DER TRIPLE-CLICK: Einfach 3x schnell auf das Logo/den Namen tippen! */}
+          <div className="flex items-center gap-3 p-1 cursor-pointer" onClick={handleTripleClick}>
+            <div className="w-10 h-10 flex items-center justify-center shrink-0 text-[#E3000F]">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"/></svg>
+            </div>
+            <div className="flex flex-col justify-center leading-none pointer-events-none">
+              <span className="text-lg font-black text-slate-900 uppercase tracking-tight">CPR Assist</span>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-0.5">by Moe</span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button className="text-slate-400 text-xl p-2 active:scale-90 transition-transform"><i className="fa-solid fa-circle-question"></i></button>
+            <button className="text-slate-400 text-xl p-2 active:scale-90 transition-transform"><i className="fa-solid fa-volume-high"></i></button>
+            
+            {/* 3. NEU: Der Settings-Button ist jetzt scharf geschaltet! */}
+            <button 
+              onClick={() => setIsSettingsOpen(true)} 
+              className="text-slate-600 text-xl p-2 active:scale-90 transition-transform ml-1"
+            >
+              <i className="fa-solid fa-gear"></i>
+            </button>
+          </div>
+        </header>
+
+        <MedicalDisclaimer />
+
+        {/* HAUPTBEREICH */}
+        <main className="flex-1 relative z-20 w-full flex flex-col">
+          <DashboardShell />
+        </main>
+
+        <PatientSetupModal />
+        
+        {/* 4. NEU: Das Modal bekommt mitgeteilt, ob es offen sein soll */}
+        <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+        
+        <HelpOverlay />
+
+      </div>
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <CprProvider>
+      <MainApp />
+    </CprProvider>
+  );
+}
+
+
+=== C:\Users\Gaumard\Desktop\cpr-assist\src\index.css ===
+@import "tailwindcss";
+
+/* Das ist alles was Tailwind v4 braucht */
+
+
+=== C:\Users\Gaumard\Desktop\cpr-assist\src\main.jsx ===
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App.jsx'
+import './index.css' // <--- DIESE ZEILE MUSS DA SEIN!
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+)
+
+
+=== C:\Users\Gaumard\Desktop\cpr-assist\src\MedicalDisclaimer.jsx ===
+// --- Datei: src/components/MedicalDisclaimer.jsx ---
+import React, { useState } from 'react';
+
+export default function MedicalDisclaimer() {
+  // Lokaler State: Wurde der Disclaimer in dieser Sitzung schon bestÃƒÂ¤tigt?
+  const [isAccepted, setIsAccepted] = useState(false);
+
+  // Wenn er bestÃƒÂ¤tigt wurde, verschwindet die Komponente komplett aus dem DOM
+  if (isAccepted) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl flex flex-col text-center border-2 border-red-500">
+        
+        <div className="flex justify-center mb-4">
+          <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center text-3xl shadow-sm border border-red-100">
+            <i className="fa-solid fa-triangle-exclamation"></i>
+          </div>
+        </div>
+        
+        <h3 className="text-lg font-black text-slate-800 uppercase tracking-wide mb-2">
+          Wichtiger Hinweis
+        </h3>
+        
+        <p className="text-sm font-bold text-slate-600 mb-6 text-left p-3 bg-slate-50 rounded-lg border border-slate-100 leading-relaxed">
+          Diese App dient ausschlieÃƒÅ¸lich der ÃƒÅ“berwachung von <span className="text-[#E3000F] font-black">Trainingsszenarien</span>. Sie ist fÃƒÂ¼r den klinischen Live-Einsatz nicht validiert oder zugelassen. Alle Dosierungen sind eigenverantwortlich zu prÃƒÂ¼fen. Nutzung auf eigene Gefahr.
+        </p>
+        
+        <button 
+          onClick={() => setIsAccepted(true)}
+          className="w-full bg-[#E3000F] text-white py-4 rounded-xl font-black uppercase tracking-widest text-sm active:scale-95 shadow-md transition-transform"
+        >
+          Ich verstehe
+        </button>
+        
+      </div>
+    </div>
+  );
+}
+
+
+=== C:\Users\Gaumard\Desktop\cpr-assist\eslint.config.js ===
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import { defineConfig, globalIgnores } from 'eslint/config'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{js,jsx}'],
+    extends: [
+      js.configs.recommended,
+      reactHooks.configs.flat.recommended,
+      reactRefresh.configs.vite,
+    ],
+    languageOptions: {
+      globals: globals.browser,
+      parserOptions: { ecmaFeatures: { jsx: true } },
+    },
+  },
+])
+
+
+=== C:\Users\Gaumard\Desktop\cpr-assist\index.html ===
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>CPR Assist React</title>
+    
+    <!-- PWA & Icons -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#E3000F">
+    <link rel="apple-touch-icon" href="/icon-192.png">
+    <link rel="icon" type="image/png" href="/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Tailwind via CDN (FÃƒÂ¼rs Testing, falls dein lokales Tailwind noch nicht lÃƒÂ¤uft) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome (Nur CSS-Version, verhindert JS-Icon-Duplizierung) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans h-[100dvh] flex flex-col m-0 overflow-hidden no-select relative">
+    
+    <!-- HIER BAUT REACT UNSERE APP.JSX EIN (Die Leinwand) -->
+    <div id="root" class="w-full h-full"></div>
+    
+    <!-- VITE ENTRY POINT -->
+    <script type="module" src="/src/main.jsx"></script>
+    
+</body>
+</html>
+
+
+=== C:\Users\Gaumard\Desktop\cpr-assist\package-lock.json ===
+{
+  "name": "cpr-assist",
+  "version": "0.0.0",
+  "lockfileVersion": 3,
+  "requires": true,
+  "packages": {
+    "": {
+      "name": "cpr-assist",
+      "version": "0.0.0",
+      "dependencies": {
+        "@tailwindcss/vite": "^4.3.0",
+        "react": "^19.2.6",
+        "react-dom": "^19.2.6"
+      },
+      "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "@tailwindcss/postcss": "^4.3.0",
+        "@types/react": "^19.2.14",
+        "@types/react-dom": "^19.2.3",
+        "@vitejs/plugin-react": "^6.0.1",
+        "autoprefixer": "^10.5.0",
+        "eslint": "^10.3.0",
+        "eslint-plugin-react-hooks": "^7.1.1",
+        "eslint-plugin-react-refresh": "^0.5.2",
+        "globals": "^17.6.0",
+        "postcss": "^8.5.14",
+        "tailwindcss": "^4.3.0",
+        "vite": "^8.0.12",
+        "vite-plugin-pwa": "^1.3.0"
+      }
+    },
+    "node_modules/@alloc/quick-lru": {
+      "version": "5.2.0",
+      "resolved": "https://registry.npmjs.org/@alloc/quick-lru/-/quick-lru-5.2.0.tgz",
+      "integrity": "sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=10"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
+    "node_modules/@babel/code-frame": {
+      "version": "7.29.0",
+      "resolved": "https://registry.npmjs.org/@babel/code-frame/-/code-frame-7.29.0.tgz",
+      "integrity": "sha512-9NhCeYjq9+3uxgdtp20LSiJXJvN0FeCtNGpJxuMFZ1Kv3cWUNb6DOhJwUvcVCzKGR66cw4njwM6hrJLqgOwbcw==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@babel/helper-validator-identifier": "^7.28.5",
+        "js-tokens": "^4.0.0",
+        "picocolors": "^1.1.1"
+      },
+      "engines": {
+        "node": ">=6.9.0"
+      }
+    },
+    "node_modules/@babel/compat-data": {
+      "version": "7.29.3",
+      "resolved": "https://registry.npmjs.org/@babel/compat-data/-/compat-data-7.29.3.tgz",
+      "integrity": "sha512-LIVqM46zQWZhj17qA8wb4nW/ixr2y1Nw+r1etiAWgRM6U1IqP+LNhL1yg440jYZR72jCWcWbLWzIosH+uP1fqg==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=6.9.0"
+      }
+    },
+    "node_modules/@babel/core": {
+      "version": "7.29.0",
+      "resolved": "https://registry.npmjs.org/@babel/core/-/core-7.29.0.tgz",
+      "integrity": "sha512-CGOfOJqWjg2qW/Mb6zNsDm+u5vFQ8DxXfbM09z69p5Z6+mE1ikP2jUXw+j42Pf1XTYED2Rni5f95npYeuwMDQA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@babel/code-frame": "^7.29.0",
+        "@babel/generator": "^7.29.0",
+        "@babel/helper-compilation-targets": "^7.28.6",
+        "@babel/helper-module-transforms": "^7.28.6",
+        "@babel/helpers": "^7.28.6",
+        "@babel/parser": "^7.29.0",
+        "@babel/template": "^7.28.6",
+        "@babel/traverse": "^7.29.0",
+        "@babel/types": "^7.29.0",
+        "@jridgewell/remapping": "^2.3.5",
+        "convert-source-map": "^2.0.0",
+        "debug": "^4.1.0",
+        "gensync": "^1.0.0-beta.2",
+        "json5": "^2.2.3",
+        "semver": "^6.3.1"
+      },
+      "engines": {
+        "node": ">=6.9.0"
+      },
+      "funding": {
+        "type": "opencollective",
+        "url": "https://opencollective.com/babel"
+      }
+    },
+    "node_modules/@babel/generator": {
+      "version": "7.29.1",
+      "resolved": "https://registry.npmjs.org/@babel/generator/-/generator-7.29.1.tgz",
+      "integrity": "sha512-qsaF+9Qcm2Qv8SRIMMscAvG4O3lJ0F1GuMo5HR/Bp02LopNgnZBC/EkbevHFeGs4ls/oPz9v+Bsmzbkbe+0dUw==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@babel/parser": "^7.29.0",
+        "@babel/types": "^7.29.0",
+        "@jridgewell/gen-mapping": "^0.3.12",
+        "@jridgewell/trace-mapping": "^0.3.28",
+        "jsesc": "^3.0.2"
+      },
+      "engines": {
+        "node": ">=6.9.0"
+      }
+    },
+    "node_modules/@babel/helper-annotate-as-pure": {
+      "version": "7.27.3",
+      "resolved": "https://registry.npmjs.org/@babel/helper-annotate-as-pure/-/helper-annotate-as-pure-7.27.3.tgz",
+      "integrity": "sha512-fXSwMQqitTGeHLBC08Eq5yXz2m37E4pJX1qAU1+2cNedz/ifv/bVXft90VeSav5nFO61EcNgwr0aJxbyPaWBPg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@babel/types": "^7.27.3"
+      },
+      "engines": {
+        "node": ">=6.9.0"
+      }
+    },
+    "node_modules/@babel/helper-compilation-targets": {
+      "version": "7.28.6",
+      "resolved": "https://registry.npmjs.org/@babel/helper-compilation-targets/-/helper-compilation-targets-7.28.6.tgz",
+      "integrity": "sha512-JYtls3hqi15fcx5GaSNL7SCTJ2MNmjrkHXg4FSpOA/grxK8KwyZ5bubHsCq8FXCkua6xhuaaBit+3b7+VZRfcA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@babel/compat-data": "^7.28.6",
+        "@babel/helper-validator-option": "^7.27.1",
+        "browserslist": "^4.24.0",
+        "lru-cache": "^5.1.1",
+        "semver": "^6.3.1"
+      },
+      "engines": {
+        "node": ">=6.9.0"
+      }
+    },
+    "node_modules/@babel/helper-create-class-features-plugin": {
+      "version": "7.29.3",
+      "resolved": "https://registry.npmjs.org/@babel/helper-create-class-features-plugin/-/helper-create-class-features-plugin-7.29.3.tgz",
+      "integrity": "sha512-RpLYy2sb51oNLjuu1iD3bwBqCBWUzjO0ocp+iaCP/lJtb2CPLcnC2Fftw+4sAzaMELGeWTgExSKADbdo0GFVzA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@babel/helper-annotate-as-pure": "^7.27.3",
+        "@babel/helper-member-expression-to-functions": "^7.28.5",
+        "@babel/helper-optimise-call-expression": "^7.27.1",
+        "@babel/helper-replace-supers": "^7.28.6",
+        "@babel/helper-skip-transparent-expression-wrappers": "^7.27.1",
+        "@babel/traverse": "^7.29.0",
+        "semver": "^6.3.1"
+      },
+      "engines": {
+        "node": ">=6.9.0"
+      },
+      "peerDependencies": {
+        "@babel/core": "^7.0.0"
+      }
+    },
+    "node_modules/@babel/helper-create-regexp-features-plugin": {
+      "version": "7.28.5",
+      "resolved": "https://registry.npmjs.org/@babel/helper-create-regexp-features-plugin/-/helper-create-regexp-features-plugin-7.28.5.tgz",
+      "integrity": "sha512-N1EhvLtHzOvj7QQOUCCS3NrPJP8c5W6ZXCHDn7Yialuy1iu4r5EmIYkXlKNqT99Ciw+W0mDqWoR6HWMZlFP3hw==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@babel/helper-annotate-as-pure": "^7.27.3",
+        "regexpu-core": "^6.3.1",
+        "semver": "^6.3.1"
+      },
+      "engines": {
+        "node": ">=6.9.0"
+      },
+      "peerDependencies": {
+        "@babel/core": "^7.0.0"
+      }
+    },
+    "node_modules/@babel/helper-define-polyfill-provider": {
+      "version": "0.6.8",
+      "resolved": "https://registry.npmjs.org/@babel/helper-define-polyfill-provider/-/helper-define-polyfill-provider-0.6.8.tgz",
+      "integrity": "sha512-47UwBLPpQi1NoWzLuHNjRoHlYXMwIJoBf7MFou6viC/sIHWYygpvr0B6IAyh5sBdA2nr2LPIRww8lfaUVQINBA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@babel/helper-compilation-targets": "^7.28.6",
+        "@babel/helper-plugin-utils": "^7.28.6",
+        "debug": "^4.4.3",
+        "lodash.debounce": "^4.0.8",
+        "resolve": "^1.22.11"
+      },
+      "peerDependencies": {
+        "@babel/core": "^7.4.0 || ^8.0.0-0 <8.0.0"
+      }
+    },
+    "node_modules/@babel/helper-globals": {
+      "version": "7.28.0",
+      "resolved": "https://registry.npmjs.org/@babel/helper-globals/-/helper-globals-7.28.0.tgz",
+      "integrity": "sha512-+W6cISkXFa1jXsDEdYA8HeevQT/FULhxzR99pxphltZcVaugps53THCeiWA8SguxxpSp3gKPiuYfSWopkLQ4hw==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=6.9.0"
+      }
+    },
+    "node_modules/@babel/helper-member-expression-to-functions": {
+      "version": "7.28.5",
+      "resolved": "https://registry.npmjs.org/@babel/helper-member-expression-to-functions/-/helper-member-expression-to-functions-7.28.5.tgz",
+      "integrity": "sha512-cwM7SBRZcPCLgl8a7cY0soT1SptSzAlMH39vwiRpOQkJlh53r5hdHwLSCZpQdVLT39sZt+CRpNwYG4Y2v77atg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@babel/traverse": "^7.28.5",
+        "@babel/types": "^7.28.5"
+      },
+      "engines": {
+        "node": ">=6.9.0"
+      }
+    },
+    "node_modules/@babel/helper-module-imports": {
+      "version": "7.28.6",
+      "resolved": "https://registry.npmjs.org/@babel/helper-module-imports/-/helper-module-imports-7.28.6.tgz",
+      "integrity": "sha512-l5XkZK7r7wa9LucGw9LwZyyCUscb4x37JWTPz7swwFE/0FMQAGpiWUZn8u9DzkSBWEcK25jmvubfpw2dnAMdbw==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@babel/traverse": "^7.28.6",
+        "@babel/types": "^7.28.6"
+      },
+      "engines": {
+        "node": ">=6.9.0"
+      }
+    },
+    "node_modules/@babel/helper-module-transforms": {
+      "version": "7.28.6",
+      "resolved": "https://registry.npmjs.org/@babel/helper-module-transforms/-/helper-module-transforms-7.28.6.tgz",
+      "integrity": "sha512-67oXFAYr2cDLDVGLXTEABjdBJZ6drElUSI7WKp70NrpyISso3plG9SAGEF6y7zbha/wOzUByWWTJvEDVNIUGcA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@babel/helper-module-imports": "^7.28.6",
+        "@babel/helper-validator-identifier": "^7.28.5",
+        "@babel/traverse": "^7.28.6"
+      },
+      "engines": {
+        "node": ">=6.9.0"
+      },
+      "peerDependencies": {
+        "@babel/core": "^7.0.0"
+      }
