@@ -1,14 +1,20 @@
+// --- Datei: src/components/CenterDisplay.jsx ---
 import React, { useContext } from 'react';
 import { CprContext } from '../context/CprContext.jsx';
 import { CPR_CONFIG } from '../config/cprConfig.js';
+
 import PatientSelection from './PatientSelection.jsx';
+import ViewAirwayMenu from './views/ViewAirwayMenu.jsx';
+import ViewAirwayDoc from './views/ViewAirwayDoc.jsx';
 
 export default function CenterDisplay() {
   const { state } = useContext(CprContext);
 
-  const isDashboard = state.appPhase === CPR_CONFIG.PHASES.RUNNING;
-  // Perfekter Kreis-Morpheffekt: 340px beim Onboarding, 224px im Dashboard
-  const circleSize = isDashboard ? '224px' : '340px';
+  // Bestimmt die Größe des Kreises.
+  // Wenn wir in RUNNING sind, ist er klein (224px).
+  // Beim Onboarding UND in den neuen Atemwegs-Menüs vergrößert er sich auf 340px.
+  const isSmallCircle = state.appPhase === CPR_CONFIG.PHASES.RUNNING;
+  const circleSize = isSmallCircle ? '224px' : '340px';
 
   const formatCprTime = (seconds) => {
     if (isNaN(seconds) || seconds === null) return "00:00";
@@ -18,34 +24,45 @@ export default function CenterDisplay() {
   };
 
   const renderPhase = () => {
-    if (state.appPhase === CPR_CONFIG.PHASES.RUNNING) {
-      return (
-        <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-white rounded-full shadow-[inset_0_0_20px_rgba(0,0,0,0.02)] animate-in zoom-in-95 duration-500 relative">
-          <div className="absolute top-5 w-10 h-1.5 bg-cyan-500 rounded-full"></div>
-          <div className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em] mb-1">
-            Nächste Analyse
+    switch (state.appPhase) {
+      // 1. Das Live-Dashboard (120s Loop)
+      case CPR_CONFIG.PHASES.RUNNING:
+        return (
+          <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-white rounded-full shadow-[inset_0_0_20px_rgba(0,0,0,0.02)] animate-in zoom-in-95 duration-500 relative">
+            <div className="absolute top-5 w-10 h-1.5 bg-cyan-500 rounded-full"></div>
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em] mb-1">
+              Nächste Analyse
+            </div>
+            
+            {/* 120s Countdown im Dashboard */}
+            <div className="text-[64px] font-black text-slate-800 tracking-tighter leading-none mb-3 font-mono">
+               {formatCprTime(120 - (state.cycleSeconds || 0))}
+            </div>
+            
+            <div className="flex items-center gap-3 text-[13px] font-black tracking-widest mt-1">
+              <span className="text-amber-500 flex items-center gap-1.5">
+                <i className="fa-solid fa-bolt"></i> {state.shockCount || 0}
+              </span>
+              <span className="text-slate-200">|</span>
+              <span className="text-[#E3000F]">
+                {state.isPediatric && state.patientWeight ? Math.round(state.patientWeight * 4) : 150} J
+              </span>
+            </div>
           </div>
-          
-          {/* 120s Countdown im Dashboard */}
-          <div className="text-[64px] font-black text-slate-800 tracking-tighter leading-none mb-3 font-mono">
-             {formatCprTime(120 - (state.cycleSeconds || 0))}
-          </div>
-          
-          <div className="flex items-center gap-3 text-[13px] font-black tracking-widest mt-1">
-            <span className="text-amber-500 flex items-center gap-1.5">
-              <i className="fa-solid fa-bolt"></i> {state.shockCount || 0}
-            </span>
-            <span className="text-slate-200">|</span>
-            <span className="text-[#E3000F]">
-              {state.isPediatric && state.patientWeight ? Math.round(state.patientWeight * 4) : 150} J
-            </span>
-          </div>
-        </div>
-      );
+        );
+      
+      // 2. Das neue Atemwegs-Auswahlmenü
+      case CPR_CONFIG.PHASES.AIRWAY_MENU:
+        return <ViewAirwayMenu />;
+      
+      // 3. Die Doku für den invasiven Atemweg
+      case CPR_CONFIG.PHASES.AIRWAY_DOC:
+        return <ViewAirwayDoc />;
+        
+      // 4. Alle anderen Phasen (Onboarding, Analyse etc.) gehen an den Unter-Router
+      default:
+        return <PatientSelection />;
     }
-
-    // Leitet alle anderen Phasen an den Onboarding-Router weiter
-    return <PatientSelection />;
   };
 
   return (
