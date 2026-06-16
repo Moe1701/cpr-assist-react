@@ -1,33 +1,25 @@
 // --- Datei: src/hooks/useGlobalTimer.js ---
-import { useEffect, useContext, useRef } from 'react';
+import { useEffect, useContext } from 'react';
 import { CprContext } from '../context/CprContext.jsx';
+import { CPR_CONFIG } from '../config/cprConfig.js';
 
 export function useGlobalTimer() {
   const { state, dispatch } = useContext(CprContext);
-  
-  const phaseRef = useRef(state.appPhase);
-  const compressingRef = useRef(state.isCompressing);
 
   useEffect(() => {
-    phaseRef.current = state.appPhase;
-    compressingRef.current = state.isCompressing;
-  }, [state.appPhase, state.isCompressing]);
+    // DIE HANDBREMSE: Wenn wir noch im Startbildschirm (Onboarding) sind,
+    // darf die Einsatzzeit auf gar keinen Fall loslaufen!
+    if (state.appPhase === CPR_CONFIG.PHASES.ONBOARDING) {
+      return; // Bricht hier ab und startet keinen Timer
+    }
 
-  useEffect(() => {
-    const masterTick = setInterval(() => {
-      // FIX: Die Einsatzuhr startet JETZT sofort, wenn der Patient gewählt wurde 
-      // (also sobald wir nicht mehr im allerersten ONBOARDING Screen sind)
-      if (phaseRef.current !== 'ONBOARDING') {
-        dispatch({ type: 'TICK_MISSION' });
-      }
-
-      // Die CPR-Uhr (Mitte) läuft nur, wenn auch wirklich gedrückt wird
-      if (compressingRef.current === true) {
-        dispatch({ type: 'TICK_CPR' });
-      }
-
+    // Sobald die Phase wechselt (Patient ausgewählt), startet der 1-Sekunden-Takt
+    const timerId = setInterval(() => {
+      dispatch({ type: 'TICK_MISSION' });
     }, 1000);
 
-    return () => clearInterval(masterTick);
-  }, [dispatch]);
+    // Aufräumen, falls die Komponente unmountet wird
+    return () => clearInterval(timerId);
+    
+  }, [state.appPhase, dispatch]); 
 }
