@@ -43,7 +43,9 @@ export const CPR_CONFIG = {
     DECISION: 'DECISION',
     JOULE: 'JOULE',
     WAITING_CPR_RESUME: 'WAITING_CPR_RESUME',
-    RUNNING: 'RUNNING'
+    RUNNING: 'RUNNING',
+    AIRWAY_MENU: 'AIRWAY_MENU', // <--- NEU: Center-Display Menü
+    AIRWAY_DOC: 'AIRWAY_DOC'    // <--- NEU: Center-Display Doku (Größe/Tiefe)
   }
 };
 
