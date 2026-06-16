@@ -1,3 +1,4 @@
+// --- Datei: src/context/cprReducer.js ---
 import { CPR_CONFIG } from '../config/cprConfig.js';
 
 export const initialState = {
@@ -8,11 +9,12 @@ export const initialState = {
   
   bpm: 110,         
   isMuted: false,   
+  shockCount: 0,            // <--- NEU: Zählt die Defibrillationen (für Eskalation)
   
   startTime: null,         
   isGridVisible: false,    
   isPatientModalOpen: false, 
-  isAirwayModalOpen: false, // <--- NEU: Modal Status
+  isAirwayModalOpen: false, 
   
   missionSeconds: 0, 
   cprSeconds: 0, 
@@ -24,7 +26,9 @@ export const initialState = {
   compressionCount: 0,
   
   airwayEstablished: false,
-  airwayType: null,         // <--- NEU: Beutel-Maske oder Invasiv
+  airwayType: null,         
+  airwaySize: null,         // <--- NEU: Größe (z.B. "4.0" oder "Gr. 2")
+  airwayDepth: null,        // <--- NEU: Tiefe (z.B. "12")
   
   compressingSeconds: 0, 
   arrestSeconds: 0,      
@@ -38,6 +42,7 @@ export function cprReducer(state, action) {
     case 'SET_PHASE': return { ...state, appPhase: action.payload };
     case 'SET_BPM': return { ...state, bpm: action.payload };
     case 'TOGGLE_MUTE': return { ...state, isMuted: !state.isMuted };
+    case 'INCREMENT_SHOCK': return { ...state, shockCount: state.shockCount + 1 }; // <--- NEU
     
     case 'SET_PEDIATRIC_DATA': return { 
         ...state, 
@@ -49,7 +54,7 @@ export function cprReducer(state, action) {
       
     case 'SET_CPR_MODE': return { ...state, cprMode: action.payload };
     case 'TOGGLE_PATIENT_MODAL': return { ...state, isPatientModalOpen: action.payload };
-    case 'TOGGLE_AIRWAY_MODAL': return { ...state, isAirwayModalOpen: action.payload }; // <--- NEU
+    case 'TOGGLE_AIRWAY_MODAL': return { ...state, isAirwayModalOpen: action.payload }; 
     case 'TOGGLE_GRID': return { ...state, isGridVisible: !state.isGridVisible };
     case 'LOG_EVENT': return { ...state, events: [...state.events, action.payload] };
     
@@ -63,8 +68,20 @@ export function cprReducer(state, action) {
     case 'SET_COMPRESSION_COUNT': return { ...state, compressionCount: action.payload };
     case 'SET_VENTILATION_PHASE': return { ...state, isVentilationPhase: action.payload };
     
-    case 'SET_AIRWAY': return { ...state, airwayEstablished: action.payload };
-    case 'SET_AIRWAY_TYPE': return { ...state, airwayType: action.payload }; // <--- NEU
+    // <--- NEU: Kompletter Atemwegs-State mit Fallback für alten Code
+    case 'SET_AIRWAY': 
+      if (typeof action.payload === 'boolean') {
+        return { ...state, airwayEstablished: action.payload };
+      }
+      return { 
+        ...state, 
+        airwayEstablished: action.payload.established,
+        airwayType: action.payload.type || null,
+        airwaySize: action.payload.size || null,
+        airwayDepth: action.payload.depth || null
+      };
+      
+    case 'SET_AIRWAY_TYPE': return { ...state, airwayType: action.payload }; 
     
     case 'TICK_MISSION': return { ...state, missionSeconds: state.missionSeconds + 1 };
     case 'TICK_CYCLE': return { ...state, cycleSeconds: state.cycleSeconds + 1 };
