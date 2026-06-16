@@ -1,3 +1,4 @@
+// --- Datei: src/hooks/useMasterLoop.js ---
 import { useEffect, useContext, useRef, useCallback } from 'react';
 import { CprContext } from '../context/CprContext.jsx';
 import { CPR_CONFIG } from '../config/cprConfig.js';
@@ -21,7 +22,7 @@ export function useMasterLoop() {
   }, [dispatch, logEvent]);
 
   // ========================================================
-  // NEU: DIE ATEMWEG-LOGIK (Beutel-Maske vs. Invasiv)
+  // DIE ATEMWEG-LOGIK (Beutel-Maske vs. Invasiv)
   // ========================================================
   const setAirway = useCallback((airwayType) => {
     dispatch({ type: 'SET_AIRWAY', payload: !!airwayType });
@@ -85,10 +86,16 @@ export function useMasterLoop() {
     }, 1500);
   }, [dispatch, playVentSound]);
 
+  // DER GLOBALE TICKER (mit Timer-Fix)
   useEffect(() => {
     let lastTick = Date.now();
     const masterTimer = setInterval(() => {
-      if (stateRef.current.appPhase === 'ONBOARDING') return;
+      // Wenn im Startmenü: Ziehe die Zeit stur mit, starte keinen Zähler
+      if (stateRef.current.appPhase === 'ONBOARDING') {
+        lastTick = Date.now();
+        return;
+      }
+      
       const now = Date.now();
       if (now - lastTick >= 1000) {
         lastTick += 1000;
@@ -106,6 +113,7 @@ export function useMasterLoop() {
     return () => clearInterval(masterTimer);
   }, [dispatch]);
 
+  // DIE WEB-AUDIO LOOKAHEAD ENGINE
   useEffect(() => {
     if (!state.isCompressing) return;
 
@@ -163,5 +171,5 @@ export function useMasterLoop() {
     
   }, [state.isCompressing, triggerVentilationPhase, dispatch]);
 
-  return { toggleCpr, setAirway }; // <--- Exportiert setAirway
+  return { toggleCpr, setAirway };
 }
