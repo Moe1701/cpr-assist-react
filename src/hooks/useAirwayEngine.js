@@ -47,7 +47,9 @@ export function useAirwayEngine() {
     dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.AIRWAY_MENU });
   };
 
-  // --- PIXELPERFECT BASIS LAYOUT ---
+  // ========================================================
+  // 1. BASIS LAYOUT (Static)
+  // ========================================================
   let btnClass = "border-slate-200 shadow-sm"; 
   let iconClass = "text-slate-400";
   let textClass = "text-slate-500";
@@ -80,10 +82,10 @@ export function useAirwayEngine() {
     }
   }
 
-  // --- ANIMATION 1: KONT-MODUS (RAF Loop) ---
+  // ========================================================
+  // 2. ANIMATION 1: KONT-MODUS (RAF Loop)
+  // ========================================================
   useEffect(() => {
-    const isContinuous = state.cprMode === 'continuous';
-
     const resetVisuals = () => {
       if (glowRef.current) { glowRef.current.style.opacity = '0'; glowRef.current.style.transform = 'scale(1)'; glowRef.current.style.boxShadow = 'none'; }
       if (iconRef.current) iconRef.current.className = `fa-solid ${icon} text-[28px] mb-0.5 transition-colors ${iconClass}`;
@@ -92,8 +94,8 @@ export function useAirwayEngine() {
       if (escalationBadgeRef.current && !state.airwayEstablished) escalationBadgeRef.current.style.opacity = '1';
     };
 
-    // BUGFIX: KONT läuft jetzt IMMER, wenn der Modus KONT ist und die Kompression läuft!
-    if (!isContinuous || !state.isCompressing) {
+    // HARTER LOCK: Keine Animation ohne dokumentierten Atemweg, kein KONT ohne Modus, kein KONT bei Pause
+    if (!state.airwayEstablished || state.cprMode !== 'continuous' || !state.isCompressing) {
       resetVisuals();
       return;
     }
@@ -128,7 +130,6 @@ export function useAirwayEngine() {
         textRef.current.innerText = labelTop;
         textRef.current.className = "text-[9px] font-black uppercase tracking-wider leading-tight text-center text-cyan-500";
 
-        // BUGFIX: Das KONT Badge ist jetzt robust eingebaut und immer sichtbar!
         const remainingSecs = Math.ceil((fillDuration - timeInCycle) / 1000);
         if (badgeRef.current) {
           badgeRef.current.innerText = remainingSecs;
@@ -137,7 +138,7 @@ export function useAirwayEngine() {
         }
         hasBreathed = false;
       } else {
-        // Knall-Effekt
+        // Knall-Effekt (Beatmung)
         if (!hasBreathed) {
           playBreathSound(state.isMuted);
           if (navigator.vibrate) navigator.vibrate(30);
@@ -160,9 +161,16 @@ export function useAirwayEngine() {
     return () => { cancelAnimationFrame(rafId); resetVisuals(); };
   }, [state.airwayEstablished, state.airwayType, state.cprMode, state.isCompressing, state.isPediatric, state.isMuted, icon, labelTop, iconClass, textClass]);
 
-  // --- ANIMATION 2A: 30:2 Vorwarnung ---
+  // ========================================================
+  // 3. ANIMATION 2A: 30:2 / 15:2 VORWARNUNG
+  // ========================================================
   useEffect(() => {
-    if (state.cprMode === 'continuous') return;
+    // HARTER LOCK: Nur wenn etabliert und NICHT in continuous Mode
+    if (!state.airwayEstablished || state.cprMode === 'continuous') {
+      if (badgeRef.current) badgeRef.current.style.opacity = '0';
+      return;
+    }
+    
     const limit = state.isPediatric ? 15 : 30;
     const remaining = limit - state.compressionCount;
 
@@ -176,11 +184,15 @@ export function useAirwayEngine() {
     } else if (!state.isVentilationPhase) {
       if (badgeRef.current) badgeRef.current.style.opacity = '0';
     }
-  }, [state.compressionCount, state.cprMode, state.isCompressing, state.isVentilationPhase, state.isPediatric]);
+  }, [state.compressionCount, state.cprMode, state.isCompressing, state.isVentilationPhase, state.isPediatric, state.airwayEstablished]);
 
-  // --- ANIMATION 2B: 30:2 Doppelflash (Halo-Effekt & Bug-Cleanup) ---
+  // ========================================================
+  // 4. ANIMATION 2B: 30:2 / 15:2 DOPPELFLASH
+  // ========================================================
   useEffect(() => {
-    if (state.cprMode === 'continuous' || !state.isVentilationPhase) return;
+    // HARTER LOCK
+    if (!state.airwayEstablished || state.cprMode === 'continuous' || !state.isVentilationPhase) return;
+    
     if (badgeRef.current) badgeRef.current.style.opacity = '0';
     if (escalationBadgeRef.current) escalationBadgeRef.current.style.opacity = '0';
     
@@ -208,7 +220,6 @@ export function useAirwayEngine() {
       }
     };
 
-    // BUGFIX: Diese Funktion räumt nun gnadenlos alles auf den Standard-Zustand zurück auf
     const endVentilation = () => {
       if (glowRef.current) { glowRef.current.style.opacity = '0'; glowRef.current.style.transform = 'scale(1)'; glowRef.current.style.boxShadow = 'none'; }
       if (iconRef.current) iconRef.current.className = `fa-solid ${icon} text-[28px] mb-0.5 transition-colors duration-500 ${iconClass}`;
@@ -226,14 +237,13 @@ export function useAirwayEngine() {
     return () => {
       clearTimeout(t1); clearTimeout(t2); clearTimeout(t3);
       if (glowRef.current) { glowRef.current.style.opacity = '0'; glowRef.current.style.transitionDuration = '0ms'; }
-      // BUGFIX: Garantiert, dass der Modus nach Abbruch/Zyklusende nicht visuell hängen bleibt
       if (iconRef.current) iconRef.current.className = `fa-solid ${icon} text-[28px] mb-0.5 ${iconClass}`;
       if (textRef.current) {
         textRef.current.innerText = labelTop;
         textRef.current.className = `text-[9px] font-black uppercase tracking-wider leading-tight text-center ${textClass}`;
       }
     };
-  }, [state.isVentilationPhase, state.cprMode, icon, labelTop, iconClass, textClass]);
+  }, [state.isVentilationPhase, state.cprMode, state.airwayEstablished, icon, labelTop, iconClass, textClass]);
 
   return { glowRef, iconRef, textRef, badgeRef, escalationBadgeRef, handleClick, btnClass, icon, labelTop, labelBottom, isPill, staticBadge, iconClass, textClass };
 }
