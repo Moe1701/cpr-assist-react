@@ -94,7 +94,6 @@ export function useAirwayEngine() {
       if (escalationBadgeRef.current && !state.airwayEstablished) escalationBadgeRef.current.style.opacity = '1';
     };
 
-    // HARTER LOCK: Keine Animation ohne dokumentierten Atemweg, kein KONT ohne Modus, kein KONT bei Pause
     if (!state.airwayEstablished || state.cprMode !== 'continuous' || !state.isCompressing) {
       resetVisuals();
       return;
@@ -130,10 +129,11 @@ export function useAirwayEngine() {
         textRef.current.innerText = labelTop;
         textRef.current.className = "text-[9px] font-black uppercase tracking-wider leading-tight text-center text-cyan-500";
 
+        // FIX: Der dunkelblaue Badge für den KONT Modus
         const remainingSecs = Math.ceil((fillDuration - timeInCycle) / 1000);
         if (badgeRef.current) {
           badgeRef.current.innerText = remainingSecs;
-          badgeRef.current.className = "absolute -top-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-[2px] border-amber-400 font-black text-amber-600 text-[15px] pointer-events-none bg-amber-100 z-20";
+          badgeRef.current.className = "absolute -top-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-[2px] border-white font-black text-white text-[15px] pointer-events-none bg-slate-800 z-20";
           badgeRef.current.style.opacity = '1'; 
         }
         hasBreathed = false;
@@ -165,15 +165,19 @@ export function useAirwayEngine() {
   // 3. ANIMATION 2A: 30:2 / 15:2 VORWARNUNG
   // ========================================================
   useEffect(() => {
-    // HARTER LOCK: Nur wenn etabliert und NICHT in continuous Mode
+    // Wenn nicht etabliert oder in KONT, blende das Badge SOFORT aus!
     if (!state.airwayEstablished || state.cprMode === 'continuous') {
-      if (badgeRef.current) badgeRef.current.style.opacity = '0';
+      if (badgeRef.current) {
+        badgeRef.current.style.opacity = '0';
+        badgeRef.current.innerText = '';
+      }
       return;
     }
     
     const limit = state.isPediatric ? 15 : 30;
     const remaining = limit - state.compressionCount;
 
+    // Countdown läuft nur in den letzten 5 Schlägen
     if (state.isCompressing && !state.isVentilationPhase && remaining > 0 && remaining <= 5) {
       if (badgeRef.current) {
         badgeRef.current.innerText = remaining;
@@ -181,8 +185,13 @@ export function useAirwayEngine() {
         badgeRef.current.style.opacity = '1';
       }
       if (remaining <= 3 && navigator.vibrate) navigator.vibrate(20);
-    } else if (!state.isVentilationPhase) {
-      if (badgeRef.current) badgeRef.current.style.opacity = '0';
+    } else {
+      // FIX FÜR DIE HÄNGENDE "1": Sobald wir nicht mehr in der 1-5 Range sind,
+      // MUSS das Badge gnadenlos unsichtbar gemacht und geleert werden!
+      if (badgeRef.current) {
+        badgeRef.current.style.opacity = '0';
+        badgeRef.current.innerText = '';
+      }
     }
   }, [state.compressionCount, state.cprMode, state.isCompressing, state.isVentilationPhase, state.isPediatric, state.airwayEstablished]);
 
@@ -190,7 +199,6 @@ export function useAirwayEngine() {
   // 4. ANIMATION 2B: 30:2 / 15:2 DOPPELFLASH
   // ========================================================
   useEffect(() => {
-    // HARTER LOCK
     if (!state.airwayEstablished || state.cprMode === 'continuous' || !state.isVentilationPhase) return;
     
     if (badgeRef.current) badgeRef.current.style.opacity = '0';
