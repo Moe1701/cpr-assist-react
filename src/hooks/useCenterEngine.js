@@ -49,11 +49,16 @@ export function useCenterEngine() {
     textColor = "text-emerald-600";
   }
 
-  // 5. SVG Render-Mathematik
+  // 5. SVG Render-Mathematik (FIX: Füllt sich jetzt im Uhrzeigersinn ab 12 Uhr)
   const strokeWidth = 4;
   const radius = 50 - strokeWidth / 2;
   const circumference = 2 * Math.PI * radius;
-  const progress = remaining / 120; 
+  
+  // Die verstrichene Zeit im aktuellen 120s Zyklus
+  const elapsed = 120 - remaining; 
+  // Progress geht jetzt von 0.0 (leer) auf 1.0 (voll)
+  const progress = elapsed / 120; 
+  // Offset startet bei circumference (Ring unsichtbar) und wandert auf 0 (Ring geschlossen)
   const strokeDashoffset = circumference * (1 - progress);
 
   // 6. Joule Anzeige-Logik
