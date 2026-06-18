@@ -1,7 +1,7 @@
 // --- Datei: src/App.jsx ---
 import React, { useContext, useState } from 'react';
 import { CprProvider, CprContext } from './context/CprContext.jsx';
-import { useGlobalTimer } from './hooks/useGlobalTimer.js';
+
 
 import MedicalDisclaimer from './MedicalDisclaimer.jsx';
 import DashboardShell from './components/dashboard/DashboardShell.jsx';
@@ -16,7 +16,7 @@ function MainApp() {
   
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   
-  useGlobalTimer();
+  
 
   // Die "Brechstange" (Triple-Click Hard Reset)
   const handleTripleClick = (e) => {
