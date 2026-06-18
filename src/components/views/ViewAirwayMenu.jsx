@@ -8,7 +8,6 @@ export default function ViewAirwayMenu() {
   const { state, dispatch, logEvent } = useContext(CprContext);
   
   const activeZone = state.isPediatric ? getBroselowZone(state.patientWeight || 10) : null;
-  // Der Fallback, falls das Gedächtnis leer ist, bleibt das Dashboard (RUNNING)
   const returnPhase = state.previousAppPhase || CPR_CONFIG.PHASES.RUNNING;
 
   const handleBvm = () => {
@@ -21,7 +20,7 @@ export default function ViewAirwayMenu() {
     logEvent(CPR_CONFIG.EVENTS.AIRWAY, 'Beutel-Maske etabliert');
     logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, `Modus: ${mode} (Beutel-Maske)`);
     
-    dispatch({ type: 'SET_PHASE', payload: returnPhase }); // <--- NEU
+    dispatch({ type: 'SET_PHASE', payload: returnPhase });
   };
 
   const handleInvasive = (type) => {
@@ -39,11 +38,11 @@ export default function ViewAirwayMenu() {
     logEvent(CPR_CONFIG.EVENTS.AIRWAY, 'Atemweg entfernt');
     logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, `Modus: ${mode} (Auto-Switch)`);
     
-    dispatch({ type: 'SET_PHASE', payload: returnPhase }); // <--- NEU
+    dispatch({ type: 'SET_PHASE', payload: returnPhase });
   };
 
   const handleCancel = () => {
-    dispatch({ type: 'SET_PHASE', payload: returnPhase }); // <--- NEU
+    dispatch({ type: 'SET_PHASE', payload: returnPhase });
   };
 
   return (
@@ -66,13 +65,17 @@ export default function ViewAirwayMenu() {
       )}
 
       <div className="w-[90%] flex flex-col gap-2">
-        <button onClick={handleBvm} className="w-full py-2.5 rounded-xl font-black uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-transform bg-white border border-slate-200 text-slate-600 shadow-sm">
-          <i className="fa-solid fa-mask-ventilator text-base pointer-events-none"></i> <span className="pointer-events-none">Beutel-Maske</span>
+        
+        {/* BVM Button in strahlendem Cyan */}
+        <button onClick={handleBvm} className="w-full py-3 rounded-xl font-black uppercase tracking-widest flex items-center justify-center gap-3 active:scale-95 transition-transform bg-cyan-50 border-2 border-cyan-200 text-cyan-700 shadow-sm">
+          <i className="fa-solid fa-mask-ventilator text-xl pointer-events-none"></i> <span className="pointer-events-none">Beutel-Maske</span>
         </button>
 
+        {/* Invasive Buttons in elegantem Indigo */}
         <div className="grid grid-cols-2 gap-2 mt-1">
           {['ET-Tubus', 'i-gel', 'Larynxmaske', 'Larynxtubus'].map((aw) => (
-            <button key={aw} onClick={() => handleInvasive(aw)} className="py-2.5 rounded-xl font-bold uppercase tracking-wider text-[9px] active:scale-95 transition-transform bg-white border border-slate-200 text-slate-600 shadow-sm">
+            <button key={aw} onClick={() => handleInvasive(aw)} className="py-3 rounded-xl font-bold uppercase tracking-wider text-[10px] active:scale-95 transition-transform bg-indigo-50 border-2 border-indigo-200 text-indigo-700 shadow-sm flex flex-col items-center justify-center gap-1">
+              <i className="fa-solid fa-lungs text-lg pointer-events-none opacity-80"></i>
               <span className="pointer-events-none">{aw}</span>
             </button>
           ))}

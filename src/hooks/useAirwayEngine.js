@@ -129,17 +129,20 @@ export function useAirwayEngine() {
         textRef.current.className = "text-[9px] font-black uppercase tracking-wider leading-tight text-center text-cyan-500";
 
         const remainingSecs = Math.ceil((fillDuration - timeInCycle) / 1000);
-        badgeRef.current.innerText = remainingSecs;
-        badgeRef.current.className = "absolute -top-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-[2px] border-amber-400 font-black text-amber-600 text-[15px] pointer-events-none bg-amber-100 opacity-100 z-20";
+        if (badgeRef.current) {
+          badgeRef.current.innerText = remainingSecs;
+          badgeRef.current.className = "absolute -top-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-[2px] border-amber-400 font-black text-amber-600 text-[15px] pointer-events-none bg-amber-100 z-20";
+          badgeRef.current.style.opacity = '1'; // <--- BUGFIX: Macht das Badge im KONT-Modus sichtbar!
+        }
         hasBreathed = false;
       } else {
-        // Knall-Effekt (Beatmung) wie im Video: Massiv Cyan, Weißer Text
+        // Knall-Effekt
         if (!hasBreathed) {
           playBreathSound(state.isMuted);
           if (navigator.vibrate) navigator.vibrate(30);
           hasBreathed = true;
         }
-        glowRef.current.style.backgroundColor = '#06b6d4'; // Cyan-500
+        glowRef.current.style.backgroundColor = '#06b6d4'; 
         glowRef.current.style.opacity = '1';
         glowRef.current.style.transform = 'scale(1.15)';
         glowRef.current.style.boxShadow = '0 0 25px rgba(6,182,212,0.6)';
@@ -147,7 +150,7 @@ export function useAirwayEngine() {
         iconRef.current.className = `fa-solid fa-lungs text-[28px] mb-0.5 text-white`;
         textRef.current.innerText = "BEATMEN";
         textRef.current.className = "text-[10px] font-black uppercase tracking-widest leading-tight text-center text-white";
-        badgeRef.current.style.opacity = '0';
+        if (badgeRef.current) badgeRef.current.style.opacity = '0';
       }
       rafId = requestAnimationFrame(loop);
     };
@@ -163,16 +166,18 @@ export function useAirwayEngine() {
     const remaining = limit - state.compressionCount;
 
     if (state.isCompressing && !state.isVentilationPhase && remaining > 0 && remaining <= 5) {
-      badgeRef.current.innerText = remaining;
-      // Perfektes Match zum Video: Helles Gelb, Oranger Rand, Oranger Text
-      badgeRef.current.className = "absolute -top-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-[2px] border-amber-400 font-black text-amber-600 text-[15px] pointer-events-none bg-amber-100 animate-pulse opacity-100 z-20";
+      if (badgeRef.current) {
+        badgeRef.current.innerText = remaining;
+        badgeRef.current.className = "absolute -top-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-[2px] border-amber-400 font-black text-amber-600 text-[15px] pointer-events-none bg-amber-100 animate-pulse z-20";
+        badgeRef.current.style.opacity = '1';
+      }
       if (remaining <= 3 && navigator.vibrate) navigator.vibrate(20);
     } else if (!state.isVentilationPhase) {
       if (badgeRef.current) badgeRef.current.style.opacity = '0';
     }
   }, [state.compressionCount, state.cprMode, state.isCompressing, state.isVentilationPhase, state.isPediatric]);
 
-  // --- ANIMATION 2B: 30:2 Doppelflash (Exakt wie im Video) ---
+  // --- ANIMATION 2B: 30:2 Doppelflash (Halo-Effekt) ---
   useEffect(() => {
     if (state.cprMode === 'continuous' || !state.isVentilationPhase) return;
     if (badgeRef.current) badgeRef.current.style.opacity = '0';
@@ -181,16 +186,13 @@ export function useAirwayEngine() {
     if (glowRef.current) glowRef.current.style.transitionDuration = '300ms';
 
     const triggerFlash = () => {
-      // Audio kommt bereits vom useMasterLoop, daher hier nur Vibration
       if (navigator.vibrate) navigator.vibrate(30);
-      
       if (glowRef.current) {
-        glowRef.current.style.backgroundColor = '#06b6d4'; // Massiv Cyan-500
-        glowRef.current.style.opacity = '1'; // Volle Deckkraft überlagert Weiß
+        glowRef.current.style.backgroundColor = '#06b6d4'; 
+        glowRef.current.style.opacity = '1'; 
         glowRef.current.style.transform = 'scale(1.15)';
         glowRef.current.style.boxShadow = '0 0 30px rgba(6,182,212,0.6)';
       }
-      
       if (iconRef.current) iconRef.current.className = `fa-solid fa-lungs text-[28px] mb-0.5 text-white transition-colors duration-200`;
       if (textRef.current) {
         textRef.current.innerText = "BEATMEN";
@@ -199,7 +201,6 @@ export function useAirwayEngine() {
     };
 
     const resetFlash = () => {
-      // Während der 0.5s Pause fällt er nur zusammen, bleibt aber Cyan/Weiß
       if (glowRef.current) { 
         glowRef.current.style.transform = 'scale(1)'; 
         glowRef.current.style.boxShadow = '0 0 10px rgba(6,182,212,0.3)'; 
@@ -207,7 +208,6 @@ export function useAirwayEngine() {
     };
 
     const endVentilation = () => {
-      // Komplettes Zurücksetzen auf Grau/Weiß
       if (glowRef.current) { glowRef.current.style.opacity = '0'; glowRef.current.style.transform = 'scale(1)'; glowRef.current.style.boxShadow = 'none'; }
       if (iconRef.current) iconRef.current.className = `fa-solid ${icon} text-[28px] mb-0.5 transition-colors duration-500 ${iconClass}`;
       if (textRef.current) {
@@ -219,11 +219,18 @@ export function useAirwayEngine() {
     triggerFlash(); 
     const t1 = setTimeout(resetFlash, 1000); 
     const t2 = setTimeout(triggerFlash, 1500); 
+    // BUGFIX: Diese Verzögerung stellt sicher, dass das UI sauber aufgeräumt wird!
     const t3 = setTimeout(endVentilation, 2500); 
 
     return () => {
       clearTimeout(t1); clearTimeout(t2); clearTimeout(t3);
       if (glowRef.current) { glowRef.current.style.opacity = '0'; glowRef.current.style.transitionDuration = '0ms'; }
+      // BUGFIX: Garantiert, dass der Button auch bei einem asynchronen React-Rerender nicht verbuggt zurückbleibt!
+      if (iconRef.current) iconRef.current.className = `fa-solid ${icon} text-[28px] mb-0.5 ${iconClass}`;
+      if (textRef.current) {
+        textRef.current.innerText = labelTop;
+        textRef.current.className = `text-[9px] font-black uppercase tracking-wider leading-tight text-center ${textClass}`;
+      }
     };
   }, [state.isVentilationPhase, state.cprMode, icon, labelTop, iconClass, textClass]);
 
