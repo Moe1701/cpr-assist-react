@@ -1,77 +1,146 @@
-import React, { useContext } from 'react';
+// --- Datei: src/components/PatientSetupModal.jsx ---
+import React, { useContext, useState } from 'react';
 import { CprContext } from '../context/CprContext.jsx';
+import { usePatientLogic } from '../hooks/usePatientLogic.js';
 
-export default function SettingsModal({ isOpen, onClose }) {
-  const { state, dispatch } = useContext(CprContext);
+export default function PatientSetupModal() {
+  const { dispatch } = useContext(CprContext);
+  
+  // Wir holen uns die smarte Berechnungs-Logik aus unserem Hook
+  const { setChild, calculateVitals, getBroselowZone } = usePatientLogic();
 
-  if (!isOpen) return null;
+  const [vitals, setVitals] = useState({ age: '', kg: '', cm: '' });
+  const [activeZone, setActiveZone] = useState(null);
+
+  const handleInput = (source, value) => {
+    if (value === '' || value <= 0) {
+      setVitals({ age: '', kg: '', cm: '' });
+      setActiveZone(null);
+      return;
+    }
+
+    // Automatische Berechnung der fehlenden Werte
+    const calc = calculateVitals(source, value);
+
+    setVitals({
+      age: calc.age === 0 ? '< 1' : calc.age,
+      kg: calc.kg,
+      cm: calc.cm
+    });
+
+    // Bestimmt die Broselow-Farbe anhand des Gewichts
+    setActiveZone(getBroselowZone(calc.kg));
+  };
+
+  const handleConfirm = () => {
+    // Schließt das Modal und startet den Pädiatrie-Einsatz mit dem Gewicht
+    setChild(vitals.kg ? parseFloat(vitals.kg) : null);
+  };
+
+  const handleClose = () => {
+    dispatch({ type: 'TOGGLE_PATIENT_MODAL', payload: false });
+  };
+
+  // Tailwind-Klassen für die Broselow-Farben
+  const colorMap = {
+    grau: 'bg-slate-400',
+    rosa: 'bg-pink-400',
+    rot: 'bg-red-500',
+    lila: 'bg-purple-500',
+    gelb: 'bg-yellow-400',
+    weiss: 'bg-white border-[3px] border-slate-200',
+    blau: 'bg-blue-500',
+    orange: 'bg-orange-500',
+    gruen: 'bg-green-500'
+  };
 
   return (
     <div className="fixed inset-0 z-[100] flex flex-col justify-end bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-      
       <div className="bg-white w-full rounded-t-3xl p-6 shadow-2xl animate-in slide-in-from-bottom-8 duration-300">
-        
-        <div className="flex items-center justify-center gap-2 mb-8">
-          <i className="fa-solid fa-sliders text-slate-400"></i>
-          <h2 className="text-sm font-black text-slate-800 tracking-widest uppercase">
-            Einstellungen
-          </h2>
+
+        {/* HEADER */}
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center gap-3 text-indigo-600">
+            <div className="w-10 h-10 bg-indigo-50 rounded-full flex items-center justify-center">
+               <i className="fa-solid fa-child text-xl"></i>
+            </div>
+            <h2 className="text-sm font-black tracking-widest uppercase">Kind Setup</h2>
+          </div>
+          <button
+            onClick={handleClose}
+            className="w-8 h-8 bg-slate-100 rounded-full text-slate-500 flex items-center justify-center active:scale-95 transition-transform"
+          >
+            <i className="fa-solid fa-xmark pointer-events-none"></i>
+          </button>
         </div>
 
-        <div className="mb-8">
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center mb-3">
-            Metronom Geschwindigkeit
-          </p>
-          <div className="flex bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
-            <button 
-              onClick={() => dispatch({ type: 'SET_BPM', payload: 100 })}
-              className={`flex-1 py-3 font-bold text-lg rounded-xl transition-all ${state.bpm === 100 ? 'bg-white text-slate-800 font-black shadow-sm border border-slate-200' : 'text-slate-400 hover:bg-slate-100'}`}
-            >100</button>
-            <button 
-              onClick={() => dispatch({ type: 'SET_BPM', payload: 110 })}
-              className={`flex-1 py-3 font-bold text-lg rounded-xl transition-all ${state.bpm === 110 ? 'bg-white text-slate-800 font-black shadow-sm border border-slate-200' : 'text-slate-400 hover:bg-slate-100'}`}
-            >110</button>
-            <button 
-              onClick={() => dispatch({ type: 'SET_BPM', payload: 120 })}
-              className={`flex-1 py-3 font-bold text-lg rounded-xl transition-all ${state.bpm === 120 ? 'bg-white text-slate-800 font-black shadow-sm border border-slate-200' : 'text-slate-400 hover:bg-slate-100'}`}
-            >120</button>
+        {/* INFO TEXT */}
+        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4 leading-relaxed text-center">
+          Trage EINEN Wert ein.<br/>Der Rest wird berechnet.
+        </p>
+
+        {/* INPUT GRID */}
+        <div className="grid grid-cols-3 gap-3 mb-6">
+          <div>
+            <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1 block text-center">Alter (J)</label>
+            <input
+              type="number"
+              value={vitals.age === '< 1' ? 0 : vitals.age}
+              onChange={(e) => handleInput('age', e.target.value)}
+              className="w-full bg-slate-50 border border-slate-200 rounded-[14px] p-3 text-center font-black text-indigo-700 text-lg focus:border-indigo-400 focus:bg-indigo-50 outline-none transition-colors"
+              placeholder="z.B. 4"
+            />
+          </div>
+          <div>
+            <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1 block text-center">Gewicht (kg)</label>
+            <input
+              type="number"
+              value={vitals.kg}
+              onChange={(e) => handleInput('kg', e.target.value)}
+              className="w-full bg-slate-50 border border-slate-200 rounded-[14px] p-3 text-center font-black text-indigo-700 text-lg focus:border-indigo-400 focus:bg-indigo-50 outline-none transition-colors"
+              placeholder="z.B. 16"
+            />
+          </div>
+          <div>
+            <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1 block text-center">Größe (cm)</label>
+            <input
+              type="number"
+              value={vitals.cm}
+              onChange={(e) => handleInput('cm', e.target.value)}
+              className="w-full bg-slate-50 border border-slate-200 rounded-[14px] p-3 text-center font-black text-indigo-700 text-lg focus:border-indigo-400 focus:bg-indigo-50 outline-none transition-colors"
+              placeholder="z.B. 100"
+            />
           </div>
         </div>
 
-        <div className="mb-8">
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center mb-3">
-            System Diagnose
-          </p>
-          <div className="flex flex-col gap-3 p-4 bg-slate-50/50 border border-slate-100 rounded-2xl">
-            
-            <button className="w-full bg-white border border-slate-200 py-3.5 rounded-xl font-bold text-slate-700 shadow-sm flex items-center justify-center gap-2 hover:bg-slate-50 transition-all">
-              <i className="fa-solid fa-bug text-slate-400"></i> Fehlerprotokoll einsehen
-            </button>
-            
-            <button 
-              onClick={() => dispatch({ type: 'TOGGLE_GRID' })}
-              className={`w-full border py-3.5 rounded-xl font-bold shadow-sm flex items-center justify-center gap-2 transition-all uppercase text-[12px] tracking-wider mt-2 ${state.isGridVisible ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'}`}
-            >
-              <i className="fa-solid fa-border-all text-slate-400"></i> Layout Grid ({state.isGridVisible ? 'An' : 'Aus'})
-            </button>
-
-            <button className="w-full bg-red-600 border border-red-700 py-3.5 rounded-xl font-bold text-white shadow-md shadow-red-600/20 flex items-center justify-center gap-2 active:scale-95 transition-all mt-6">
-              <i className="fa-solid fa-triangle-exclamation"></i> Hard Reset (Daten löschen)
-            </button>
+        {/* BROSELOW ANZEIGE (Wird nur gezeigt, wenn Werte vorhanden sind) */}
+        {activeZone && (
+          <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex items-center justify-between mb-6 shadow-sm">
+            <div className="flex items-center gap-3.5">
+              <div className={`w-10 h-10 rounded-full shadow-sm ${colorMap[activeZone.color]}`}></div>
+              <div className="flex flex-col">
+                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Broselow Zone</span>
+                <span className="text-[14px] font-black text-slate-700 uppercase tracking-wider">{activeZone.color}</span>
+              </div>
+            </div>
+            <div className="text-right border-l border-slate-200 pl-4">
+              <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block mb-0.5">Tubus (Empf.)</span>
+              <span className="text-[15px] font-black text-indigo-600">{activeZone.airway.tubus} mm</span>
+            </div>
           </div>
-        </div>
+        )}
 
-        <div className="text-center mb-6">
-          <p className="font-bold text-slate-800 tracking-widest text-xs">
-            CPR ASSIST <span className="text-red-600">VFINAL</span>
-          </p>
-        </div>
-
-        <button 
-          onClick={onClose}
-          className="w-full bg-slate-100 border border-slate-200 py-4 rounded-2xl font-bold text-slate-600 uppercase tracking-wider shadow-sm flex items-center justify-center gap-2 active:scale-95 transition-all"
+        {/* BESTÄTIGEN BUTTON */}
+        <button
+          onClick={handleConfirm}
+          className={`w-full py-4 rounded-full font-black uppercase tracking-widest text-[11px] shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 mb-2 ${
+            vitals.kg ? 'bg-indigo-600 text-white shadow-indigo-600/30 hover:bg-indigo-500' : 'bg-slate-800 text-white shadow-slate-800/30 hover:bg-slate-700'
+          }`}
         >
-          <i className="fa-solid fa-rotate-left"></i> Zurück zum Einsatz
+          <i className={`fa-solid ${vitals.kg ? 'fa-check' : 'fa-forward-step'} pointer-events-none text-lg`}></i>
+          <span className="pointer-events-none">
+            {vitals.kg ? 'Kind übernehmen' : 'Ohne Werte starten'}
+          </span>
         </button>
 
       </div>

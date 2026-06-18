@@ -7,7 +7,7 @@ import CenterDisplay from '../CenterDisplay.jsx';
 import PatientSetupModal from '../PatientSetupModal.jsx'; 
 
 import CprButton from './CprButton.jsx';  
-import AirwayButton from './AirwayButton.jsx'; // Unser neuer, schlauer Button
+import AirwayButton from './AirwayButton.jsx';
 import { usePatientLogic } from '../../hooks/usePatientLogic.js';
 import { useMasterLoop } from '../../hooks/useMasterLoop.js'; 
 
@@ -42,7 +42,6 @@ export default function DashboardShell() {
   const showTopStats = !isSetup;
   const showSatellites = isRunning;
   const showBottomButtons = !isSetup; 
-  const orbitShiftClass = state.isCompressing ? '-translate-y-[20px]' : 'translate-y-[0px]';
 
   return (
     <div className="absolute inset-0 w-full h-full flex flex-col bg-slate-50 animate-in fade-in duration-500 overflow-hidden">
@@ -89,7 +88,8 @@ export default function DashboardShell() {
       </div>
 
       {/* 2. MITTLERER BEREICH */}
-      <div className={`flex-1 relative w-full flex items-center justify-center transition-transform duration-500 z-30 overflow-visible ${orbitShiftClass}`}>
+      {/* BUGFIX: Dynamische orbitShiftClass entfernt. Der Bereich ist nun felsenfest. */}
+      <div className="flex-1 relative w-full flex items-center justify-center z-30 overflow-visible">
         <OrbitPosition x={0} y={0} zIndex={10}><CenterDisplay /></OrbitPosition>
 
         {showSatellites && (
