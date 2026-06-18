@@ -8,11 +8,8 @@ import ViewAirwayMenu from './views/ViewAirwayMenu.jsx';
 import ViewAirwayDoc from './views/ViewAirwayDoc.jsx';
 
 export default function CenterDisplay() {
-  const { state } = useContext(CprContext);
+  const { state, dispatch, logEvent } = useContext(CprContext);
 
-  // Bestimmt die Größe des Kreises.
-  // Wenn wir in RUNNING sind, ist er klein (224px).
-  // Beim Onboarding UND in den neuen Atemwegs-Menüs vergrößert er sich auf 340px.
   const isSmallCircle = state.appPhase === CPR_CONFIG.PHASES.RUNNING;
   const circleSize = isSmallCircle ? '224px' : '340px';
 
@@ -23,35 +20,101 @@ export default function CenterDisplay() {
     return `${m}:${s}`;
   };
 
+  // Löst zu jedem Zeitpunkt die Analyse-Sequenz aus
+  const handleManualAnalyze = () => {
+    // 1. CPR (Metronom) sofort stoppen!
+    dispatch({ type: 'TOGGLE_COMPRESSION', payload: false });
+    logEvent(CPR_CONFIG.EVENTS.PAUSE, "Rhythmusanalyse gestartet");
+    
+    // 2. Direkt in die Auswahl (Schockbar/Nicht schockbar) springen
+    dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.DECISION });
+  };
+
   const renderPhase = () => {
     switch (state.appPhase) {
+      
       // 1. Das Live-Dashboard (120s Loop)
-      case CPR_CONFIG.PHASES.RUNNING:
+      case CPR_CONFIG.PHASES.RUNNING: {
+        const remaining = Math.max(0, 120 - (state.cycleSeconds || 0));
+
+        // Dynamische Farb- und Textlogik nach deinen Vorgaben!
+        let ringColor = "text-cyan-500";
+        let topText = "BEI ANALYSE DRÜCKEN";
+        let textColor = "text-slate-400";
+        let isPulsing = false;
+
+        if (remaining === 0) {
+          ringColor = "text-red-600";
+          topText = "ANALYSE FÄLLIG!";
+          textColor = "text-red-600";
+          isPulsing = true;
+        } else if (remaining <= 15) {
+          ringColor = "text-amber-500"; // Gelb
+          topText = "PULS TASTEN, DEFI LADEN";
+          textColor = "text-amber-600";
+          isPulsing = true;
+        } else if (remaining <= 30) {
+          ringColor = "text-emerald-500"; // Grün
+          topText = "ANALYSE VORBEREITEN";
+          textColor = "text-emerald-600";
+        }
+
+        // SVG Kreis-Mathematik für den Ring
+        const strokeWidth = 4;
+        const radius = 50 - strokeWidth / 2;
+        const circumference = 2 * Math.PI * radius;
+        const progress = remaining / 120; 
+        const strokeDashoffset = circumference * (1 - progress);
+
+        // Default Joule-Wert falls noch kein Schock abgegeben wurde
+        const defaultJoule = state.isPediatric && state.patientWeight ? Math.round(state.patientWeight * 4) : 150;
+        const displayJoule = state.lastJoule || defaultJoule;
+
         return (
-          <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-white rounded-full shadow-[inset_0_0_20px_rgba(0,0,0,0.02)] animate-in zoom-in-95 duration-500 relative">
-            <div className="absolute top-5 w-10 h-1.5 bg-cyan-500 rounded-full"></div>
-            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em] mb-1">
-              Nächste Analyse
+          <button 
+            onClick={handleManualAnalyze}
+            className="w-full h-full flex flex-col items-center justify-center p-6 bg-white rounded-full shadow-[inset_0_0_20px_rgba(0,0,0,0.02)] hover:bg-slate-50 active:scale-95 transition-all relative overflow-hidden cursor-pointer"
+          >
+            {/* SVG Timer Ring (liegt unter dem Text) */}
+            <svg className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r={radius} fill="none" stroke="#f8fafc" strokeWidth={strokeWidth} />
+              <circle
+                  cx="50" cy="50" r={radius}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={strokeWidth}
+                  strokeDasharray={circumference}
+                  strokeDashoffset={strokeDashoffset}
+                  strokeLinecap="round"
+                  className={`transition-all duration-1000 ease-linear ${ringColor}`}
+              />
+            </svg>
+
+            {/* Dynamischer Warn-Text oben */}
+            <div className={`text-[10px] font-black uppercase tracking-widest mb-1 z-10 transition-colors ${textColor} ${isPulsing ? 'animate-pulse' : ''} text-center leading-tight`}>
+              {topText}
             </div>
             
-            {/* 120s Countdown im Dashboard */}
-            <div className="text-[64px] font-black text-slate-800 tracking-tighter leading-none mb-3 font-mono">
-               {formatCprTime(120 - (state.cycleSeconds || 0))}
+            {/* 120s Countdown in der Mitte */}
+            <div className="text-[64px] font-black text-[#1e293b] tracking-tighter leading-none mb-3 font-mono z-10">
+               {formatCprTime(remaining)}
             </div>
             
-            <div className="flex items-center gap-3 text-[13px] font-black tracking-widest mt-1">
+            {/* Schocks & Joule unten */}
+            <div className="flex items-center justify-center gap-3 text-[14px] font-black tracking-widest mt-1 z-10 w-full">
               <span className="text-amber-500 flex items-center gap-1.5">
                 <i className="fa-solid fa-bolt"></i> {state.shockCount || 0}
               </span>
               <span className="text-slate-200">|</span>
               <span className="text-[#E3000F]">
-                {state.isPediatric && state.patientWeight ? Math.round(state.patientWeight * 4) : 150} J
+                {displayJoule} J
               </span>
             </div>
-          </div>
+          </button>
         );
+      }
       
-      // 2. Das neue Atemwegs-Auswahlmenü
+      // 2. Das Atemwegs-Auswahlmenü
       case CPR_CONFIG.PHASES.AIRWAY_MENU:
         return <ViewAirwayMenu />;
       
