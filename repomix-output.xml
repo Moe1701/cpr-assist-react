@@ -65,6 +65,8 @@ src/components/HelpOverlay.jsx
 src/components/PatientSelection.jsx
 src/components/PatientSetupModal.jsx
 src/components/SettingsModal.jsx
+src/components/views/ViewAirwayDoc.jsx
+src/components/views/ViewAirwayMenu.jsx
 src/components/views/ViewCprResume.jsx
 src/components/views/ViewDecision.jsx
 src/components/views/ViewJoule.jsx
@@ -260,74 +262,6 @@ If you are developing a production application, we recommend using TypeScript wi
 <svg xmlns="http://www.w3.org/2000/svg" width="77" height="47" fill="none" aria-labelledby="vite-logo-title" viewBox="0 0 77 47"><title id="vite-logo-title">Vite</title><style>.parenthesis{fill:#000}@media (prefers-color-scheme:dark){.parenthesis{fill:#fff}}</style><path fill="#9135ff" d="M40.151 45.71c-.663.844-2.02.374-2.02-.699V34.708a2.26 2.26 0 0 0-2.262-2.262H24.493c-.92 0-1.457-1.04-.92-1.788l7.479-10.471c1.07-1.498 0-3.578-1.842-3.578H15.443c-.92 0-1.456-1.04-.92-1.788l9.696-13.576c.213-.297.556-.474.92-.474h28.894c.92 0 1.456 1.04.92 1.788l-7.48 10.472c-1.07 1.497 0 3.578 1.842 3.578h11.376c.944 0 1.474 1.087.89 1.83L40.153 45.712z"/><mask id="a" width="48" height="47" x="14" y="0" maskUnits="userSpaceOnUse" style="mask-type:alpha"><path fill="#000" d="M40.047 45.71c-.663.843-2.02.374-2.02-.699V34.708a2.26 2.26 0 0 0-2.262-2.262H24.389c-.92 0-1.457-1.04-.92-1.788l7.479-10.472c1.07-1.497 0-3.578-1.842-3.578H15.34c-.92 0-1.456-1.04-.92-1.788l9.696-13.575c.213-.297.556-.474.92-.474H53.93c.92 0 1.456 1.04.92 1.788L47.37 13.03c-1.07 1.498 0 3.578 1.842 3.578h11.376c.944 0 1.474 1.088.89 1.831L40.049 45.712z"/></mask><g mask="url(#a)"><g filter="url(#b)"><ellipse cx="5.508" cy="14.704" fill="#eee6ff" rx="5.508" ry="14.704" transform="rotate(269.814 20.96 11.29)scale(-1 1)"/></g><g filter="url(#c)"><ellipse cx="10.399" cy="29.851" fill="#eee6ff" rx="10.399" ry="29.851" transform="rotate(89.814 -16.902 -8.275)scale(1 -1)"/></g><g filter="url(#d)"><ellipse cx="5.508" cy="30.487" fill="#8900ff" rx="5.508" ry="30.487" transform="rotate(89.814 -19.197 -7.127)scale(1 -1)"/></g><g filter="url(#e)"><ellipse cx="5.508" cy="30.599" fill="#8900ff" rx="5.508" ry="30.599" transform="rotate(89.814 -25.928 4.177)scale(1 -1)"/></g><g filter="url(#f)"><ellipse cx="5.508" cy="30.599" fill="#8900ff" rx="5.508" ry="30.599" transform="rotate(89.814 -25.738 5.52)scale(1 -1)"/></g><g filter="url(#g)"><ellipse cx="14.072" cy="22.078" fill="#eee6ff" rx="14.072" ry="22.078" transform="rotate(93.35 31.245 55.578)scale(-1 1)"/></g><g filter="url(#h)"><ellipse cx="3.47" cy="21.501" fill="#8900ff" rx="3.47" ry="21.501" transform="rotate(89.009 35.419 55.202)scale(-1 1)"/></g><g filter="url(#i)"><ellipse cx="3.47" cy="21.501" fill="#8900ff" rx="3.47" ry="21.501" transform="rotate(89.009 35.419 55.202)scale(-1 1)"/></g><g filter="url(#j)"><ellipse cx="14.592" cy="9.743" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(39.51 14.592 9.743)"/></g><g filter="url(#k)"><ellipse cx="61.728" cy="-5.321" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 61.728 -5.32)"/></g><g filter="url(#l)"><ellipse cx="55.618" cy="7.104" fill="#00c2ff" rx="5.971" ry="9.665" transform="rotate(37.892 55.618 7.104)"/></g><g filter="url(#m)"><ellipse cx="12.326" cy="39.103" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 12.326 39.103)"/></g><g filter="url(#n)"><ellipse cx="12.326" cy="39.103" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 12.326 39.103)"/></g><g filter="url(#o)"><ellipse cx="49.857" cy="30.678" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 49.857 30.678)"/></g><g filter="url(#p)"><ellipse cx="52.623" cy="33.171" fill="#00c2ff" rx="5.971" ry="15.297" transform="rotate(37.892 52.623 33.17)"/></g></g><path d="M6.919 0c-9.198 13.166-9.252 33.575 0 46.789h6.215c-9.25-13.214-9.196-33.623 0-46.789zm62.424 0h-6.215c9.198 13.166 9.252 33.575 0 46.789h6.215c9.25-13.214 9.196-33.623 0-46.789" class="parenthesis"/><defs><filter id="b" width="60.045" height="41.654" x="-5.564" y="16.92" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="c" width="90.34" height="51.437" x="-40.407" y="-6.762" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="d" width="79.355" height="29.4" x="-35.435" y="2.801" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="e" width="79.579" height="29.4" x="-30.84" y="20.8" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="f" width="79.579" height="29.4" x="-29.307" y="21.949" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="g" width="74.749" height="58.852" x="29.961" y="-17.13" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="h" width="61.377" height="25.362" x="37.754" y="3.055" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="i" width="61.377" height="25.362" x="37.754" y="3.055" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="j" width="56.045" height="63.649" x="-13.43" y="-22.082" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="k" width="54.814" height="64.646" x="34.321" y="-37.644" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="l" width="33.541" height="35.313" x="38.847" y="-10.552" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="m" width="54.814" height="64.646" x="-15.081" y="6.78" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="n" width="54.814" height="64.646" x="-15.081" y="6.78" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="o" width="54.814" height="64.646" x="22.45" y="-1.645" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="p" width="39.409" height="43.623" x="32.919" y="11.36" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter></defs></svg>
 </file>
 
-<file path="src/components/AirwayModal.jsx">
-import React, { useContext } from 'react';
-import { CprContext } from '../context/CprContext.jsx';
-import { useMasterLoop } from '../hooks/useMasterLoop.js';
-
-export default function AirwayModal() {
-  const { state, dispatch } = useContext(CprContext);
-  const { selectAirway, removeAirway } = useMasterLoop();
-
-  if (!state.isAirwayModalOpen) return null;
-
-  const handleSelect = (type) => {
-    selectAirway(type);
-    dispatch({ type: 'TOGGLE_AIRWAY_MODAL', payload: false });
-  };
-
-  const handleRemove = () => {
-    removeAirway();
-    dispatch({ type: 'TOGGLE_AIRWAY_MODAL', payload: false });
-  };
-
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm animate-in fade-in duration-200 p-4">
-      <div className="relative bg-white w-full max-w-[340px] rounded-[2rem] p-6 border border-slate-100 shadow-2xl flex flex-col animate-in zoom-in-95 duration-300">
-        
-        <button 
-          onClick={() => dispatch({ type: 'TOGGLE_AIRWAY_MODAL', payload: false })} 
-          className="absolute top-4 right-4 w-8 h-8 bg-slate-100 rounded-full text-slate-500 flex items-center justify-center active:scale-95"
-        >
-          <i className="fa-solid fa-xmark"></i>
-        </button>
-
-        <h2 className="text-lg font-black text-slate-800 uppercase tracking-widest text-center mt-2 mb-6">
-          Atemweg sichern
-        </h2>
-
-        <div className="flex flex-col gap-3 mb-6">
-          <button 
-            onClick={() => handleSelect('Beutel-Maske')}
-            className={`w-full h-[70px] rounded-2xl font-black uppercase tracking-widest flex items-center justify-center gap-3 active:scale-95 transition-all border-2 ${state.airwayType === 'Beutel-Maske' ? 'bg-cyan-50 border-cyan-400 text-cyan-700' : 'bg-white border-slate-200 text-slate-600 shadow-sm'}`}
-          >
-            <i className="fa-solid fa-mask-ventilator text-2xl"></i>
-            Beutel-Maske
-          </button>
-          
-          <button 
-            onClick={() => handleSelect('Invasiv')}
-            className={`w-full h-[70px] rounded-2xl font-black uppercase tracking-widest flex items-center justify-center gap-3 active:scale-95 transition-all border-2 ${state.airwayType === 'Invasiv' ? 'bg-cyan-50 border-cyan-400 text-cyan-700' : 'bg-white border-slate-200 text-slate-600 shadow-sm'}`}
-          >
-            <i className="fa-solid fa-virus-covid text-2xl"></i>
-            Tubus / SGA
-          </button>
-        </div>
-
-        {state.airwayEstablished && (
-          <button 
-            onClick={handleRemove}
-            className="w-full h-[50px] rounded-2xl font-bold uppercase tracking-widest text-[11px] bg-red-50 text-red-600 border border-red-200 active:scale-95 transition-all"
-          >
-            Atemweg entfernen
-          </button>
-        )}
-      </div>
-    </div>
-  );
-}
-</file>
-
 <file path="src/components/HelpOverlay.jsx">
 // --- Datei: src/components/HelpOverlay.jsx ---
 import React, { useContext } from 'react';
@@ -421,77 +355,182 @@ export default function HelpOverlay({ isActive }) {
 }
 </file>
 
-<file path="src/components/SettingsModal.jsx">
-// --- Datei: src/components/SettingsModal.jsx ---
-import React, { useContext } from 'react';
-import { CprContext } from '../context/CprContext.jsx';
+<file path="src/components/views/ViewAirwayDoc.jsx">
+// --- Datei: src/components/views/ViewAirwayDoc.jsx ---
+import React, { useContext, useState } from 'react';
+import { CprContext } from '../../context/CprContext.jsx';
+import { CPR_CONFIG } from '../../config/cprConfig.js';
+import { getBroselowZone } from '../../config/broselowData.js';
 
-export default function SettingsModal({ isOpen, onClose }) {
-  const { state, dispatch } = useContext(CprContext);
+export default function ViewAirwayDoc() {
+  const { state, dispatch, logEvent } = useContext(CprContext);
+  const activeZone = state.isPediatric ? getBroselowZone(state.patientWeight || 10) : null;
+  
+  const [size, setSize] = useState('');
+  const [depth, setDepth] = useState('');
 
-  if (!isOpen) return null;
+  const handleSave = () => {
+    const finalSize = size || '?';
+    const finalDepth = depth || '?';
+    
+    // Speichert den Atemweg in den globalen State
+    dispatch({ 
+      type: 'SET_AIRWAY', 
+      payload: { established: true, type: state.airwayType, size: finalSize, depth: finalDepth } 
+    });
+    
+    // Erzwingt den KONT-Modus
+    dispatch({ type: 'SET_CPR_MODE', payload: 'continuous' });
+    dispatch({ type: 'SET_COMPRESSION_COUNT', payload: 0 }); // Reset Loop
+    
+    // Rechtssicheres Protokoll
+    logEvent(CPR_CONFIG.EVENTS.AIRWAY, `${state.airwayType} etabliert (Gr. ${finalSize}, Tiefe: ${finalDepth}cm)`);
+    logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, `Modus: continuous (Auto-Switch durch Invasiv)`);
+    
+    // Zurück zum Dashboard
+    dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.RUNNING });
+  };
+
+  const handleCancel = () => {
+    // Zurück zur vorherigen Auswahl
+    dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.AIRWAY_MENU });
+  };
 
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col justify-end bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-      
-      <div className="bg-white w-full rounded-t-3xl p-6 shadow-2xl animate-in slide-in-from-bottom-8 duration-300">
-        
-        <div className="flex items-center justify-center gap-2 mb-8">
-          <i className="fa-solid fa-sliders text-slate-400"></i>
-          <h2 className="text-sm font-black text-slate-800 tracking-widest uppercase">
-            Einstellungen
-          </h2>
+    <div className="flex flex-col items-center justify-center w-full h-full p-4 animate-in slide-in-from-right-8 duration-200">
+      <button onClick={handleCancel} className="absolute top-4 left-4 w-8 h-8 bg-slate-100 rounded-full text-slate-500 flex items-center justify-center active:scale-95 transition-transform z-10">
+        <i className="fa-solid fa-arrow-left pointer-events-none"></i>
+      </button>
+
+      <h2 className="text-[11px] font-black text-slate-800 uppercase tracking-widest text-center mt-2 mb-4">
+        Doku: {state.airwayType || 'Invasiv'}
+      </h2>
+
+      <div className="w-[85%] flex flex-col gap-3 mb-5">
+        <div>
+          <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-1 block">Größe (mm)</label>
+          <input 
+            type="text" 
+            value={size} 
+            onChange={(e) => setSize(e.target.value)} 
+            placeholder={activeZone?.airway?.tubus || "z.B. 7.5"} 
+            className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-center font-bold text-slate-700 focus:outline-none focus:border-cyan-400 focus:bg-cyan-50" 
+          />
         </div>
-
-        <div className="mb-8">
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center mb-3">
-            Metronom Geschwindigkeit
-          </p>
-          <div className="flex bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
-            <button className="flex-1 py-3 text-slate-400 font-bold text-lg rounded-xl transition-all">100</button>
-            <button className="flex-1 py-3 bg-white text-slate-800 font-black text-lg rounded-xl shadow-sm border border-slate-200 transition-all">110</button>
-            <button className="flex-1 py-3 text-slate-400 font-bold text-lg rounded-xl transition-all">120</button>
-          </div>
+        <div>
+          <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-1 block">Tiefe (cm ab Zahnreihe)</label>
+          <input 
+            type="text" 
+            value={depth} 
+            onChange={(e) => setDepth(e.target.value)} 
+            placeholder={activeZone?.airway?.tiefe || "z.B. 21"} 
+            className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-center font-bold text-slate-700 focus:outline-none focus:border-cyan-400 focus:bg-cyan-50" 
+          />
         </div>
+      </div>
 
-        <div className="mb-8">
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center mb-3">
-            System Diagnose
-          </p>
-          <div className="flex flex-col gap-3 p-4 bg-slate-50/50 border border-slate-100 rounded-2xl">
-            
-            <button className="w-full bg-white border border-slate-200 py-3.5 rounded-xl font-bold text-slate-700 shadow-sm flex items-center justify-center gap-2 hover:bg-slate-50 transition-all">
-              <i className="fa-solid fa-bug text-slate-400"></i> Fehlerprotokoll einsehen
-            </button>
-            
-            {/* HIER IST DEIN NEUER GRID BUTTON */}
-            <button 
-              onClick={() => dispatch({ type: 'TOGGLE_GRID' })}
-              className={`w-full border py-3.5 rounded-xl font-bold shadow-sm flex items-center justify-center gap-2 transition-all uppercase text-[12px] tracking-wider mt-2 ${state.isGridVisible ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'}`}
-            >
-              <i className="fa-solid fa-border-all text-slate-400"></i> Layout Grid ({state.isGridVisible ? 'An' : 'Aus'})
-            </button>
+      <button onClick={handleSave} className="w-[85%] py-3 rounded-xl font-black uppercase tracking-widest text-[11px] bg-cyan-500 text-white shadow-[0_5px_15px_rgba(6,182,212,0.4)] active:scale-95 transition-transform flex items-center justify-center gap-2">
+        <i className="fa-solid fa-check pointer-events-none"></i> <span className="pointer-events-none">Speichern</span>
+      </button>
+    </div>
+  );
+}
+</file>
 
-            <button className="w-full bg-red-600 border border-red-700 py-3.5 rounded-xl font-bold text-white shadow-md shadow-red-600/20 flex items-center justify-center gap-2 active:scale-95 transition-all mt-6">
-              <i className="fa-solid fa-triangle-exclamation"></i> Hard Reset (Daten löschen)
-            </button>
-          </div>
+<file path="src/components/views/ViewAirwayMenu.jsx">
+// --- Datei: src/components/views/ViewAirwayMenu.jsx ---
+import React, { useContext } from 'react';
+import { CprContext } from '../../context/CprContext.jsx';
+import { CPR_CONFIG } from '../../config/cprConfig.js';
+import { getBroselowZone } from '../../config/broselowData.js';
+
+export default function ViewAirwayMenu() {
+  const { state, dispatch, logEvent } = useContext(CprContext);
+  
+  // Lädt Broselow-Daten, wenn es ein Kind ist
+  const activeZone = state.isPediatric ? getBroselowZone(state.patientWeight || 10) : null;
+
+  // Pfad A: Beutel-Maske (Keine Doku nötig)
+  const handleBvm = () => {
+    const mode = state.isPediatric ? '15:2' : '30:2';
+    
+    dispatch({ type: 'SET_AIRWAY', payload: { established: true, type: 'Beutel-Maske', size: null, depth: null } });
+    dispatch({ type: 'SET_CPR_MODE', payload: mode });
+    dispatch({ type: 'SET_COMPRESSION_COUNT', payload: 0 }); // Zyklus-Reset
+    
+    logEvent(CPR_CONFIG.EVENTS.AIRWAY, 'Beutel-Maske etabliert');
+    logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, `Modus: ${mode} (Beutel-Maske)`);
+    
+    // Zurück zum Dashboard
+    dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.RUNNING });
+  };
+
+  // Pfad B: Invasiv (Leitet weiter in die Doku)
+  const handleInvasive = (type) => {
+    dispatch({ type: 'SET_AIRWAY_TYPE', payload: type });
+    dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.AIRWAY_DOC });
+  };
+
+  // Atemweg wieder entfernen
+  const handleRemove = () => {
+    const mode = state.isPediatric ? '15:2' : '30:2';
+    
+    dispatch({ type: 'SET_AIRWAY', payload: { established: false, type: null, size: null, depth: null } });
+    dispatch({ type: 'SET_CPR_MODE', payload: mode });
+    dispatch({ type: 'SET_COMPRESSION_COUNT', payload: 0 });
+    
+    logEvent(CPR_CONFIG.EVENTS.AIRWAY, 'Atemweg entfernt');
+    logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, `Modus: ${mode} (Auto-Switch)`);
+    
+    dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.RUNNING });
+  };
+
+  const handleCancel = () => {
+    dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.RUNNING });
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center w-full h-full p-4 animate-in zoom-in-95 duration-200">
+      <button onClick={handleCancel} className="absolute top-4 right-4 w-8 h-8 bg-slate-100 rounded-full text-slate-500 flex items-center justify-center active:scale-95 transition-transform z-10">
+        <i className="fa-solid fa-xmark pointer-events-none"></i>
+      </button>
+
+      <h2 className="text-xs font-black text-slate-800 uppercase tracking-widest text-center mt-2 mb-3">
+        Atemweg sichern
+      </h2>
+
+      {/* Broselow Tipp (Nur bei Pädiatrie) */}
+      {activeZone && (
+        <div className="bg-slate-50 border border-slate-200 rounded-xl p-2 w-[90%] mb-3 text-center shadow-sm">
+          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block mb-0.5">Broselow Empfehlung</span>
+          <span className="text-[11px] font-black text-slate-700">
+            Tubus: {activeZone.airway?.tubus || '?'} mm | Tiefe: {activeZone.airway?.tiefe || '?'} cm
+          </span>
         </div>
+      )}
 
-        <div className="text-center mb-6">
-          <p className="font-bold text-slate-800 tracking-widest text-xs">
-            CPR ASSIST <span className="text-red-600">VFINAL</span>
-          </p>
-        </div>
-
-        <button 
-          onClick={onClose}
-          className="w-full bg-slate-100 border border-slate-200 py-4 rounded-2xl font-bold text-slate-600 uppercase tracking-wider shadow-sm flex items-center justify-center gap-2 active:scale-95 transition-all"
-        >
-          <i className="fa-solid fa-rotate-left"></i> Zurück zum Einsatz
+      <div className="w-[90%] flex flex-col gap-2">
+        {/* Der große Beutel-Maske Button */}
+        <button onClick={handleBvm} className="w-full py-2.5 rounded-xl font-black uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-transform bg-white border border-slate-200 text-slate-600 shadow-sm">
+          <i className="fa-solid fa-mask-ventilator text-base pointer-events-none"></i> <span className="pointer-events-none">Beutel-Maske</span>
         </button>
 
+        {/* Das 4er Grid für invasive Atemwege */}
+        <div className="grid grid-cols-2 gap-2 mt-1">
+          {['ET-Tubus', 'i-gel', 'Larynxmaske', 'Larynxtubus'].map((aw) => (
+            <button key={aw} onClick={() => handleInvasive(aw)} className="py-2.5 rounded-xl font-bold uppercase tracking-wider text-[9px] active:scale-95 transition-transform bg-white border border-slate-200 text-slate-600 shadow-sm">
+              <span className="pointer-events-none">{aw}</span>
+            </button>
+          ))}
+        </div>
       </div>
+
+      {/* Der rote Entfernen-Button (nur wenn was liegt) */}
+      {state.airwayEstablished && (
+        <button onClick={handleRemove} className="mt-4 w-[90%] py-2 rounded-xl font-bold uppercase tracking-widest text-[9px] bg-red-50 text-red-600 border border-red-200 active:scale-95 transition-transform">
+          <span className="pointer-events-none">Atemweg entfernen</span>
+        </button>
+      )}
     </div>
   );
 }
@@ -583,6 +622,101 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     "vite": "^8.0.12",
     "vite-plugin-pwa": "^1.3.0"
   }
+}
+</file>
+
+<file path="src/components/AirwayModal.jsx">
+import React, { useContext } from 'react';
+import { CprContext } from '../context/CprContext.jsx';
+import { useMasterLoop } from '../hooks/useMasterLoop.js';
+import { getBroselowZone } from '../config/broselowData.js';
+
+export default function AirwayModal() {
+  const { state, dispatch } = useContext(CprContext);
+  const { setAirway } = useMasterLoop();
+
+  if (!state.isAirwayModalOpen) return null;
+
+  const handleSelect = (type) => {
+    setAirway(type);
+    dispatch({ type: 'TOGGLE_AIRWAY_MODAL', payload: false });
+  };
+
+  const handleRemove = () => {
+    setAirway(null);
+    dispatch({ type: 'TOGGLE_AIRWAY_MODAL', payload: false });
+  };
+
+  // Broselow-Daten laden, falls das Kind-Setup aktiv ist
+  const activeZone = state.isPediatric ? getBroselowZone(state.patientWeight || 10) : null;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm animate-in fade-in duration-200 p-4">
+      <div className="relative bg-white w-full max-w-[340px] rounded-[2rem] p-6 border border-slate-100 shadow-2xl flex flex-col animate-in zoom-in-95 duration-300">
+        
+        <button 
+          onClick={() => dispatch({ type: 'TOGGLE_AIRWAY_MODAL', payload: false })} 
+          className="absolute top-4 right-4 w-8 h-8 bg-slate-100 rounded-full text-slate-500 flex items-center justify-center active:scale-95 cursor-pointer"
+        >
+          <i className="fa-solid fa-xmark pointer-events-none"></i>
+        </button>
+
+        <h2 className="text-lg font-black text-slate-800 uppercase tracking-widest text-center mt-2 mb-6">
+          Atemweg sichern
+        </h2>
+
+        {/* BESI-ANZEIGE: Pädiatrie Tubus-Größen! */}
+        {state.isPediatric && activeZone && (
+          <div className="mb-6 p-4 bg-indigo-50 border border-indigo-100 rounded-2xl shadow-inner">
+            <div className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-2 text-center">Broselow Info ({activeZone.color})</div>
+            <div className="flex justify-between items-center px-2">
+                <div className="flex flex-col items-center">
+                    <span className="text-[10px] font-bold text-slate-500 uppercase">Tubus</span>
+                    <span className="font-black text-indigo-700 text-lg">{activeZone.airway.tubus}</span>
+                </div>
+                <div className="w-px h-8 bg-indigo-200"></div>
+                <div className="flex flex-col items-center">
+                    <span className="text-[10px] font-bold text-slate-500 uppercase">Tiefe</span>
+                    <span className="font-black text-indigo-700 text-lg">{activeZone.airway.tiefe} cm</span>
+                </div>
+                <div className="w-px h-8 bg-indigo-200"></div>
+                <div className="flex flex-col items-center">
+                    <span className="text-[10px] font-bold text-slate-500 uppercase">SGA</span>
+                    <span className="font-black text-indigo-700 text-lg">{activeZone.airway.sga}</span>
+                </div>
+            </div>
+          </div>
+        )}
+
+        <div className="flex flex-col gap-3 mb-6">
+          <button 
+            onClick={() => handleSelect('Beutel-Maske')}
+            className={`w-full h-[70px] rounded-2xl font-black uppercase tracking-widest flex items-center justify-center gap-3 active:scale-95 transition-all border-2 cursor-pointer ${state.airwayType === 'Beutel-Maske' ? 'bg-cyan-50 border-cyan-400 text-cyan-700' : 'bg-white border-slate-200 text-slate-600 shadow-sm'}`}
+          >
+            <i className="fa-solid fa-mask-ventilator text-2xl pointer-events-none"></i>
+            <span className="pointer-events-none">Beutel-Maske</span>
+          </button>
+          
+          <button 
+            onClick={() => handleSelect('Invasiv')}
+            className={`w-full h-[70px] rounded-2xl font-black uppercase tracking-widest flex items-center justify-center gap-3 active:scale-95 transition-all border-2 cursor-pointer ${state.airwayType === 'Invasiv' ? 'bg-cyan-50 border-cyan-400 text-cyan-700' : 'bg-white border-slate-200 text-slate-600 shadow-sm'}`}
+          >
+            <i className="fa-solid fa-virus-covid text-2xl pointer-events-none"></i>
+            <span className="pointer-events-none">Tubus / SGA</span>
+          </button>
+        </div>
+
+        {state.airwayEstablished && (
+          <button 
+            onClick={handleRemove}
+            className="w-full h-[50px] rounded-2xl font-bold uppercase tracking-widest text-[11px] bg-red-50 text-red-600 border border-red-200 active:scale-95 transition-all cursor-pointer"
+          >
+            Atemweg entfernen
+          </button>
+        )}
+      </div>
+    </div>
+  );
 }
 </file>
 
@@ -697,105 +831,102 @@ export default function CprButton({ toggleCpr }) {
 }
 </file>
 
-<file path="src/components/dashboard/projekt_handbuch.md">
-# 🚑 CPR ASSIST - PROJEKT HANDBUCH (Single Source of Truth)
+<file path="src/components/SettingsModal.jsx">
+// --- Datei: src/components/SettingsModal.jsx ---
+import React, { useContext } from 'react';
+import { CprContext } from '../context/CprContext.jsx';
 
-Dieses Dokument dient als "externes Gedächtnis" für die KI. Es enthält alle festgelegten Regeln, Architekturentscheidungen und Abläufe, damit bei neuen Chat-Sitzungen der Kontext sofort wiederhergestellt werden kann.
+export default function SettingsModal({ isOpen, onClose }) {
+  const { state, dispatch } = useContext(CprContext);
 
-## 1. ARCHITEKTUR & STATE-MANAGEMENT
-* **Global State:** Die App nutzt die React Context API (`CprContext.jsx` & `cprReducer.js`).
-* **Konstanten:** Alle festen Werte (Phasen, Timer, Medikamenten-Dosierungen) liegen streng getrennt in der `src/config/cprConfig.js`. 
-* **Logik-Auslagerung:** Die Geschäftslogik ist in Custom Hooks getrennt:
-    * `useGlobalTimer.js`: Steuert die fortlaufende Einsatzzeit (missionSeconds). 
-    * `useMasterLoop.js`: Steuert die 120s-Zyklen, das 100-BPM Metronom und automatische 30:2 / 15:2 Pausen.
-    * `usePatientLogic.js`: Behandelt Broselow-Berechnungen und den Wechsel zwischen Erwachsenen/Kindern.
+  if (!isOpen) return null;
 
-## 2. APP-PHASEN & ROUTING (ONBOARDING)
-Der Ablauf vom Start bis zur eigentlichen Reanimation folgt einer strikten Reihenfolge, gesteuert durch `PatientSelection.jsx`:
-1.  `ONBOARDING`: Patient wählen (Erwachsener oder Kind).
-2.  `OB_INITIAL_BREATHS`: Nur bei Kindern (5 initiale Beatmungen).
-3.  `OB_COMPRESSIONS`: Die Frage "Kompression gestartet?". **Ab hier starten die UI-Elemente der Reanimation.**
-4.  `OB_ANALYZE`: "Initiale Analyse" -> Hier drücken.
-5.  `DECISION`: Schockbar / Nicht Schockbar.
-6.  `JOULE`: Energieauswahl (wird bei Pädiatrie nach Gewicht ausgerechnet: 4 J/kg oder 8 J/kg).
-7.  `WAITING_CPR_RESUME`: "CPR Fortsetzen".
-8.  `RUNNING`: Das eigentliche Live-Dashboard mit 120s-Loop.
+  // DER NEUE HARD RESET HANDLER
+  const handleHardReset = () => {
+    if (window.confirm("WARNUNG: Möchtest du wirklich alle Einsatzdaten löschen und die App zurücksetzen?")) {
+      localStorage.removeItem('cprAssist_db'); // Speicher putzen
+      window.location.reload(); // App komplett frisch neu laden
+    }
+  };
 
-## 3. UI & LAYOUT REGELN
-* **CenterDisplay Morphing:** Das zentrale Display ist ein perfekter Kreis (`rounded-full`). Im Onboarding hat es eine Größe von `340px`. Im Dashboard (`RUNNING`) verkleinert es sich fließend auf `224px`.
-* **Sichtbarkeit "Bottom Buttons":** Die Knöpfe für *Atemweg* und *CPR Play/Pause* werden exakt ab der Phase `OB_COMPRESSIONS` eingeblendet.
-* **Text-Umbrüche im Kreis:** Innerhalb des kreisrunden Displays zwingend echte HTML-Tags (`<br/>`) für Zeilenumbrüche nutzen. Standard-`\n` wird vom Kreis-Overflow abgeschnitten.
+  return (
+    <div className="fixed inset-0 z-[100] flex flex-col justify-end bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+      
+      <div className="bg-white w-full rounded-t-3xl p-6 shadow-2xl animate-in slide-in-from-bottom-8 duration-300">
+        
+        <div className="flex items-center justify-center gap-2 mb-8">
+          <i className="fa-solid fa-sliders text-slate-400"></i>
+          <h2 className="text-sm font-black text-slate-800 tracking-widest uppercase">
+            Einstellungen
+          </h2>
+        </div>
 
-## 4. AKTUELLER STATUS (Stand: Layout-Merge abgeschlossen)
-* **Erreicht:** Die neue, performante Hook-Logik wurde zu 100 % in das gewünschte, fließende UI-Design (Kreis-Morphing) integriert. Das Routing im Onboarding läuft schleifenfrei durch.
-* **Nächste Schritte:** Fokus auf das Dashboard (`RUNNING` Phase) verlagern (Aktivierung der Satelliten-Buttons, Medikamenten-Logik).
-## 5. UI-LOGIK: ATEMWEG & CPR-BUTTON (Deep Dive)
-Basierend auf der Video-Analyse des Original-Verhaltens wurden folgende komplexe UI-Zustände für das Dashboard (`RUNNING`) definiert:
+        <div className="mb-8">
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center mb-3">
+            Metronom Geschwindigkeit
+          </p>
+          <div className="flex bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
+            <button 
+              onClick={() => dispatch({ type: 'SET_BPM', payload: 100 })}
+              className={`flex-1 py-3 font-bold text-lg rounded-xl transition-all ${state.bpm === 100 ? 'bg-white text-slate-800 font-black shadow-sm border border-slate-200' : 'text-slate-400 hover:bg-slate-100'}`}
+            >100</button>
+            <button 
+              onClick={() => dispatch({ type: 'SET_BPM', payload: 110 })}
+              className={`flex-1 py-3 font-bold text-lg rounded-xl transition-all ${state.bpm === 110 ? 'bg-white text-slate-800 font-black shadow-sm border border-slate-200' : 'text-slate-400 hover:bg-slate-100'}`}
+            >110</button>
+            <button 
+              onClick={() => dispatch({ type: 'SET_BPM', payload: 120 })}
+              className={`flex-1 py-3 font-bold text-lg rounded-xl transition-all ${state.bpm === 120 ? 'bg-white text-slate-800 font-black shadow-sm border border-slate-200' : 'text-slate-400 hover:bg-slate-100'}`}
+            >120</button>
+          </div>
+        </div>
 
-### Der smarte Atemweg-Button & das Modal
-* **Kein einfacher Toggle:** Der Button öffnet immer zuerst ein Modal.
-* **Pädiatrie-Integration:** Bei Kindern zeigt das Modal automatisch die material- und größenspezifischen Broselow-Werte (z.B. Tubus-Größe, Tiefe) passend zum Gewicht an.
-* **Pfad A (Beutel-Maske):** Führt sofort zum Modus `30:2` (Erwachsene) oder `15:2` (Kinder). In diesem Modus zeigt der Atemweg-Button bei den letzten 5 Kompressionen einen eigenen kleinen Countdown (z.B. "4, 3, 2, 1") als Vorwarnung an.
-* **Pfad B (Invasiv - Tubus/SGA):** Führt in einen sekundären Doku-Screen im Modal. **Erst nach dem Speichern** dieser Doku wechselt das System in den durchgehenden `KONT`-Modus.
-* **Der KONT-Countdown:** Im KONT-Modus läuft am Atemweg-Button ein superschneller Countdown (alle 6s bei Erwachsenen, alle 2.4s bei Kindern), der bei Ablauf "HUB!" anzeigt und blau aufblitzt.
+        <div className="mb-8">
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center mb-3">
+            System Diagnose
+          </p>
+          <div className="flex flex-col gap-3 p-4 bg-slate-50/50 border border-slate-100 rounded-2xl">
+            
+            <button className="w-full bg-white border border-slate-200 py-3.5 rounded-xl font-bold text-slate-700 shadow-sm flex items-center justify-center gap-2 hover:bg-slate-50 transition-all">
+              <i className="fa-solid fa-bug text-slate-400"></i> Fehlerprotokoll einsehen
+            </button>
+            
+            <button 
+              onClick={() => dispatch({ type: 'TOGGLE_GRID' })}
+              className={`w-full border py-3.5 rounded-xl font-bold shadow-sm flex items-center justify-center gap-2 transition-all uppercase text-[12px] tracking-wider mt-2 ${state.isGridVisible ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'}`}
+            >
+              <i className="fa-solid fa-border-all text-slate-400"></i> Layout Grid ({state.isGridVisible ? 'An' : 'Aus'})
+            </button>
 
-### Der dynamische CPR-Button (Das Herzstück)
-Der große Play/Pause-Knopf unten rechts ist eine State-Machine mit 3 visuellen Phasen:
-1. **Laufende CPR (15:2 / 30:2):** Der Button ist grün/weiß und zeigt einen Live-Badge, der jeden Metronom-Schlag mitzählt (1 bis 15 bzw. 30).
-2. **Beatmungs-Phase:** Sobald das Limit erreicht ist, stoppt das Metronom. Der komplette Button färbt sich cyan/blau, das Icon wird zu einer Lunge und der Text lautet **"BEATMEN"**. Nach dem automatischen Ping-Pong-Timer springt er von selbst zurück auf CPR.
-3. **Manuelle Pause (Eskalation):** Wird der Button manuell pausiert (Text: "CPR FORTSETZEN"), erscheint ein roter Badge, der die Sekunden hochzählt. Ab 5 Sekunden wird der Button gelb (Warnung), ab 10 Sekunden rot und pulsierend (Kritisch).
-# 🚑 CPR ASSIST - PROJEKT HANDBUCH (Single Source of Truth)
+            {/* DER SCHARFE HARD RESET BUTTON */}
+            <button 
+              onClick={handleHardReset}
+              className="w-full bg-red-600 border border-red-700 py-3.5 rounded-xl font-bold text-white shadow-md shadow-red-600/20 flex items-center justify-center gap-2 active:scale-95 transition-all mt-6 cursor-pointer"
+            >
+              <i className="fa-solid fa-triangle-exclamation pointer-events-none"></i> 
+              <span className="pointer-events-none">Hard Reset (Daten löschen)</span>
+            </button>
+          </div>
+        </div>
 
-Dieses Dokument dient als "externes Gedächtnis" für die KI. Es enthält alle festgelegten Regeln, Architekturentscheidungen und Abläufe, damit bei neuen Chat-Sitzungen der Kontext sofort wiederhergestellt werden kann.
+        <div className="text-center mb-6">
+          <p className="font-bold text-slate-800 tracking-widest text-xs">
+            CPR ASSIST <span className="text-red-600">VFINAL</span>
+          </p>
+        </div>
 
-## 1. ARCHITEKTUR & STATE-MANAGEMENT
-* **Global State:** Die App nutzt die React Context API (`CprContext.jsx` & `cprReducer.js`).
-* **Konstanten:** Alle festen Werte (Phasen, Timer, Medikamenten-Dosierungen) liegen streng getrennt in der `src/config/cprConfig.js`. 
-* **Logik-Auslagerung:** Die Geschäftslogik ist in Custom Hooks getrennt:
-    * `useGlobalTimer.js`: Steuert die fortlaufende Einsatzzeit (missionSeconds). 
-    * `useMasterLoop.js`: Steuert die 120s-Zyklen, das hochpräzise Web-Audio Metronom und automatische 30:2 / 15:2 Pausen.
-    * `usePatientLogic.js`: Behandelt Broselow-Berechnungen und den Wechsel zwischen Erwachsenen/Kindern.
+        <button 
+          onClick={onClose}
+          className="w-full bg-slate-100 border border-slate-200 py-4 rounded-2xl font-bold text-slate-600 uppercase tracking-wider shadow-sm flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer"
+        >
+          <i className="fa-solid fa-rotate-left pointer-events-none"></i> 
+          <span className="pointer-events-none">Zurück zum Einsatz</span>
+        </button>
 
-## 2. APP-PHASEN & ROUTING (ONBOARDING)
-Der Ablauf vom Start bis zur eigentlichen Reanimation folgt einer strikten Reihenfolge:
-1.  `ONBOARDING`: Patient wählen (Erwachsener oder Kind).
-2.  `OB_INITIAL_BREATHS`: Nur bei Kindern (5 initiale Beatmungen).
-3.  `OB_COMPRESSIONS`: Die Frage "Kompression gestartet?". **Ab hier starten die UI-Timer und das Metronom.**
-4.  `OB_ANALYZE`: "Initiale Analyse" -> Hier drücken (Pausiert CPR automatisch).
-5.  `DECISION`: Schockbar / Nicht Schockbar.
-6.  `JOULE`: Energieauswahl (wird bei Pädiatrie nach Gewicht ausgerechnet: 4 J/kg oder 8 J/kg).
-7.  `WAITING_CPR_RESUME`: "CPR Fortsetzen".
-8.  `RUNNING`: Das eigentliche Live-Dashboard mit 120s-Loop.
-
-## 3. UI & LAYOUT REGELN
-* **CenterDisplay Morphing:** Das zentrale Display ist ein perfekter Kreis (`rounded-full`). Im Onboarding hat es eine Größe von `340px`. Im Dashboard (`RUNNING`) verkleinert es sich fließend auf `224px`.
-* **Sichtbarkeit "Bottom Buttons":** Die Knöpfe für *Atemweg* und *CPR Play/Pause* werden exakt ab der Phase `OB_COMPRESSIONS` eingeblendet.
-* **Mobile Klick-Sicherheit:** Alle Buttons, die Icons (`<i>`) oder Text (`<span>`) enthalten, müssen zwingend `pointer-events-none` auf diesen inneren Elementen haben, damit Touch-Events (iOS/Android) den React-`onClick` oder `onTouchEnd` nicht blockieren.
-
-## 4. AKTUELLER STATUS (Stand: Audio-Engine & CPR-Button)
-* **Erreicht:** * Der CPR-Button ist als eigene Komponente isoliert (`CprButton.jsx`) und verfügt über eine visuelle Flash-Animation (150ms) pro Metronom-Schlag.
-  * Eine hochpräzise Web-Audio-Engine wurde in `useMasterLoop.js` implementiert (Lookahead-Scheduler).
-  * **Mute & BPM Fix:** Die Audio-Schleife verzichtet auf React-Abhängigkeiten (`useEffect` Dependencies) und greift synchron via `stateRef.current = state` auf den Live-State zu. Dadurch wirken Mute-Befehle und BPM-Änderungen in Echtzeit, ohne den Loop neu zu starten (Verhinderung von "Zombie-Closures").
-* **Nächste Schritte:** 1. Das Einstellungs-Menü an den `CprContext` anbinden, damit die BPM-Auswahl in den globalen State geschrieben wird.
-  2. Den "Atemweg-Button" ausbauen (Broselow-Daten ins Modal laden, "BEATMEN"-Phase visuell vom CPR-Button dorthin verlagern).
-
-## 5. UI-LOGIK: ATEMWEG & CPR-BUTTON (Deep Dive)
-### Der smarte Atemweg-Button & das Modal (WIP)
-* **Kein einfacher Toggle:** Der Button öffnet immer zuerst ein Modal.
-* **Pfad A (Beutel-Maske):** Führt zum Modus `30:2` oder `15:2`. Zeigt in den letzten 5 Kompressionen einen eigenen Countdown.
-* **Pfad B (Invasiv):** Führt in einen sekundären Doku-Screen im Modal. Wechselt erst nach dem Speichern in den `KONT`-Modus (inklusive superschnellem Beatmungs-Countdown).
-
-### Der dynamische CPR-Button (Abgeschlossen)
-Der Play/Pause-Knopf unten rechts ist eine State-Machine mit 3 Phasen:
-1. **Laufende CPR (Weiß):** Metronom-Zähler blitzt synchron zum Audio feuerrot auf.
-2. **Beatmungs-Phase (Cyan):** Button blockiert kurzzeitig und signalisiert die Beatmung (wird künftig auf den Atemweg-Button verschoben).
-3. **Manuelle Pause (Weiß/Grün):** Zählt die Pausen-Sekunden hoch. Eskaliert ab 5 Sekunden zu Gelb (Warnung) und ab 10 Sekunden zu pulsierendem Rot (Kritisch).
-
-## 6. AUDIO ENGINE & METRONOM (Technisches Setup)
-* **Technologie:** 100% Web Audio API. Keine MP3/WAV-Dateien.
-* **Metronom:** Nutzt einen `OscillatorNode` (800 Hz Sine Wave). Gesteuert über Lookahead-Scheduler (`setTimeout` alle 25ms + `AudioContext.currentTime`).
-* **Beatmungston:** White-Noise-Buffer mit BandPass-Filter (400 Hz) und Volume-Envelopes (1 Sekunde).
-* **Mute-Logik:** Greift als Guard (`if (stateRef.current.isMuted)`) *direkt vor* der Tonausgabe, wodurch das visuelle UI im Takt weiterläuft.
+      </div>
+    </div>
+  );
+}
 </file>
 
 <file path="src/config/broselowData.js">
@@ -987,100 +1118,153 @@ export default defineConfig({
 })
 </file>
 
-<file path="src/config/cprConfig.js">
-// --- Datei: src/config/cprConfig.js ---
+<file path="src/components/dashboard/projekt_handbuch.md">
+# 🚑 CPR ASSIST - PROJEKT HANDBUCH (Single Source of Truth)
 
-export const CPR_CONFIG = {
-  // 1. ZYKLUS & TIMER (Alle Angaben in exakten Sekunden)
-  TIMERS: {
-    MASTER_LOOP: 120,          
-    DEFI_WARNING: 105,         
-    ADRENALIN_INTERVAL: 240,   
-    VENTILATION_CONT: 6,       
-  },
+Dieses Dokument dient als "externes Gedächtnis" für die KI. Es enthält alle festgelegten Regeln, Architekturentscheidungen und Abläufe, damit bei neuen Chat-Sitzungen der Kontext sofort wiederhergestellt werden kann.
 
-  // 2. STANDARD-MEDIKAMENTE (Erwachsene)
-  DRUGS_ADULT: {
-    ADRENALIN: "1 mg",
-    AMIO_D1: "300 mg",         
-    AMIO_D2: "150 mg",         
-  },
+## 1. ARCHITEKTUR & STATE-MANAGEMENT
+* **Global State:** Die App nutzt die React Context API (`CprContext.jsx` & `cprReducer.js`).
+* **Konstanten:** Alle festen Werte (Phasen, Timer, Medikamenten-Dosierungen) liegen streng getrennt in der `src/config/cprConfig.js`. 
+* **Logik-Auslagerung:** Die Geschäftslogik ist in Custom Hooks getrennt:
+    * `useGlobalTimer.js`: Steuert die fortlaufende Einsatzzeit (missionSeconds). 
+    * `useMasterLoop.js`: Steuert die 120s-Zyklen, das 100-BPM Metronom und automatische 30:2 / 15:2 Pausen.
+    * `usePatientLogic.js`: Behandelt Broselow-Berechnungen und den Wechsel zwischen Erwachsenen/Kindern.
 
-  // 3. PÄDIATRIE-BERECHNUNG (Gewichtsadaptiert)
-  DRUGS_PEDS_FACTORS: {
-    ADRENALIN_MCG_PER_KG: 10,  
-    AMIO_MG_PER_KG: 5,         
-    JOULE_PER_KG: 4,           
-  },
+## 2. APP-PHASEN & ROUTING (ONBOARDING)
+Der Ablauf vom Start bis zur eigentlichen Reanimation folgt einer strikten Reihenfolge, gesteuert durch `PatientSelection.jsx`:
+1.  `ONBOARDING`: Patient wählen (Erwachsener oder Kind).
+2.  `OB_INITIAL_BREATHS`: Nur bei Kindern (5 initiale Beatmungen).
+3.  `OB_COMPRESSIONS`: Die Frage "Kompression gestartet?". **Ab hier starten die UI-Elemente der Reanimation.**
+4.  `OB_ANALYZE`: "Initiale Analyse" -> Hier drücken.
+5.  `DECISION`: Schockbar / Nicht Schockbar.
+6.  `JOULE`: Energieauswahl (wird bei Pädiatrie nach Gewicht ausgerechnet: 4 J/kg oder 8 J/kg).
+7.  `WAITING_CPR_RESUME`: "CPR Fortsetzen".
+8.  `RUNNING`: Das eigentliche Live-Dashboard mit 120s-Loop.
 
-  // 4. EVENT-TYPEN FÜR DIE DATENBANK
-  EVENTS: {
-    PHASE_CHANGE: "PHASE_CHANGE", 
-    DRUG: "DRUG",                 
-    SHOCK: "SHOCK",               
-    AIRWAY: "AIRWAY",             
-    PAUSE: "PAUSE",               
-    RESUME: "RESUME",             
-    WARNING: "WARNING",           
-  },
+## 3. UI & LAYOUT REGELN
+* **CenterDisplay Morphing:** Das zentrale Display ist ein perfekter Kreis (`rounded-full`). Im Onboarding hat es eine Größe von `340px`. Im Dashboard (`RUNNING`) verkleinert es sich fließend auf `224px`.
+* **Sichtbarkeit "Bottom Buttons":** Die Knöpfe für *Atemweg* und *CPR Play/Pause* werden exakt ab der Phase `OB_COMPRESSIONS` eingeblendet.
+* **Text-Umbrüche im Kreis:** Innerhalb des kreisrunden Displays zwingend echte HTML-Tags (`<br/>`) für Zeilenumbrüche nutzen. Standard-`\n` wird vom Kreis-Overflow abgeschnitten.
 
-  // 5. PHASEN ALS KONSTANTEN (Verhindert Tippfehler im Code)
-  PHASES: {
-    ONBOARDING: 'ONBOARDING',
-    OB_INITIAL_BREATHS: 'OB_INITIAL_BREATHS',
-    OB_COMPRESSIONS: 'OB_COMPRESSIONS',
-    OB_ANALYZE: 'OB_ANALYZE',
-    DECISION: 'DECISION',
-    JOULE: 'JOULE',
-    WAITING_CPR_RESUME: 'WAITING_CPR_RESUME',
-    RUNNING: 'RUNNING'
-  }
-};
+## 4. AKTUELLER STATUS (Stand: Layout-Merge abgeschlossen)
+* **Erreicht:** Die neue, performante Hook-Logik wurde zu 100 % in das gewünschte, fließende UI-Design (Kreis-Morphing) integriert. Das Routing im Onboarding läuft schleifenfrei durch.
+* **Nächste Schritte:** Fokus auf das Dashboard (`RUNNING` Phase) verlagern (Aktivierung der Satelliten-Buttons, Medikamenten-Logik).
+## 5. UI-LOGIK: ATEMWEG & CPR-BUTTON (Deep Dive)
+Basierend auf der Video-Analyse des Original-Verhaltens wurden folgende komplexe UI-Zustände für das Dashboard (`RUNNING`) definiert:
 
-// Hilfsfunktion: Berechnet Pädiatrie-Dosierungen blitzschnell
-export const calculatePedsDose = (weightKg) => {
-  return {
-    adrenalinMcg: weightKg * CPR_CONFIG.DRUGS_PEDS_FACTORS.ADRENALIN_MCG_PER_KG,
-    amioMg: weightKg * CPR_CONFIG.DRUGS_PEDS_FACTORS.AMIO_MG_PER_KG,
-    joule: weightKg * CPR_CONFIG.DRUGS_PEDS_FACTORS.JOULE_PER_KG
-  };
-};
-</file>
+### Der smarte Atemweg-Button & das Modal
+* **Kein einfacher Toggle:** Der Button öffnet immer zuerst ein Modal.
+* **Pädiatrie-Integration:** Bei Kindern zeigt das Modal automatisch die material- und größenspezifischen Broselow-Werte (z.B. Tubus-Größe, Tiefe) passend zum Gewicht an.
+* **Pfad A (Beutel-Maske):** Führt sofort zum Modus `30:2` (Erwachsene) oder `15:2` (Kinder). In diesem Modus zeigt der Atemweg-Button bei den letzten 5 Kompressionen einen eigenen kleinen Countdown (z.B. "4, 3, 2, 1") als Vorwarnung an.
+* **Pfad B (Invasiv - Tubus/SGA):** Führt in einen sekundären Doku-Screen im Modal. **Erst nach dem Speichern** dieser Doku wechselt das System in den durchgehenden `KONT`-Modus.
+* **Der KONT-Countdown:** Im KONT-Modus läuft am Atemweg-Button ein superschneller Countdown (alle 6s bei Erwachsenen, alle 2.4s bei Kindern), der bei Ablauf "HUB!" anzeigt und blau aufblitzt.
 
-<file path="src/hooks/useGlobalTimer.js">
-// --- Datei: src/hooks/useGlobalTimer.js ---
-import { useEffect, useContext, useRef } from 'react';
-import { CprContext } from '../context/CprContext.jsx';
+### Der dynamische CPR-Button (Das Herzstück)
+Der große Play/Pause-Knopf unten rechts ist eine State-Machine mit 3 visuellen Phasen:
+1. **Laufende CPR (15:2 / 30:2):** Der Button ist grün/weiß und zeigt einen Live-Badge, der jeden Metronom-Schlag mitzählt (1 bis 15 bzw. 30).
+2. **Beatmungs-Phase:** Sobald das Limit erreicht ist, stoppt das Metronom. Der komplette Button färbt sich cyan/blau, das Icon wird zu einer Lunge und der Text lautet **"BEATMEN"**. Nach dem automatischen Ping-Pong-Timer springt er von selbst zurück auf CPR.
+3. **Manuelle Pause (Eskalation):** Wird der Button manuell pausiert (Text: "CPR FORTSETZEN"), erscheint ein roter Badge, der die Sekunden hochzählt. Ab 5 Sekunden wird der Button gelb (Warnung), ab 10 Sekunden rot und pulsierend (Kritisch).
+# 🚑 CPR ASSIST - PROJEKT HANDBUCH (Single Source of Truth)
 
-export function useGlobalTimer() {
-  const { state, dispatch } = useContext(CprContext);
-  
-  const phaseRef = useRef(state.appPhase);
-  const compressingRef = useRef(state.isCompressing);
+Dieses Dokument dient als "externes Gedächtnis" für die KI. Es enthält alle festgelegten Regeln, Architekturentscheidungen und Abläufe, damit bei neuen Chat-Sitzungen der Kontext sofort wiederhergestellt werden kann.
 
-  useEffect(() => {
-    phaseRef.current = state.appPhase;
-    compressingRef.current = state.isCompressing;
-  }, [state.appPhase, state.isCompressing]);
+## 1. ARCHITEKTUR & STATE-MANAGEMENT
+* **Global State:** Die App nutzt die React Context API (`CprContext.jsx` & `cprReducer.js`).
+* **Konstanten:** Alle festen Werte (Phasen, Timer, Medikamenten-Dosierungen) liegen streng getrennt in der `src/config/cprConfig.js`. 
+* **Logik-Auslagerung:** Die Geschäftslogik ist in Custom Hooks getrennt:
+    * `useGlobalTimer.js`: Steuert die fortlaufende Einsatzzeit (missionSeconds). 
+    * `useMasterLoop.js`: Steuert die 120s-Zyklen, das hochpräzise Web-Audio Metronom und automatische 30:2 / 15:2 Pausen.
+    * `usePatientLogic.js`: Behandelt Broselow-Berechnungen und den Wechsel zwischen Erwachsenen/Kindern.
 
-  useEffect(() => {
-    const masterTick = setInterval(() => {
-      // FIX: Die Einsatzuhr startet JETZT sofort, wenn der Patient gewählt wurde 
-      // (also sobald wir nicht mehr im allerersten ONBOARDING Screen sind)
-      if (phaseRef.current !== 'ONBOARDING') {
-        dispatch({ type: 'TICK_MISSION' });
-      }
+## 2. APP-PHASEN & ROUTING (ONBOARDING)
+Der Ablauf vom Start bis zur eigentlichen Reanimation folgt einer strikten Reihenfolge:
+1.  `ONBOARDING`: Patient wählen (Erwachsener oder Kind).
+2.  `OB_INITIAL_BREATHS`: Nur bei Kindern (5 initiale Beatmungen).
+3.  `OB_COMPRESSIONS`: Die Frage "Kompression gestartet?". **Ab hier starten die UI-Timer und das Metronom.**
+4.  `OB_ANALYZE`: "Initiale Analyse" -> Hier drücken (Pausiert CPR automatisch).
+5.  `DECISION`: Schockbar / Nicht Schockbar.
+6.  `JOULE`: Energieauswahl (wird bei Pädiatrie nach Gewicht ausgerechnet: 4 J/kg oder 8 J/kg).
+7.  `WAITING_CPR_RESUME`: "CPR Fortsetzen".
+8.  `RUNNING`: Das eigentliche Live-Dashboard mit 120s-Loop.
 
-      // Die CPR-Uhr (Mitte) läuft nur, wenn auch wirklich gedrückt wird
-      if (compressingRef.current === true) {
-        dispatch({ type: 'TICK_CPR' });
-      }
+## 3. UI & LAYOUT REGELN
+* **CenterDisplay Morphing:** Das zentrale Display ist ein perfekter Kreis (`rounded-full`). Im Onboarding hat es eine Größe von `340px`. Im Dashboard (`RUNNING`) verkleinert es sich fließend auf `224px`.
+* **Sichtbarkeit "Bottom Buttons":** Die Knöpfe für *Atemweg* und *CPR Play/Pause* werden exakt ab der Phase `OB_COMPRESSIONS` eingeblendet.
+* **Mobile Klick-Sicherheit:** Alle Buttons, die Icons (`<i>`) oder Text (`<span>`) enthalten, müssen zwingend `pointer-events-none` auf diesen inneren Elementen haben, damit Touch-Events (iOS/Android) den React-`onClick` oder `onTouchEnd` nicht blockieren.
 
-    }, 1000);
+## 4. AKTUELLER STATUS (Stand: Audio-Engine & CPR-Button)
+* **Erreicht:** * Der CPR-Button ist als eigene Komponente isoliert (`CprButton.jsx`) und verfügt über eine visuelle Flash-Animation (150ms) pro Metronom-Schlag.
+  * Eine hochpräzise Web-Audio-Engine wurde in `useMasterLoop.js` implementiert (Lookahead-Scheduler).
+  * **Mute & BPM Fix:** Die Audio-Schleife verzichtet auf React-Abhängigkeiten (`useEffect` Dependencies) und greift synchron via `stateRef.current = state` auf den Live-State zu. Dadurch wirken Mute-Befehle und BPM-Änderungen in Echtzeit, ohne den Loop neu zu starten (Verhinderung von "Zombie-Closures").
+* **Nächste Schritte:** 1. Das Einstellungs-Menü an den `CprContext` anbinden, damit die BPM-Auswahl in den globalen State geschrieben wird.
+  2. Den "Atemweg-Button" ausbauen (Broselow-Daten ins Modal laden, "BEATMEN"-Phase visuell vom CPR-Button dorthin verlagern).
 
-    return () => clearInterval(masterTick);
-  }, [dispatch]);
-}
+## 5. UI-LOGIK: ATEMWEG & CPR-BUTTON (Deep Dive)
+### Der smarte Atemweg-Button & das Modal (WIP)
+* **Kein einfacher Toggle:** Der Button öffnet immer zuerst ein Modal.
+* **Pfad A (Beutel-Maske):** Führt zum Modus `30:2` oder `15:2`. Zeigt in den letzten 5 Kompressionen einen eigenen Countdown.
+* **Pfad B (Invasiv):** Führt in einen sekundären Doku-Screen im Modal. Wechselt erst nach dem Speichern in den `KONT`-Modus (inklusive superschnellem Beatmungs-Countdown).
+
+### Der dynamische CPR-Button (Abgeschlossen)
+Der Play/Pause-Knopf unten rechts ist eine State-Machine mit 3 Phasen:
+1. **Laufende CPR (Weiß):** Metronom-Zähler blitzt synchron zum Audio feuerrot auf.
+2. **Beatmungs-Phase (Cyan):** Button blockiert kurzzeitig und signalisiert die Beatmung (wird künftig auf den Atemweg-Button verschoben).
+3. **Manuelle Pause (Weiß/Grün):** Zählt die Pausen-Sekunden hoch. Eskaliert ab 5 Sekunden zu Gelb (Warnung) und ab 10 Sekunden zu pulsierendem Rot (Kritisch).
+
+## 6. AUDIO ENGINE & METRONOM (Technisches Setup)
+* **Technologie:** 100% Web Audio API. Keine MP3/WAV-Dateien.
+* **Metronom:** Nutzt einen `OscillatorNode` (800 Hz Sine Wave). Gesteuert über Lookahead-Scheduler (`setTimeout` alle 25ms + `AudioContext.currentTime`).
+* **Beatmungston:** White-Noise-Buffer mit BandPass-Filter (400 Hz) und Volume-Envelopes (1 Sekunde).
+* **Mute-Logik:** Greift als Guard (`if (stateRef.current.isMuted)`) *direkt vor* der Tonausgabe, wodurch das visuelle UI im Takt weiterläuft.
+# 🚑 CPR ASSIST - PROJEKT HANDBUCH (Single Source of Truth)
+
+Dieses Dokument dient als "externes Gedächtnis" für die KI. Es enthält alle festgelegten Regeln, Architekturentscheidungen und Abläufe, damit bei neuen Chat-Sitzungen der Kontext sofort wiederhergestellt werden kann.
+
+## 1. ARCHITEKTUR & STATE-MANAGEMENT
+* **Global State:** Die App nutzt die React Context API (`CprContext.jsx` & `cprReducer.js`).
+* **Konstanten:** Alle festen Werte (Phasen, Timer, Medikamenten-Dosierungen) liegen streng getrennt in der `src/config/cprConfig.js`. 
+* **Logik-Auslagerung:** Die Geschäftslogik ist in Custom Hooks getrennt:
+    * `useGlobalTimer.js`: Steuert die fortlaufende Einsatzzeit (missionSeconds). 
+    * `useMasterLoop.js`: Steuert die 120s-Zyklen, das hochpräzise Web-Audio Metronom und automatische 30:2 / 15:2 Pausen.
+    * `usePatientLogic.js`: Behandelt Broselow-Berechnungen und den Wechsel zwischen Erwachsenen/Kindern.
+* **Datensicherung:** `localStorage` speichert den kompletten Einsatz-State in Echtzeit. Ein "Hard Reset" Button in den Einstellungen oder ein Triple-Click auf das Header-Logo löscht diesen Cache.
+
+## 2. APP-PHASEN & ROUTING (ONBOARDING)
+Der Ablauf vom Start bis zur eigentlichen Reanimation folgt einer strikten Reihenfolge:
+1.  `ONBOARDING`: Patient wählen (Erwachsener oder Kind).
+2.  `OB_INITIAL_BREATHS`: Nur bei Kindern (5 initiale Beatmungen).
+3.  `OB_COMPRESSIONS`: Die Frage "Kompression gestartet?". **Ab hier starten die UI-Timer und das Metronom.**
+4.  `OB_ANALYZE`: "Initiale Analyse" -> Hier drücken (Pausiert CPR automatisch).
+5.  `DECISION`: Schockbar / Nicht Schockbar.
+6.  `JOULE`: Energieauswahl (wird bei Pädiatrie nach Gewicht ausgerechnet: 4 J/kg oder 8 J/kg).
+7.  `WAITING_CPR_RESUME`: "CPR Fortsetzen".
+8.  `RUNNING`: Das eigentliche Live-Dashboard mit 120s-Loop.
+
+## 3. UI & LAYOUT REGELN
+* **CenterDisplay Morphing:** Das zentrale Display ist ein perfekter Kreis (`rounded-full`). Im Onboarding hat es eine Größe von `340px`. Im Dashboard (`RUNNING`) verkleinert es sich fließend auf `224px`.
+* **Mobile Klick-Sicherheit:** Alle Buttons, die Icons (`<i>`) oder Text (`<span>`) enthalten, müssen zwingend `pointer-events-none` auf diesen inneren Elementen haben, damit Touch-Events (iOS/Android) den React-Klick nicht blockieren.
+
+## 4. AKTUELLER STATUS (Stand: Metronom & Settings 100% funktional)
+* **Erreicht:** 
+  * Der CPR-Button verfügt über eine visuelle Flash-Animation (150ms) pro Metronom-Schlag.
+  * Eine hochpräzise Web-Audio-Engine wurde in `useMasterLoop.js` implementiert (Lookahead-Scheduler).
+  * **Settings-Menü ist live:** BPM lassen sich in Echtzeit zwischen 100, 110 (Standard) und 120 umschalten. Der Mute-Button kappt den Ton sofort, ohne die visuelle Animation des CPR-Buttons zu stoppen.
+  * **Kugelsicheres UI:** Der Double-Fire Bug bei Touch-Geräten wurde eliminiert.
+
+## 5. UI-LOGIK: ATEMWEG & CPR-BUTTON (Deep Dive)
+### Der smarte Atemweg-Button & das Modal (ALS NÄCHSTES)
+* **Kein einfacher Toggle:** Der Button öffnet immer zuerst ein Modal.
+* **Pädiatrie-Integration:** Bei Kindern zeigt das Modal automatisch die material- und größenspezifischen Broselow-Werte (z.B. Tubus-Größe, Tiefe) passend zum Gewicht an.
+* **Pfad A (Beutel-Maske):** Führt sofort zum Modus `30:2` oder `15:2`. Zeigt in den letzten 5 Kompressionen einen eigenen kleinen Countdown als Vorwarnung an.
+* **Pfad B (Invasiv - Tubus/SGA):** Führt in einen sekundären Doku-Screen im Modal. Erst nach dem Speichern wechselt das System in den durchgehenden `KONT`-Modus.
+* **Der KONT-Countdown:** Im KONT-Modus läuft am Atemweg-Button ein superschneller Countdown, der bei Ablauf "HUB!" anzeigt und blau aufblitzt.
+
+### Der dynamische CPR-Button (Abgeschlossen)
+Der Play/Pause-Knopf unten rechts ist eine State-Machine mit 3 Phasen:
+1. **Laufende CPR (Weiß):** Metronom-Zähler blitzt synchron zum Audio feuerrot auf.
+2. **Beatmungs-Phase (Cyan):** Button blockiert kurzzeitig und signalisiert die Beatmung (wird künftig auf den Atemweg-Button verschoben).
+3. **Manuelle Pause (Weiß/Grün):** Zählt die Pausen-Sekunden hoch. Eskaliert ab 5 Sekunden zu Gelb (Warnung) und ab 10 Sekunden zu pulsierendem Rot (Kritisch).
 </file>
 
 <file path="src/components/views/ViewDecision.jsx">
@@ -1138,6 +1322,68 @@ export default function ViewDecision() {
     </div>
   );
 }
+</file>
+
+<file path="src/config/cprConfig.js">
+// --- Datei: src/config/cprConfig.js ---
+
+export const CPR_CONFIG = {
+  // 1. ZYKLUS & TIMER (Alle Angaben in exakten Sekunden)
+  TIMERS: {
+    MASTER_LOOP: 120,          
+    DEFI_WARNING: 105,         
+    ADRENALIN_INTERVAL: 240,   
+    VENTILATION_CONT: 6,       
+  },
+
+  // 2. STANDARD-MEDIKAMENTE (Erwachsene)
+  DRUGS_ADULT: {
+    ADRENALIN: "1 mg",
+    AMIO_D1: "300 mg",         
+    AMIO_D2: "150 mg",         
+  },
+
+  // 3. PÄDIATRIE-BERECHNUNG (Gewichtsadaptiert)
+  DRUGS_PEDS_FACTORS: {
+    ADRENALIN_MCG_PER_KG: 10,  
+    AMIO_MG_PER_KG: 5,         
+    JOULE_PER_KG: 4,           
+  },
+
+  // 4. EVENT-TYPEN FÜR DIE DATENBANK
+  EVENTS: {
+    PHASE_CHANGE: "PHASE_CHANGE", 
+    DRUG: "DRUG",                 
+    SHOCK: "SHOCK",               
+    AIRWAY: "AIRWAY",             
+    PAUSE: "PAUSE",               
+    RESUME: "RESUME",             
+    WARNING: "WARNING",           
+  },
+
+  // 5. PHASEN ALS KONSTANTEN (Verhindert Tippfehler im Code)
+  PHASES: {
+    ONBOARDING: 'ONBOARDING',
+    OB_INITIAL_BREATHS: 'OB_INITIAL_BREATHS',
+    OB_COMPRESSIONS: 'OB_COMPRESSIONS',
+    OB_ANALYZE: 'OB_ANALYZE',
+    DECISION: 'DECISION',
+    JOULE: 'JOULE',
+    WAITING_CPR_RESUME: 'WAITING_CPR_RESUME',
+    RUNNING: 'RUNNING',
+    AIRWAY_MENU: 'AIRWAY_MENU', // <--- NEU: Center-Display Menü
+    AIRWAY_DOC: 'AIRWAY_DOC'    // <--- NEU: Center-Display Doku (Größe/Tiefe)
+  }
+};
+
+// Hilfsfunktion: Berechnet Pädiatrie-Dosierungen blitzschnell
+export const calculatePedsDose = (weightKg) => {
+  return {
+    adrenalinMcg: weightKg * CPR_CONFIG.DRUGS_PEDS_FACTORS.ADRENALIN_MCG_PER_KG,
+    amioMg: weightKg * CPR_CONFIG.DRUGS_PEDS_FACTORS.AMIO_MG_PER_KG,
+    joule: weightKg * CPR_CONFIG.DRUGS_PEDS_FACTORS.JOULE_PER_KG
+  };
+};
 </file>
 
 <file path="src/MedicalDisclaimer.jsx">
@@ -1260,6 +1506,15 @@ export default function ViewObPatient() {
 }
 </file>
 
+<file path="src/hooks/useGlobalTimer.js">
+// --- Datei: src/hooks/useGlobalTimer.js ---
+// Dieser Hook wurde absichtlich deaktiviert. 
+// Die Einsatzzeit wird nun 100% synchron und präzise im useMasterLoop.js gesteuert.
+export function useGlobalTimer() {
+  return; 
+}
+</file>
+
 <file path="src/components/views/ViewJoule.jsx">
 import React, { useContext, useMemo } from 'react';
 import { CprContext } from '../../context/CprContext.jsx';
@@ -1341,92 +1596,6 @@ export default function ViewJoule() {
       </div>
     </div>
   );
-}
-</file>
-
-<file path="src/context/cprReducer.js">
-import { CPR_CONFIG } from '../config/cprConfig.js';
-
-export const initialState = {
-  appPhase: CPR_CONFIG.PHASES.ONBOARDING,
-  isPediatric: false,
-  patientWeight: null,
-  cprMode: 'continuous', 
-  
-  bpm: 100,         // NEU: Einstellbare Frequenz
-  isMuted: false,   // NEU: Mute-Status
-  
-  startTime: null,         
-  isGridVisible: false,    
-  isPatientModalOpen: false, 
-  
-  missionSeconds: 0, 
-  cprSeconds: 0, 
-  cycleSeconds: 0, 
-  
-  isCompressing: false,
-  pauseSeconds: 0, 
-  isVentilationPhase: false,
-  compressionCount: 0,
-  
-  airwayEstablished: false,
-  
-  compressingSeconds: 0, 
-  arrestSeconds: 0,      
-  currentCcfPercent: 100,
-  events: [],      
-  reminders: []
-};
-
-export function cprReducer(state, action) {
-  switch (action.type) {
-    case 'SET_PHASE': return { ...state, appPhase: action.payload };
-    case 'SET_BPM': return { ...state, bpm: action.payload };
-    case 'TOGGLE_MUTE': return { ...state, isMuted: !state.isMuted };
-    
-    case 'SET_PEDIATRIC_DATA': return { 
-        ...state, 
-        isPediatric: action.payload.isPediatric,
-        patientWeight: action.payload.patientWeight,
-        cprMode: 'continuous', 
-        startTime: state.startTime || new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
-      };
-      
-    case 'SET_CPR_MODE': return { ...state, cprMode: action.payload };
-    case 'TOGGLE_PATIENT_MODAL': return { ...state, isPatientModalOpen: action.payload };
-    case 'TOGGLE_GRID': return { ...state, isGridVisible: !state.isGridVisible };
-    case 'LOG_EVENT': return { ...state, events: [...state.events, action.payload] };
-    
-    case 'TOGGLE_COMPRESSION': 
-      return { 
-        ...state, 
-        isCompressing: action.payload, 
-        pauseSeconds: action.payload ? 0 : state.pauseSeconds 
-      };
-      
-    case 'SET_COMPRESSION_COUNT': return { ...state, compressionCount: action.payload };
-    case 'SET_VENTILATION_PHASE': return { ...state, isVentilationPhase: action.payload };
-    case 'SET_AIRWAY': return { ...state, airwayEstablished: action.payload };
-    
-    case 'TICK_MISSION': return { ...state, missionSeconds: state.missionSeconds + 1 };
-    case 'TICK_CYCLE': return { ...state, cycleSeconds: state.cycleSeconds + 1 };
-    case 'TICK_PAUSE': return { ...state, pauseSeconds: state.pauseSeconds + 1 };
-    
-    case 'TICK_CCF_ARREST': {
-      const newArrest = state.arrestSeconds + 1;
-      const rawCcf = (state.compressingSeconds / newArrest) * 100;
-      return { ...state, arrestSeconds: newArrest, currentCcfPercent: Math.min(100, Math.round(rawCcf)) };
-    }
-    case 'TICK_CCF_COMPRESSING': 
-      return { 
-        ...state, 
-        compressingSeconds: state.compressingSeconds + 1, 
-        cprSeconds: state.cprSeconds + 1 
-      };
-    
-    case 'RESET_ALL': return initialState;
-    default: return state;
-  }
 }
 </file>
 
@@ -1568,6 +1737,327 @@ export default function ViewObInitialBreaths() {
 }
 </file>
 
+<file path="src/components/PatientSelection.jsx">
+import React, { useContext } from 'react';
+import { CprContext } from '../context/CprContext.jsx';
+import { CPR_CONFIG } from '../config/cprConfig.js';
+
+import ViewObPatient from './views/ViewObPatient.jsx';
+import ViewObInitialBreaths from './views/ViewObInitialBreaths.jsx';
+import ViewObCompressions from './views/ViewObCompressions.jsx';
+import ViewObAnalyze from './views/ViewObAnalyze.jsx';
+import ViewDecision from './views/ViewDecision.jsx';
+import ViewJoule from './views/ViewJoule.jsx';
+import ViewCprResume from './views/ViewCprResume.jsx';
+
+export default function PatientSelection() {
+  const { state } = useContext(CprContext);
+
+  switch (state.appPhase) {
+    case CPR_CONFIG.PHASES.ONBOARDING:         
+      return <ViewObPatient />;
+    case CPR_CONFIG.PHASES.OB_INITIAL_BREATHS: 
+      return <ViewObInitialBreaths />;
+    case CPR_CONFIG.PHASES.OB_COMPRESSIONS:    
+      return <ViewObCompressions />;
+    case CPR_CONFIG.PHASES.OB_ANALYZE:         
+      return <ViewObAnalyze />;
+    case CPR_CONFIG.PHASES.DECISION:           
+      return <ViewDecision />;
+    case CPR_CONFIG.PHASES.JOULE:              
+      return <ViewJoule />;
+    case CPR_CONFIG.PHASES.WAITING_CPR_RESUME: 
+      return <ViewCprResume />;
+    default:                   
+      return null;
+  }
+}
+</file>
+
+<file path="src/components/PatientSetupModal.jsx">
+import React, { useContext } from 'react';
+import { CprContext } from '../context/CprContext.jsx';
+
+export default function SettingsModal({ isOpen, onClose }) {
+  const { state, dispatch } = useContext(CprContext);
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex flex-col justify-end bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+      
+      <div className="bg-white w-full rounded-t-3xl p-6 shadow-2xl animate-in slide-in-from-bottom-8 duration-300">
+        
+        <div className="flex items-center justify-center gap-2 mb-8">
+          <i className="fa-solid fa-sliders text-slate-400"></i>
+          <h2 className="text-sm font-black text-slate-800 tracking-widest uppercase">
+            Einstellungen
+          </h2>
+        </div>
+
+        <div className="mb-8">
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center mb-3">
+            Metronom Geschwindigkeit
+          </p>
+          <div className="flex bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
+            <button 
+              onClick={() => dispatch({ type: 'SET_BPM', payload: 100 })}
+              className={`flex-1 py-3 font-bold text-lg rounded-xl transition-all ${state.bpm === 100 ? 'bg-white text-slate-800 font-black shadow-sm border border-slate-200' : 'text-slate-400 hover:bg-slate-100'}`}
+            >100</button>
+            <button 
+              onClick={() => dispatch({ type: 'SET_BPM', payload: 110 })}
+              className={`flex-1 py-3 font-bold text-lg rounded-xl transition-all ${state.bpm === 110 ? 'bg-white text-slate-800 font-black shadow-sm border border-slate-200' : 'text-slate-400 hover:bg-slate-100'}`}
+            >110</button>
+            <button 
+              onClick={() => dispatch({ type: 'SET_BPM', payload: 120 })}
+              className={`flex-1 py-3 font-bold text-lg rounded-xl transition-all ${state.bpm === 120 ? 'bg-white text-slate-800 font-black shadow-sm border border-slate-200' : 'text-slate-400 hover:bg-slate-100'}`}
+            >120</button>
+          </div>
+        </div>
+
+        <div className="mb-8">
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center mb-3">
+            System Diagnose
+          </p>
+          <div className="flex flex-col gap-3 p-4 bg-slate-50/50 border border-slate-100 rounded-2xl">
+            
+            <button className="w-full bg-white border border-slate-200 py-3.5 rounded-xl font-bold text-slate-700 shadow-sm flex items-center justify-center gap-2 hover:bg-slate-50 transition-all">
+              <i className="fa-solid fa-bug text-slate-400"></i> Fehlerprotokoll einsehen
+            </button>
+            
+            <button 
+              onClick={() => dispatch({ type: 'TOGGLE_GRID' })}
+              className={`w-full border py-3.5 rounded-xl font-bold shadow-sm flex items-center justify-center gap-2 transition-all uppercase text-[12px] tracking-wider mt-2 ${state.isGridVisible ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'}`}
+            >
+              <i className="fa-solid fa-border-all text-slate-400"></i> Layout Grid ({state.isGridVisible ? 'An' : 'Aus'})
+            </button>
+
+            <button className="w-full bg-red-600 border border-red-700 py-3.5 rounded-xl font-bold text-white shadow-md shadow-red-600/20 flex items-center justify-center gap-2 active:scale-95 transition-all mt-6">
+              <i className="fa-solid fa-triangle-exclamation"></i> Hard Reset (Daten löschen)
+            </button>
+          </div>
+        </div>
+
+        <div className="text-center mb-6">
+          <p className="font-bold text-slate-800 tracking-widest text-xs">
+            CPR ASSIST <span className="text-red-600">VFINAL</span>
+          </p>
+        </div>
+
+        <button 
+          onClick={onClose}
+          className="w-full bg-slate-100 border border-slate-200 py-4 rounded-2xl font-bold text-slate-600 uppercase tracking-wider shadow-sm flex items-center justify-center gap-2 active:scale-95 transition-all"
+        >
+          <i className="fa-solid fa-rotate-left"></i> Zurück zum Einsatz
+        </button>
+
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="src/components/CenterDisplay.jsx">
+// --- Datei: src/components/CenterDisplay.jsx ---
+import React, { useContext } from 'react';
+import { CprContext } from '../context/CprContext.jsx';
+import { CPR_CONFIG } from '../config/cprConfig.js';
+
+import PatientSelection from './PatientSelection.jsx';
+import ViewAirwayMenu from './views/ViewAirwayMenu.jsx';
+import ViewAirwayDoc from './views/ViewAirwayDoc.jsx';
+
+export default function CenterDisplay() {
+  const { state } = useContext(CprContext);
+
+  // Bestimmt die Größe des Kreises.
+  // Wenn wir in RUNNING sind, ist er klein (224px).
+  // Beim Onboarding UND in den neuen Atemwegs-Menüs vergrößert er sich auf 340px.
+  const isSmallCircle = state.appPhase === CPR_CONFIG.PHASES.RUNNING;
+  const circleSize = isSmallCircle ? '224px' : '340px';
+
+  const formatCprTime = (seconds) => {
+    if (isNaN(seconds) || seconds === null) return "00:00";
+    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  };
+
+  const renderPhase = () => {
+    switch (state.appPhase) {
+      // 1. Das Live-Dashboard (120s Loop)
+      case CPR_CONFIG.PHASES.RUNNING:
+        return (
+          <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-white rounded-full shadow-[inset_0_0_20px_rgba(0,0,0,0.02)] animate-in zoom-in-95 duration-500 relative">
+            <div className="absolute top-5 w-10 h-1.5 bg-cyan-500 rounded-full"></div>
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em] mb-1">
+              Nächste Analyse
+            </div>
+            
+            {/* 120s Countdown im Dashboard */}
+            <div className="text-[64px] font-black text-slate-800 tracking-tighter leading-none mb-3 font-mono">
+               {formatCprTime(120 - (state.cycleSeconds || 0))}
+            </div>
+            
+            <div className="flex items-center gap-3 text-[13px] font-black tracking-widest mt-1">
+              <span className="text-amber-500 flex items-center gap-1.5">
+                <i className="fa-solid fa-bolt"></i> {state.shockCount || 0}
+              </span>
+              <span className="text-slate-200">|</span>
+              <span className="text-[#E3000F]">
+                {state.isPediatric && state.patientWeight ? Math.round(state.patientWeight * 4) : 150} J
+              </span>
+            </div>
+          </div>
+        );
+      
+      // 2. Das neue Atemwegs-Auswahlmenü
+      case CPR_CONFIG.PHASES.AIRWAY_MENU:
+        return <ViewAirwayMenu />;
+      
+      // 3. Die Doku für den invasiven Atemweg
+      case CPR_CONFIG.PHASES.AIRWAY_DOC:
+        return <ViewAirwayDoc />;
+        
+      // 4. Alle anderen Phasen (Onboarding, Analyse etc.) gehen an den Unter-Router
+      default:
+        return <PatientSelection />;
+    }
+  };
+
+  return (
+    <div className="relative flex flex-col items-center justify-center transition-all duration-500">
+      
+      {/* Überschrift beim Onboarding über dem Kreis schwebend */}
+      {state.appPhase === CPR_CONFIG.PHASES.ONBOARDING && (
+        <div className="absolute -top-[75px] w-full flex flex-col items-center justify-center text-center animate-in fade-in slide-in-from-bottom-4 duration-500 z-10">
+           <h1 className="text-[26px] font-black text-slate-800 uppercase tracking-[0.2em] drop-shadow-sm leading-none mb-1">
+             Einsatz Starten
+           </h1>
+           <div className="w-12 h-[3px] bg-[#E3000F] rounded-full opacity-80 mt-2"></div>
+        </div>
+      )}
+
+      {/* Das absolut runde, sich anpassende Hauptfenster */}
+      <div 
+        style={{ width: circleSize, height: circleSize }}
+        className="rounded-full shadow-[0_15px_40px_rgba(0,0,0,0.08)] border-4 border-slate-100 flex items-center justify-center relative overflow-hidden bg-white shrink-0 transition-all duration-500 mx-auto z-20"
+      >
+        {renderPhase()}
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="src/context/cprReducer.js">
+// --- Datei: src/context/cprReducer.js ---
+import { CPR_CONFIG } from '../config/cprConfig.js';
+
+export const initialState = {
+  appPhase: CPR_CONFIG.PHASES.ONBOARDING,
+  isPediatric: false,
+  patientWeight: null,
+  cprMode: 'continuous', 
+  
+  bpm: 110,         
+  isMuted: false,   
+  shockCount: 0,            // <--- NEU: Zählt die Defibrillationen (für Eskalation)
+  
+  startTime: null,         
+  isGridVisible: false,    
+  isPatientModalOpen: false, 
+  isAirwayModalOpen: false, 
+  
+  missionSeconds: 0, 
+  cprSeconds: 0, 
+  cycleSeconds: 0, 
+  
+  isCompressing: false,
+  pauseSeconds: 0, 
+  isVentilationPhase: false,
+  compressionCount: 0,
+  
+  airwayEstablished: false,
+  airwayType: null,         
+  airwaySize: null,         // <--- NEU: Größe (z.B. "4.0" oder "Gr. 2")
+  airwayDepth: null,        // <--- NEU: Tiefe (z.B. "12")
+  
+  compressingSeconds: 0, 
+  arrestSeconds: 0,      
+  currentCcfPercent: 100,
+  events: [],      
+  reminders: []
+};
+
+export function cprReducer(state, action) {
+  switch (action.type) {
+    case 'SET_PHASE': return { ...state, appPhase: action.payload };
+    case 'SET_BPM': return { ...state, bpm: action.payload };
+    case 'TOGGLE_MUTE': return { ...state, isMuted: !state.isMuted };
+    case 'INCREMENT_SHOCK': return { ...state, shockCount: state.shockCount + 1 }; // <--- NEU
+    
+    case 'SET_PEDIATRIC_DATA': return { 
+        ...state, 
+        isPediatric: action.payload.isPediatric,
+        patientWeight: action.payload.patientWeight,
+        cprMode: 'continuous', 
+        startTime: state.startTime || new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
+      };
+      
+    case 'SET_CPR_MODE': return { ...state, cprMode: action.payload };
+    case 'TOGGLE_PATIENT_MODAL': return { ...state, isPatientModalOpen: action.payload };
+    case 'TOGGLE_AIRWAY_MODAL': return { ...state, isAirwayModalOpen: action.payload }; 
+    case 'TOGGLE_GRID': return { ...state, isGridVisible: !state.isGridVisible };
+    case 'LOG_EVENT': return { ...state, events: [...state.events, action.payload] };
+    
+    case 'TOGGLE_COMPRESSION': 
+      return { 
+        ...state, 
+        isCompressing: action.payload, 
+        pauseSeconds: action.payload ? 0 : state.pauseSeconds 
+      };
+      
+    case 'SET_COMPRESSION_COUNT': return { ...state, compressionCount: action.payload };
+    case 'SET_VENTILATION_PHASE': return { ...state, isVentilationPhase: action.payload };
+    
+    // <--- NEU: Kompletter Atemwegs-State mit Fallback für alten Code
+    case 'SET_AIRWAY': 
+      if (typeof action.payload === 'boolean') {
+        return { ...state, airwayEstablished: action.payload };
+      }
+      return { 
+        ...state, 
+        airwayEstablished: action.payload.established,
+        airwayType: action.payload.type || null,
+        airwaySize: action.payload.size || null,
+        airwayDepth: action.payload.depth || null
+      };
+      
+    case 'SET_AIRWAY_TYPE': return { ...state, airwayType: action.payload }; 
+    
+    case 'TICK_MISSION': return { ...state, missionSeconds: state.missionSeconds + 1 };
+    case 'TICK_CYCLE': return { ...state, cycleSeconds: state.cycleSeconds + 1 };
+    case 'TICK_PAUSE': return { ...state, pauseSeconds: state.pauseSeconds + 1 };
+    
+    case 'TICK_CCF_ARREST': {
+      const newArrest = state.arrestSeconds + 1;
+      const rawCcf = (state.compressingSeconds / newArrest) * 100;
+      return { ...state, arrestSeconds: newArrest, currentCcfPercent: Math.min(100, Math.round(rawCcf)) };
+    }
+    case 'TICK_CCF_COMPRESSING': 
+      return { 
+        ...state, 
+        compressingSeconds: state.compressingSeconds + 1, 
+        cprSeconds: state.cprSeconds + 1 
+      };
+    
+    case 'RESET_ALL': return initialState;
+    default: return state;
+  }
+}
+</file>
+
 <file path="src/context/CprContext.jsx">
 // --- Datei: src/context/CprContext.jsx ---
 import React, { createContext, useReducer, useEffect, useCallback } from 'react';
@@ -1582,6 +2072,13 @@ const loadState = () => {
        const parsed = JSON.parse(saved);
        parsed.isGridVisible = false;
        parsed.isPatientModalOpen = false;
+       
+       // Sicherheits-Fallbacks für neue oder alte Cache-Werte
+       if (parsed.bpm === undefined) parsed.bpm = 110;
+       if (parsed.isMuted === undefined) parsed.isMuted = false;
+       if (parsed.shockCount === undefined) parsed.shockCount = 0;
+       if (parsed.airwayEstablished === undefined) parsed.airwayEstablished = false;
+       
        return parsed;
     }
     return initialState;
@@ -1599,11 +2096,18 @@ export function CprProvider({ children }) {
       isPediatric: state.isPediatric,
       patientWeight: state.patientWeight,
       cprMode: state.cprMode,
+      bpm: state.bpm,                 
+      isMuted: state.isMuted,         
+      shockCount: state.shockCount,   // <--- NEU
       startTime: state.startTime,
       missionSeconds: state.missionSeconds,
       cprSeconds: state.cprSeconds,
       cycleSeconds: state.cycleSeconds,
       isCompressing: state.isCompressing,
+      airwayEstablished: state.airwayEstablished,
+      airwayType: state.airwayType,
+      airwaySize: state.airwaySize,   // <--- NEU
+      airwayDepth: state.airwayDepth, // <--- NEU
       events: state.events,
       reminders: state.reminders,
       currentCcfPercent: state.currentCcfPercent,
@@ -1614,13 +2118,28 @@ export function CprProvider({ children }) {
   }, [state]);
 
   const logEvent = useCallback((type, detail = "") => {
+    const now = new Date();
+    const realTimeStr = now.toLocaleTimeString('de-DE', { hour12: false });
+    
+    // Formatiert die fortlaufende Einsatzuhr präzise in MM:SS
+    const formatMissionTime = (totalSeconds) => {
+      const m = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+      const s = (totalSeconds % 60).toString().padStart(2, '0');
+      return `${m}:${s}`;
+    };
+
+    // Das neue, absolut rechtssichere Format: [Uhrzeit] (Einsatzzeit) Aktion
+    const formattedEntry = `[${realTimeStr}] (${formatMissionTime(state.missionSeconds)}) ${type}: ${detail}`;
+
     const newEvent = {
       id: crypto.randomUUID(),
-      realTime: new Date().toLocaleTimeString('de-DE', { hour12: false }),
+      realTime: realTimeStr,
       missionTime: state.missionSeconds,
       type: type,
-      detail: detail
+      detail: detail,
+      fullEntry: formattedEntry // <--- Der komplette String für das Protokoll
     };
+    
     dispatch({ type: 'LOG_EVENT', payload: newEvent });
   }, [state.missionSeconds]);
 
@@ -1632,187 +2151,102 @@ export function CprProvider({ children }) {
 }
 </file>
 
-<file path="src/components/PatientSetupModal.jsx">
+<file path="src/App.jsx">
+// --- Datei: src/App.jsx ---
 import React, { useContext, useState } from 'react';
-import { CprContext } from '../context/CprContext.jsx';
-import { usePatientLogic } from '../hooks/usePatientLogic.js';
-import { BROSELOW_DATA, calculatePediatricVitals, getBroselowZone } from '../config/broselowData.js';
+import { CprProvider, CprContext } from './context/CprContext.jsx';
 
-// ==========================================
-// HILFS-KOMPONENTEN
-// ==========================================
 
-const VitalSliderBlock = ({ label, valueText, min, max, value, step = 1, readOnly = false, onChange }) => (
-  <div className="flex flex-col mb-3 px-3 py-2 bg-white rounded-[1.5rem] shadow-[0_4px_20px_rgba(0,0,0,0.04)] border border-slate-100">
-    <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest px-1 pb-1 border-b border-dashed border-slate-100 mb-2">
-      {label}
-    </div>
-    <div className="flex items-center gap-3">
-      <input 
-        type="range" 
-        min={min} 
-        max={max} 
-        step={step} 
-        value={value} 
-        readOnly={readOnly}
-        onChange={(e) => !readOnly && onChange(e.target.value)} 
-        className={`flex-1 h-2 bg-slate-200 rounded-full accent-[#E3000F] ${readOnly ? 'pointer-events-none opacity-60' : 'cursor-pointer'}`} 
-      />
-      <div className="bg-slate-50 text-slate-600 border border-slate-200 font-bold text-[9px] uppercase tracking-wider rounded-xl w-[110px] h-9 shadow-sm shrink-0 flex items-center justify-center">
-        {valueText}
-      </div>
-    </div>
-  </div>
-);
+import MedicalDisclaimer from './MedicalDisclaimer.jsx';
+import DashboardShell from './components/dashboard/DashboardShell.jsx';
+import SettingsModal from './components/SettingsModal.jsx';
+import HelpOverlay from './components/HelpOverlay.jsx';
 
-// ==========================================
-// HAUPT-KOMPONENTE
-// ==========================================
+import './App.css';
 
-export default function PatientSetupModal() {
-  const { dispatch } = useContext(CprContext);
-  const { setChild } = usePatientLogic();
+function MainApp() {
+  // WICHTIG: Hier wurde 'dispatch' hinzugefügt, damit der Button funktioniert!
+  const { state, dispatch } = useContext(CprContext);
   
-  // State für die synchronisierten Vitals (Startwert 4kg laut Vorgabe)
-  const [vitals, setVitals] = useState({ age: 0, kg: 4, cm: 55 });
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  
+  
 
-  const handleSync = (source, value) => {
-    setVitals(prev => ({ ...prev, ...calculatePediatricVitals(source, parseFloat(value)) }));
-  };
-
-  const handleStart = (withWeight) => {
-    setChild(withWeight ? vitals.kg : null);
-  };
-
-  const handleClose = () => {
-    dispatch({ type: 'TOGGLE_PATIENT_MODAL', payload: false });
-  };
-
-  const activeZone = getBroselowZone(vitals.kg);
-
-  // Farbschema exakt nach deinen Vorgaben
-  const broselowStyles = {
-    grau: { bg: '#9ca3af', text: '#ffffff' },
-    rosa: { bg: '#f472b6', text: '#ffffff' },
-    rot: { bg: '#ef4444', text: '#ffffff' },
-    lila: { bg: '#a855f7', text: '#ffffff' },
-    gelb: { bg: '#eab308', text: '#ffffff' },
-    weiss: { bg: '#ffffff', text: '#334155', extraClass: 'border border-slate-200' },
-    blau: { bg: '#3b82f6', text: '#ffffff' },
-    orange: { bg: '#f97316', text: '#ffffff' },
-    gruen: { bg: '#22c55e', text: '#ffffff' }
+  // Die "Brechstange" (Triple-Click Hard Reset)
+  const handleTripleClick = (e) => {
+    if (e.detail === 3) {
+      localStorage.clear();
+      window.location.reload();
+    }
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm animate-in fade-in duration-200 p-4">
-      
-      {/* Modal Container */}
-      <div className="relative bg-white w-full max-w-[420px] max-h-[98vh] rounded-[2rem] border border-slate-100 shadow-2xl flex flex-col animate-in zoom-in-95 duration-300">
+    <div className="bg-slate-200/50 w-full h-[100dvh] flex justify-center items-center overflow-hidden relative">
+      <div className="w-full max-w-[430px] h-full bg-slate-50 flex flex-col relative shadow-2xl overflow-hidden text-slate-900 select-none">
         
-        {/* Schließen Button */}
-        <button 
-          onClick={handleClose} 
-          className="absolute top-3 right-3 w-8 h-8 bg-slate-100 rounded-full text-slate-500 flex items-center justify-center active:scale-90 transition-transform z-10"
-        >
-          <i className="fa-solid fa-xmark"></i>
-        </button>
-
-        <div className="overflow-y-auto flex-1 p-5 pb-6 custom-scrollbar">
+        {/* HEADER */}
+        <header className="flex items-center justify-between bg-white px-4 py-3 border-b border-slate-200 shadow-sm z-[70] relative shrink-0">
           
-          {/* Überschrift */}
-          <h2 className="text-lg font-black text-slate-800 uppercase tracking-widest text-center mt-2 mb-6">
-            Pädiatrie Setup
-          </h2>
-
-          {/* Sektion 1: Broselow-Farb-Schnellwahl */}
-          <div className="mb-6">
-            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest text-center block mb-3">
-              Maßband-Farbe Schnellwahl
-            </span>
-            <div className="grid grid-cols-3 gap-1.5">
-              {BROSELOW_DATA.map((zone) => {
-                const styleDef = broselowStyles[zone.color] || broselowStyles.weiss;
-                const isActive = activeZone?.color === zone.color;
-                
-                return (
-                  <button 
-                    key={zone.color} 
-                    onClick={() => handleSync('kg', zone.avgKg)}
-                    style={{ backgroundColor: styleDef.bg, color: styleDef.text }}
-                    className={`flex flex-col items-center justify-center py-2 rounded-xl shadow-sm transition-all duration-200 
-                      ${styleDef.extraClass || ''} 
-                      ${isActive ? 'opacity-100 scale-105 border-[3px] border-slate-800' : 'opacity-40 scale-100 border-none'}`
-                    }
-                  >
-                    <span className="text-[13px] font-black tracking-wider drop-shadow-md uppercase">{zone.color}</span>
-                    <span className="text-[9px] font-extrabold tracking-wide drop-shadow-md">{zone.avgKg} kg • {zone.cm} cm</span>
-                  </button>
-                );
-              })}
+          <div className="flex items-center gap-3 p-1 cursor-pointer" onClick={handleTripleClick}>
+            <div className="w-10 h-10 flex items-center justify-center shrink-0 text-[#E3000F]">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"/></svg>
+            </div>
+            <div className="flex flex-col justify-center leading-none pointer-events-none">
+              <span className="text-lg font-black text-slate-900 uppercase tracking-tight">CPR Assist</span>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-0.5">by Moe</span>
             </div>
           </div>
 
-          {/* Sektion 2: Synchronisierte Slider */}
-          <div className="mb-4">
-            <VitalSliderBlock 
-              label="Alter" 
-              value={vitals.age} 
-              min="0" max="12" 
-              onChange={(val) => handleSync('age', val)}
-              valueText={vitals.age === 0 ? 'Säugling' : `${vitals.age} J.`} 
-            />
-            <VitalSliderBlock 
-              label="Gewicht" 
-              value={vitals.kg} 
-              min="3" max="36" 
-              onChange={(val) => handleSync('kg', val)}
-              valueText={`${vitals.kg} kg`} 
-            />
-            <VitalSliderBlock 
-              label="Größe (Berechnet)" 
-              value={vitals.cm} 
-              min="50" max="140" 
-              readOnly 
-              valueText={`${vitals.cm} cm`} 
-            />
-          </div>
-
-          {/* Sektion 3: Zusammenfassungs-Badge */}
-          <div className="h-8 flex justify-center mb-4">
-            {activeZone && (
-              <div id="summary-badge" className="bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-black uppercase tracking-widest px-5 py-2 rounded-full shadow-sm flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: broselowStyles[activeZone.color]?.bg }}></span>
-                {activeZone.color} • {activeZone.avgKg} kg • {vitals.age === 0 ? 'Säugling' : `${vitals.age} J.`}
-              </div>
-            )}
-          </div>
-
-          {/* Sektion 4: Aktions-Buttons */}
-          <div className="flex gap-3">
-            <button 
-              onClick={() => handleStart(false)} 
-              className="flex-1 bg-slate-50 border border-slate-200 text-slate-500 rounded-2xl py-3 font-bold uppercase text-[9px] tracking-widest flex flex-col items-center justify-center active:scale-95 transition-transform hover:bg-slate-100"
-            >
-              <i className="fa-solid fa-scale-unbalanced text-slate-400 text-sm mb-1"></i>
-              Gewicht später
+          <div className="flex items-center gap-2">
+            <button className="text-slate-400 text-xl p-2 active:scale-90 transition-transform cursor-pointer">
+              <i className="fa-solid fa-circle-question pointer-events-none"></i>
             </button>
+            
+            {/* DER SAUBERE MUTE-BUTTON */}
             <button 
-              onClick={() => handleStart(true)} 
-              className="flex-[1.5] bg-[#E3000F] text-white rounded-2xl py-3 font-black uppercase text-[11px] tracking-widest shadow-[0_8px_20px_rgba(227,0,15,0.25)] active:scale-95 transition-transform flex items-center justify-center gap-2 hover:bg-red-700"
+              type="button"
+              onClick={() => dispatch({ type: 'TOGGLE_MUTE' })}
+              className="text-slate-600 text-xl p-2 active:scale-90 transition-transform cursor-pointer"
             >
-              Starten
-              <i className="fa-solid fa-play text-[10px]"></i>
+              <i className={`fa-solid ${state.isMuted ? 'fa-volume-xmark text-red-500' : 'fa-volume-high'} pointer-events-none`}></i>
+            </button>
+            
+            <button 
+              onClick={() => setIsSettingsOpen(true)} 
+              className="text-slate-600 text-xl p-2 active:scale-90 transition-transform ml-1 cursor-pointer"
+            >
+              <i className="fa-solid fa-gear pointer-events-none"></i>
             </button>
           </div>
+        </header>
 
-        </div>
+        <MedicalDisclaimer />
+
+        {/* HAUPTBEREICH */}
+        <main className="flex-1 relative z-20 w-full flex flex-col">
+          <DashboardShell />
+        </main>
+        
+        <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+        
+        <HelpOverlay />
+
       </div>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <CprProvider>
+      <MainApp />
+    </CprProvider>
   );
 }
 </file>
 
 <file path="src/hooks/useMasterLoop.js">
+// --- Datei: src/hooks/useMasterLoop.js ---
 import { useEffect, useContext, useRef, useCallback } from 'react';
 import { CprContext } from '../context/CprContext.jsx';
 import { CPR_CONFIG } from '../config/cprConfig.js';
@@ -1820,10 +2254,6 @@ import { CPR_CONFIG } from '../config/cprConfig.js';
 export function useMasterLoop() {
   const { state, dispatch, logEvent } = useContext(CprContext);
   
-  // ========================================================
-  // HIER IST DER FIX FÜR DEN MUTE-BUTTON: 
-  // Das Update passiert jetzt in Echtzeit, nicht mehr verzögert!
-  // ========================================================
   const stateRef = useRef(state);
   stateRef.current = state; 
 
@@ -1839,9 +2269,25 @@ export function useMasterLoop() {
     logEvent(CPR_CONFIG.EVENTS.PAUSE, isComp ? "Kompression FORTGESETZT" : "Kompression PAUSE");
   }, [dispatch, logEvent]);
 
-  // DER SYNTHETISCHE BEATMUNGSTON
+  // ========================================================
+  // DIE ATEMWEG-LOGIK (Beutel-Maske vs. Invasiv)
+  // ========================================================
+  const setAirway = useCallback((airwayType) => {
+    dispatch({ type: 'SET_AIRWAY', payload: !!airwayType });
+    dispatch({ type: 'SET_AIRWAY_TYPE', payload: airwayType });
+    logEvent(CPR_CONFIG.EVENTS.AIRWAY, airwayType ? `Atemweg gesichert: ${airwayType}` : "Atemweg entfernt");
+
+    if (airwayType === 'Beutel-Maske') {
+      const mode = stateRef.current.isPediatric ? '15:2' : '30:2';
+      dispatch({ type: 'SET_CPR_MODE', payload: mode });
+      logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, `Modus: ${mode} (Beutel-Maske)`);
+    } else if (airwayType === 'Invasiv') {
+      dispatch({ type: 'SET_CPR_MODE', payload: 'continuous' });
+      logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, `Modus: KONT (Invasiv)`);
+    }
+  }, [dispatch, logEvent]);
+
   const playVentSound = useCallback(() => {
-    // Greift in Echtzeit auf den stumm-Status zu!
     if (stateRef.current.isMuted || !window.CPR_AudioCtx) return;
     
     const ctx = window.CPR_AudioCtx;
@@ -1888,11 +2334,16 @@ export function useMasterLoop() {
     }, 1500);
   }, [dispatch, playVentSound]);
 
-  // DER GLOBALE TICKER
+  // DER GLOBALE TICKER (mit Timer-Fix)
   useEffect(() => {
     let lastTick = Date.now();
     const masterTimer = setInterval(() => {
-      if (stateRef.current.appPhase === 'ONBOARDING') return;
+      // Wenn im Startmenü: Ziehe die Zeit stur mit, starte keinen Zähler
+      if (stateRef.current.appPhase === 'ONBOARDING') {
+        lastTick = Date.now();
+        return;
+      }
+      
       const now = Date.now();
       if (now - lastTick >= 1000) {
         lastTick += 1000;
@@ -1926,7 +2377,6 @@ export function useMasterLoop() {
     const scheduler = () => {
         while (nextNoteTime < ctx.currentTime + 0.1) {
             
-            // Greift in Echtzeit auf den stumm-Status zu!
             if (!stateRef.current.isMuted) {
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
@@ -1957,7 +2407,7 @@ export function useMasterLoop() {
                 }
             }, timeUntilNote);
 
-            const secondsPerBeat = 60.0 / stateRef.current.bpm;
+            const secondsPerBeat = 60.0 / (stateRef.current.bpm || 110);
             nextNoteTime += secondsPerBeat;
         }
         
@@ -1969,218 +2419,19 @@ export function useMasterLoop() {
     
   }, [state.isCompressing, triggerVentilationPhase, dispatch]);
 
-  return { toggleCpr };
-}
-</file>
-
-<file path="src/components/CenterDisplay.jsx">
-import React, { useContext } from 'react';
-import { CprContext } from '../context/CprContext.jsx';
-import { CPR_CONFIG } from '../config/cprConfig.js';
-import PatientSelection from './PatientSelection.jsx';
-
-export default function CenterDisplay() {
-  const { state } = useContext(CprContext);
-
-  const isDashboard = state.appPhase === CPR_CONFIG.PHASES.RUNNING;
-  // Perfekter Kreis-Morpheffekt: 340px beim Onboarding, 224px im Dashboard
-  const circleSize = isDashboard ? '224px' : '340px';
-
-  const formatCprTime = (seconds) => {
-    if (isNaN(seconds) || seconds === null) return "00:00";
-    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-    const s = (seconds % 60).toString().padStart(2, '0');
-    return `${m}:${s}`;
-  };
-
-  const renderPhase = () => {
-    if (state.appPhase === CPR_CONFIG.PHASES.RUNNING) {
-      return (
-        <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-white rounded-full shadow-[inset_0_0_20px_rgba(0,0,0,0.02)] animate-in zoom-in-95 duration-500 relative">
-          <div className="absolute top-5 w-10 h-1.5 bg-cyan-500 rounded-full"></div>
-          <div className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em] mb-1">
-            Nächste Analyse
-          </div>
-          
-          {/* 120s Countdown im Dashboard */}
-          <div className="text-[64px] font-black text-slate-800 tracking-tighter leading-none mb-3 font-mono">
-             {formatCprTime(120 - (state.cycleSeconds || 0))}
-          </div>
-          
-          <div className="flex items-center gap-3 text-[13px] font-black tracking-widest mt-1">
-            <span className="text-amber-500 flex items-center gap-1.5">
-              <i className="fa-solid fa-bolt"></i> {state.shockCount || 0}
-            </span>
-            <span className="text-slate-200">|</span>
-            <span className="text-[#E3000F]">
-              {state.isPediatric && state.patientWeight ? Math.round(state.patientWeight * 4) : 150} J
-            </span>
-          </div>
-        </div>
-      );
-    }
-
-    // Leitet alle anderen Phasen an den Onboarding-Router weiter
-    return <PatientSelection />;
-  };
-
-  return (
-    <div className="relative flex flex-col items-center justify-center transition-all duration-500">
-      
-      {/* Überschrift beim Onboarding über dem Kreis schwebend */}
-      {state.appPhase === CPR_CONFIG.PHASES.ONBOARDING && (
-        <div className="absolute -top-[75px] w-full flex flex-col items-center justify-center text-center animate-in fade-in slide-in-from-bottom-4 duration-500 z-10">
-           <h1 className="text-[26px] font-black text-slate-800 uppercase tracking-[0.2em] drop-shadow-sm leading-none mb-1">
-             Einsatz Starten
-           </h1>
-           <div className="w-12 h-[3px] bg-[#E3000F] rounded-full opacity-80 mt-2"></div>
-        </div>
-      )}
-
-      {/* Das absolut runde, sich anpassende Hauptfenster */}
-      <div 
-        style={{ width: circleSize, height: circleSize }}
-        className="rounded-full shadow-[0_15px_40px_rgba(0,0,0,0.08)] border-4 border-slate-100 flex items-center justify-center relative overflow-hidden bg-white shrink-0 transition-all duration-500 mx-auto z-20"
-      >
-        {renderPhase()}
-      </div>
-    </div>
-  );
-}
-</file>
-
-<file path="src/components/PatientSelection.jsx">
-import React, { useContext } from 'react';
-import { CprContext } from '../context/CprContext.jsx';
-import { CPR_CONFIG } from '../config/cprConfig.js';
-
-import ViewObPatient from './views/ViewObPatient.jsx';
-import ViewObInitialBreaths from './views/ViewObInitialBreaths.jsx';
-import ViewObCompressions from './views/ViewObCompressions.jsx';
-import ViewObAnalyze from './views/ViewObAnalyze.jsx';
-import ViewDecision from './views/ViewDecision.jsx';
-import ViewJoule from './views/ViewJoule.jsx';
-import ViewCprResume from './views/ViewCprResume.jsx';
-
-export default function PatientSelection() {
-  const { state } = useContext(CprContext);
-
-  switch (state.appPhase) {
-    case CPR_CONFIG.PHASES.ONBOARDING:         
-      return <ViewObPatient />;
-    case CPR_CONFIG.PHASES.OB_INITIAL_BREATHS: 
-      return <ViewObInitialBreaths />;
-    case CPR_CONFIG.PHASES.OB_COMPRESSIONS:    
-      return <ViewObCompressions />;
-    case CPR_CONFIG.PHASES.OB_ANALYZE:         
-      return <ViewObAnalyze />;
-    case CPR_CONFIG.PHASES.DECISION:           
-      return <ViewDecision />;
-    case CPR_CONFIG.PHASES.JOULE:              
-      return <ViewJoule />;
-    case CPR_CONFIG.PHASES.WAITING_CPR_RESUME: 
-      return <ViewCprResume />;
-    default:                   
-      return null;
-  }
-}
-</file>
-
-<file path="src/App.jsx">
-// --- Datei: src/App.jsx ---
-import React, { useContext, useState } from 'react';
-import { CprProvider, CprContext } from './context/CprContext.jsx';
-import { useGlobalTimer } from './hooks/useGlobalTimer.js';
-
-import MedicalDisclaimer from './MedicalDisclaimer.jsx';
-import DashboardShell from './components/dashboard/DashboardShell.jsx';
-import SettingsModal from './components/SettingsModal.jsx';
-import HelpOverlay from './components/HelpOverlay.jsx';
-
-import './App.css';
-
-function MainApp() {
-  const { state } = useContext(CprContext);
-  
-  // 1. NEU: Der State für das Einstellungsmenü
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  
-  useGlobalTimer();
-
-  // 2. NEU: Die "Brechstange" (Triple-Click Hard Reset)
-  // Löscht den gesamten fehlerhaften Browser-Speicher und lädt die App frisch
-  const handleTripleClick = (e) => {
-    if (e.detail === 3) {
-      localStorage.clear();
-      window.location.reload();
-    }
-  };
-
-  return (
-    <div className="bg-slate-200/50 w-full h-[100dvh] flex justify-center items-center overflow-hidden relative">
-      <div className="w-full max-w-[430px] h-full bg-slate-50 flex flex-col relative shadow-2xl overflow-hidden text-slate-900 select-none">
-        
-        {/* HEADER */}
-        <header className="flex items-center justify-between bg-white px-4 py-3 border-b border-slate-200 shadow-sm z-[70] relative shrink-0">
-          
-          {/* HIER LIEGT DER TRIPLE-CLICK: Einfach 3x schnell auf das Logo/den Namen tippen! */}
-          <div className="flex items-center gap-3 p-1 cursor-pointer" onClick={handleTripleClick}>
-            <div className="w-10 h-10 flex items-center justify-center shrink-0 text-[#E3000F]">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"/></svg>
-            </div>
-            <div className="flex flex-col justify-center leading-none pointer-events-none">
-              <span className="text-lg font-black text-slate-900 uppercase tracking-tight">CPR Assist</span>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-0.5">by Moe</span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button className="text-slate-400 text-xl p-2 active:scale-90 transition-transform"><i className="fa-solid fa-circle-question"></i></button>
-            <button className="text-slate-400 text-xl p-2 active:scale-90 transition-transform"><i className="fa-solid fa-volume-high"></i></button>
-            
-            {/* 3. NEU: Der Settings-Button ist jetzt scharf geschaltet! */}
-            <button 
-              onClick={() => setIsSettingsOpen(true)} 
-              className="text-slate-600 text-xl p-2 active:scale-90 transition-transform ml-1"
-            >
-              <i className="fa-solid fa-gear"></i>
-            </button>
-          </div>
-        </header>
-
-        <MedicalDisclaimer />
-
-        {/* HAUPTBEREICH */}
-        <main className="flex-1 relative z-20 w-full flex flex-col">
-          <DashboardShell />
-        </main>
-        
-        {/* 4. NEU: Das Modal bekommt mitgeteilt, ob es offen sein soll */}
-        <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
-        
-        <HelpOverlay />
-
-      </div>
-    </div>
-  );
-}
-
-export default function App() {
-  return (
-    <CprProvider>
-      <MainApp />
-    </CprProvider>
-  );
+  return { toggleCpr, setAirway };
 }
 </file>
 
 <file path="src/components/dashboard/DashboardShell.jsx">
+// --- Datei: src/components/dashboard/DashboardShell.jsx ---
 import React, { useContext } from 'react';
 import { CprContext } from '../../context/CprContext.jsx';
 import { CPR_CONFIG } from '../../config/cprConfig.js';
 
 import CenterDisplay from '../CenterDisplay.jsx';
 import PatientSetupModal from '../PatientSetupModal.jsx'; 
+import AirwayModal from '../AirwayModal.jsx';
 import CprButton from './CprButton.jsx'; 
 
 import { usePatientLogic } from '../../hooks/usePatientLogic.js';
@@ -2196,13 +2447,6 @@ export default function DashboardShell() {
     const m = Math.floor(seconds / 60).toString().padStart(2, '0');
     const s = (seconds % 60).toString().padStart(2, '0');
     return `${m}:${s}`;
-  };
-
-  // KUGELSICHERER MUTE-HANDLER FÜR MOBILE GERÄTE
-  const handleMute = (e) => {
-    e.preventDefault(); 
-    e.stopPropagation();
-    dispatch({ type: 'TOGGLE_MUTE' });
   };
 
   const SatelliteBtn = ({ icon, label, colorClass = "bg-white text-slate-500 border-slate-200" }) => (
@@ -2250,14 +2494,11 @@ export default function DashboardShell() {
           <div className="flex justify-between items-center w-full mb-0.5">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Zeit</span>
             
-            {/* DER NEUE, PERFEKTIONIERTE MUTE-BUTTON */}
             <button 
               type="button"
-              onClick={handleMute}
-              onTouchEnd={handleMute} // Fängt Mobile-Taps 100%ig ab!
-              className="text-slate-300 active:scale-95 transition-all p-2 -mr-2 z-50 relative"
+              onClick={() => dispatch({ type: 'TOGGLE_MUTE' })}
+              className="text-slate-300 active:scale-95 transition-all p-2 -mr-2 z-50 relative cursor-pointer"
             >
-              {/* pointer-events-none verhindert, dass das Icon den Klick klaut! */}
               <i className={`fa-solid ${state.isMuted ? 'fa-volume-xmark text-red-500' : 'fa-volume-high text-slate-500'} pointer-events-none text-lg`}></i>
             </button>
 
@@ -2271,10 +2512,10 @@ export default function DashboardShell() {
           <div className="flex flex-col items-start justify-center h-full gap-1.5">
             <div className="flex items-center gap-2">
               <button onClick={toggleCprMode} className="flex rounded-full border border-amber-300 overflow-hidden shadow-sm active:scale-95 transition-transform cursor-pointer">
-                <span className={`text-[10px] font-black px-2.5 py-0.5 uppercase ${state.cprMode !== 'continuous' ? 'bg-amber-100 text-amber-700' : 'bg-white text-slate-400'}`}>
+                <span className={`text-[10px] font-black px-2.5 py-0.5 uppercase ${state.cprMode !== 'continuous' ? 'bg-amber-100 text-amber-700' : 'bg-white text-slate-400 pointer-events-none'}`}>
                   {state.isPediatric ? '15:2' : '30:2'}
                 </span>
-                <span className={`text-[10px] font-black px-2.5 py-0.5 uppercase border-l border-amber-200 ${state.cprMode === 'continuous' ? 'bg-amber-100 text-amber-700' : 'bg-white text-slate-400'}`}>
+                <span className={`text-[10px] font-black px-2.5 py-0.5 uppercase border-l border-amber-200 ${state.cprMode === 'continuous' ? 'bg-amber-100 text-amber-700' : 'bg-white text-slate-400 pointer-events-none'}`}>
                   KONT
                 </span>
               </button>
@@ -2310,13 +2551,16 @@ export default function DashboardShell() {
       {/* 3. UNTERE LEISTE */}
       <div className={`shrink-0 w-full flex justify-between items-end px-5 pb-8 pt-2 z-50 transition-opacity duration-300 pointer-events-none ${!showBottomButtons ? 'opacity-0' : 'opacity-100'}`}>
         <MainBtn 
-            onClick={() => console.log("Atemweg kommt als nächstes!")}
+             onClick={() => dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.AIRWAY_MENU })}
             icon="fa-lungs" label="Atemweg" badge={!state.airwayEstablished} colorClass="bg-white text-[#E3000F] border-[#E3000F] shadow-[0_0_25px_rgba(227,0,15,0.3)]"
         />
         <CprButton toggleCpr={toggleCpr} />
       </div>
 
+      {/* MODALS (Diese müssen strikt VOR dem schließenden div liegen) */}
       {state.isPatientModalOpen && <PatientSetupModal />}
+      <AirwayModal />
+
     </div>
   );
 }
