@@ -5,7 +5,7 @@ import { CPR_CONFIG } from '../../config/cprConfig.js';
 
 import CenterDisplay from '../CenterDisplay.jsx';
 import PatientSetupModal from '../PatientSetupModal.jsx'; 
-import AirwayModal from '../AirwayModal.jsx';
+
 import CprButton from './CprButton.jsx'; 
 
 import { usePatientLogic } from '../../hooks/usePatientLogic.js';
@@ -132,9 +132,11 @@ export default function DashboardShell() {
       </div>
 
       {/* MODALS (Diese müssen strikt VOR dem schließenden div liegen) */}
+      {/* MODALS (Diese müssen strikt VOR dem schließenden div liegen) */}
       {state.isPatientModalOpen && <PatientSetupModal />}
-      <AirwayModal />
 
     </div>
   );
 }
+
+ 
