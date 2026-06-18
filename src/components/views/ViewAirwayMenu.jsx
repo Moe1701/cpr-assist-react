@@ -41,42 +41,50 @@ export default function ViewAirwayMenu() {
     dispatch({ type: 'SET_PHASE', payload: returnPhase });
   };
 
-  const handleCancel = () => {
-    dispatch({ type: 'SET_PHASE', payload: returnPhase });
-  };
-
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full p-4 animate-in zoom-in-95 duration-200">
-      <button onClick={handleCancel} className="absolute top-4 right-4 w-8 h-8 bg-slate-100 rounded-full text-slate-500 flex items-center justify-center active:scale-95 transition-transform z-10">
+    <div className="flex flex-col items-center justify-center w-full h-full p-6 animate-in zoom-in-95 duration-200">
+      
+      <button 
+        onClick={() => dispatch({ type: 'SET_PHASE', payload: returnPhase })} 
+        className="absolute top-4 right-4 w-8 h-8 bg-slate-50 rounded-full text-slate-400 flex items-center justify-center active:scale-95 transition-transform z-10 hover:bg-slate-100"
+      >
         <i className="fa-solid fa-xmark pointer-events-none"></i>
       </button>
 
-      <h2 className="text-xs font-black text-slate-800 uppercase tracking-widest text-center mt-2 mb-3">
+      <h2 className="text-[11px] font-black text-slate-700 uppercase tracking-widest text-center mt-1 mb-3">
         Atemweg sichern
       </h2>
 
       {activeZone && (
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-2 w-[90%] mb-3 text-center shadow-sm">
-          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block mb-0.5">Broselow Empfehlung</span>
-          <span className="text-[11px] font-black text-slate-700">
+        <div className="bg-slate-50 border border-slate-100 rounded-xl p-1.5 w-[85%] max-w-[220px] mb-3 text-center">
+          <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest block mb-0.5">Broselow Info</span>
+          <span className="text-[10px] font-black text-slate-600">
             Tubus: {activeZone.airway?.tubus || '?'} mm | Tiefe: {activeZone.airway?.tiefe || '?'} cm
           </span>
         </div>
       )}
 
-      <div className="w-[90%] flex flex-col gap-2.5">
+      {/* Die Container-Breite sorgt dafür, dass nichts den Kreis berührt */}
+      <div className="w-[85%] max-w-[220px] flex flex-col gap-2">
         
-        {/* BVM Button: Kräftiges Cyan */}
-        <button onClick={handleBvm} className="w-full py-3.5 rounded-[14px] font-black uppercase tracking-widest flex items-center justify-center gap-3 active:scale-95 transition-transform bg-cyan-500 text-white shadow-md shadow-cyan-500/30">
-          <i className="fa-solid fa-mask-ventilator text-2xl pointer-events-none"></i> 
-          <span className="pointer-events-none">Beutel-Maske</span>
+        {/* BEUTEL-MASKE: Weiß mit Cyan Rahmen */}
+        <button 
+          onClick={handleBvm} 
+          className="w-full py-3 rounded-[16px] font-black uppercase tracking-widest flex items-center justify-center gap-2.5 active:scale-95 transition-transform bg-white border-2 border-cyan-200 text-cyan-600 shadow-sm hover:bg-cyan-50"
+        >
+          <i className="fa-solid fa-mask-ventilator text-lg pointer-events-none"></i> 
+          <span className="pointer-events-none text-[11px]">Beutel-Maske</span>
         </button>
 
-        {/* Invasive Buttons: Kräftiges Indigo */}
-        <div className="grid grid-cols-2 gap-2.5 mt-1">
+        {/* INVASIV GRID: Weiß mit Indigo Rahmen */}
+        <div className="grid grid-cols-2 gap-2 mt-0.5">
           {['ET-Tubus', 'i-gel', 'Larynxmaske', 'Larynxtubus'].map((aw) => (
-            <button key={aw} onClick={() => handleInvasive(aw)} className="py-3.5 rounded-[14px] font-bold uppercase tracking-wider text-[11px] active:scale-95 transition-transform bg-indigo-500 text-white shadow-md shadow-indigo-500/30 flex flex-col items-center justify-center gap-1.5">
-              <i className="fa-solid fa-lungs text-xl pointer-events-none opacity-90"></i>
+            <button 
+              key={aw} 
+              onClick={() => handleInvasive(aw)} 
+              className="py-3 rounded-[16px] font-bold uppercase tracking-wider text-[9px] active:scale-95 transition-transform bg-white border-2 border-indigo-100 text-indigo-500 shadow-sm flex flex-col items-center justify-center gap-1.5 hover:bg-indigo-50"
+            >
+              <i className="fa-solid fa-lungs text-lg pointer-events-none opacity-80"></i>
               <span className="pointer-events-none">{aw}</span>
             </button>
           ))}
@@ -84,7 +92,10 @@ export default function ViewAirwayMenu() {
       </div>
 
       {state.airwayEstablished && (
-        <button onClick={handleRemove} className="mt-5 w-[90%] py-2.5 rounded-xl font-bold uppercase tracking-widest text-[10px] bg-red-50 text-red-600 border border-red-200 active:scale-95 transition-transform">
+        <button 
+          onClick={handleRemove} 
+          className="mt-4 w-[85%] max-w-[220px] py-2 font-bold uppercase tracking-widest text-[9px] text-red-500 bg-red-50 rounded-xl border border-red-100 active:scale-95 transition-transform"
+        >
           <span className="pointer-events-none">Atemweg entfernen</span>
         </button>
       )}

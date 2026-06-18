@@ -31,51 +31,59 @@ export default function ViewAirwayDoc() {
     dispatch({ type: 'SET_PHASE', payload: returnPhase });
   };
 
-  const handleCancel = () => {
-    dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.AIRWAY_MENU });
-  };
-
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full p-4 animate-in slide-in-from-right-8 duration-200">
-      <button onClick={handleCancel} className="absolute top-4 left-4 w-8 h-8 bg-slate-100 rounded-full text-slate-500 flex items-center justify-center active:scale-95 transition-transform z-10">
+    <div className="flex flex-col items-center justify-center w-full h-full p-6 animate-in slide-in-from-right-8 duration-200">
+      
+      <button 
+        onClick={() => dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.AIRWAY_MENU })} 
+        className="absolute top-4 left-4 w-8 h-8 bg-slate-50 rounded-full text-slate-400 flex items-center justify-center active:scale-95 transition-transform z-10 hover:bg-slate-100"
+      >
         <i className="fa-solid fa-arrow-left pointer-events-none"></i>
       </button>
 
-      <h2 className="text-[12px] font-black text-slate-800 uppercase tracking-widest text-center mt-1 mb-3">
+      <h2 className="text-[12px] font-black text-slate-700 uppercase tracking-widest text-center mt-1 mb-2">
         Doku: {state.airwayType || 'Invasiv'}
       </h2>
 
-      {/* NEU: Auffällige etCO2 und Cuffdruck Warnung */}
-      <div className="w-[85%] bg-amber-50 border-[2px] border-amber-400 rounded-[14px] p-3 mb-5 flex flex-col items-center justify-center gap-1.5 text-amber-600 shadow-sm animate-pulse">
-        <i className="fa-solid fa-triangle-exclamation text-[22px]"></i>
-        <span className="text-[10px] font-black uppercase tracking-widest text-center leading-tight">etCO2 & Cuffdruck<br/>sofort prüfen!</span>
+      {/* Subtiler, unaufdringlicher Hinweis statt blinkender Warnung */}
+      <div className="flex items-center gap-1.5 text-slate-400 mb-5">
+        <i className="fa-solid fa-circle-info text-[10px]"></i>
+        <span className="text-[8px] font-bold uppercase tracking-widest">etCO2 & Cuffdruck prüfen</span>
       </div>
 
-      <div className="w-[85%] flex flex-col gap-3 mb-5">
+      <div className="w-[85%] max-w-[220px] flex flex-col gap-2.5 mb-5">
         <div>
-          <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-1 block">Größe (mm)</label>
+          <label className="text-[8px] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-0.5 block">
+            Größe (mm)
+          </label>
           <input 
             type="text" 
             value={size} 
             onChange={(e) => setSize(e.target.value)} 
             placeholder={activeZone?.airway?.tubus || "z.B. 7.5"} 
-            className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-center font-bold text-slate-700 focus:outline-none focus:border-cyan-400 focus:bg-cyan-50" 
+            className="w-full bg-slate-50 border border-slate-200 rounded-[14px] p-2.5 text-center font-black text-slate-600 text-sm placeholder:text-slate-300 placeholder:font-bold focus:outline-none focus:border-cyan-300 focus:bg-cyan-50 transition-colors" 
           />
         </div>
         <div>
-          <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-1 block">Tiefe (cm ab Zahnreihe)</label>
+          <label className="text-[8px] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-0.5 block">
+            Tiefe (cm)
+          </label>
           <input 
             type="text" 
             value={depth} 
             onChange={(e) => setDepth(e.target.value)} 
             placeholder={activeZone?.airway?.tiefe || "z.B. 21"} 
-            className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-center font-bold text-slate-700 focus:outline-none focus:border-cyan-400 focus:bg-cyan-50" 
+            className="w-full bg-slate-50 border border-slate-200 rounded-[14px] p-2.5 text-center font-black text-slate-600 text-sm placeholder:text-slate-300 placeholder:font-bold focus:outline-none focus:border-cyan-300 focus:bg-cyan-50 transition-colors" 
           />
         </div>
       </div>
 
-      <button onClick={handleSave} className="w-[85%] py-3.5 rounded-xl font-black uppercase tracking-widest text-[11px] bg-emerald-500 text-white shadow-md shadow-emerald-500/30 active:scale-95 transition-transform flex items-center justify-center gap-2">
-        <i className="fa-solid fa-check pointer-events-none"></i> <span className="pointer-events-none">Speichern</span>
+      <button 
+        onClick={handleSave} 
+        className="w-[85%] max-w-[220px] py-3 rounded-full font-black uppercase tracking-widest text-[11px] bg-emerald-500 text-white shadow-sm hover:bg-emerald-400 active:scale-95 transition-all flex items-center justify-center gap-2"
+      >
+        <i className="fa-solid fa-check pointer-events-none"></i> 
+        <span className="pointer-events-none">Speichern</span>
       </button>
     </div>
   );
