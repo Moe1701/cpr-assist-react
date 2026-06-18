@@ -47,11 +47,10 @@ export function useAirwayEngine() {
     dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.AIRWAY_MENU });
   };
 
-  // --- KUGELSICHERE BADGE-STEUERUNG ---
   const hideBadge = () => {
     if (badgeRef.current) {
       badgeRef.current.style.opacity = '0';
-      badgeRef.current.style.display = 'none'; // Verhindert hängende Hüllen
+      badgeRef.current.style.display = 'none'; 
       badgeRef.current.innerText = '';
     }
   };
@@ -59,7 +58,6 @@ export function useAirwayEngine() {
   const showBadge = (text, isPulsing = false) => {
     if (badgeRef.current) {
       badgeRef.current.innerText = text;
-      // Exakt das Styling des CPR-Buttons: dunkelblau (slate-700), kleiner (28px)
       badgeRef.current.className = `absolute -top-1 -right-1 w-[28px] h-[28px] text-[12px] font-black bg-slate-700 text-white rounded-full flex items-center justify-center shadow-md border-[2px] border-white pointer-events-none z-30 ${isPulsing ? 'animate-pulse' : ''}`;
       badgeRef.current.style.display = 'flex';
       badgeRef.current.style.opacity = '1';
@@ -67,8 +65,16 @@ export function useAirwayEngine() {
   };
 
   // ========================================================
-  // 1. BASIS LAYOUT (Static)
+  // 1. BASIS LAYOUT (Die Stille vor dem Start)
   // ========================================================
+  
+  // Prüfung: Ist der Startschuss (Kompression bestätigt) gefallen?
+  const hasStartedCpr = ![
+    CPR_CONFIG.PHASES.ONBOARDING, 
+    CPR_CONFIG.PHASES.OB_INITIAL_BREATHS, 
+    CPR_CONFIG.PHASES.OB_COMPRESSIONS
+  ].includes(state.appPhase);
+
   let btnClass = "border-slate-200 shadow-sm"; 
   let iconClass = "text-slate-400";
   let textClass = "text-slate-500";
@@ -87,18 +93,23 @@ export function useAirwayEngine() {
     else if (state.airwayType === 'Larynxtubus') { labelTop = "LTS"; icon = "fa-lungs"; }
     else { labelTop = state.airwayType ? state.airwayType.toUpperCase() : "ATEMWEG"; }
   } else {
-    isPill = true;
-    if (state.missionSeconds >= 60) {
-      btnClass = "border-red-500 shadow-[0_0_25px_rgba(227,0,15,0.35)] animate-pulse";
-      iconClass = "text-[#E3000F]"; textClass = "text-[#E3000F]";
-      labelTop = "BEATMUNG"; labelBottom = "ETABLIEREN!!!";
-      staticBadge = { text: "!!!", bg: "bg-[#E3000F]" };
-    } else {
-      btnClass = "border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.25)] animate-pulse";
-      iconClass = "text-amber-500"; textClass = "text-amber-500";
-      labelTop = "ATEMWEG"; labelBottom = "DOKU FEHLT";
-      staticBadge = { text: "!", bg: "bg-amber-500" };
+    // KEIN Atemweg etabliert. 
+    // Warnung wird NUR gezeigt, wenn CPR offiziell gestartet wurde!
+    if (hasStartedCpr) {
+      isPill = true;
+      if (state.missionSeconds >= 60) {
+        btnClass = "border-red-500 shadow-[0_0_25px_rgba(227,0,15,0.35)] animate-pulse";
+        iconClass = "text-[#E3000F]"; textClass = "text-[#E3000F]";
+        labelTop = "BEATMUNG"; labelBottom = "ETABLIEREN!!!";
+        staticBadge = { text: "!!!", bg: "bg-[#E3000F]" };
+      } else {
+        btnClass = "border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.25)] animate-pulse";
+        iconClass = "text-amber-500"; textClass = "text-amber-500";
+        labelTop = "ATEMWEG"; labelBottom = "DOKU FEHLT";
+        staticBadge = { text: "!", bg: "bg-amber-500" };
+      }
     }
+    // Wenn nicht gestartet, bleibt alles grau und ruhig (wie oben deklariert)
   }
 
   // ========================================================
@@ -110,9 +121,10 @@ export function useAirwayEngine() {
       if (iconRef.current) iconRef.current.className = `fa-solid ${icon} text-[28px] mb-0.5 transition-colors ${iconClass}`;
       if (textRef.current) { textRef.current.innerText = labelTop; textRef.current.className = `text-[9px] font-black uppercase tracking-wider leading-tight text-center transition-colors ${textClass}`; }
       hideBadge();
-      if (escalationBadgeRef.current && !state.airwayEstablished) escalationBadgeRef.current.style.opacity = '1';
+      if (escalationBadgeRef.current && !state.airwayEstablished && hasStartedCpr) escalationBadgeRef.current.style.opacity = '1';
     };
 
+    // HARTER LOCK: Keine Animation ohne Atemweg, kein KONT ohne Toggle, keine Animation bei Pause
     if (!state.airwayEstablished || state.cprMode !== 'continuous' || !state.isCompressing) {
       resetVisuals();
       return;
@@ -137,7 +149,6 @@ export function useAirwayEngine() {
       textRef.current.style.transitionDuration = '0ms';
 
       if (timeInCycle < fillDuration) {
-        // Füll-Phase
         const progress = timeInCycle / fillDuration;
         glowRef.current.style.backgroundColor = '#67e8f9';
         glowRef.current.style.opacity = (0.1 + (0.6 * progress)).toString();
@@ -149,10 +160,9 @@ export function useAirwayEngine() {
         textRef.current.className = "text-[9px] font-black uppercase tracking-wider leading-tight text-center text-cyan-500";
 
         const remainingSecs = Math.ceil((fillDuration - timeInCycle) / 1000);
-        showBadge(remainingSecs, false); // Schlichtes dunkelblaues Badge
+        showBadge(remainingSecs, false); 
         hasBreathed = false;
       } else {
-        // Knall-Effekt (Beatmung)
         if (!hasBreathed) {
           playBreathSound(state.isMuted);
           if (navigator.vibrate) navigator.vibrate(30);
@@ -166,19 +176,20 @@ export function useAirwayEngine() {
         iconRef.current.className = `fa-solid fa-lungs text-[28px] mb-0.5 text-white`;
         textRef.current.innerText = "BEATMEN";
         textRef.current.className = "text-[10px] font-black uppercase tracking-widest leading-tight text-center text-white";
-        hideBadge(); // Verschwindet während des Schocks
+        hideBadge(); 
       }
       rafId = requestAnimationFrame(loop);
     };
 
     rafId = requestAnimationFrame(loop);
     return () => { cancelAnimationFrame(rafId); resetVisuals(); };
-  }, [state.airwayEstablished, state.airwayType, state.cprMode, state.isCompressing, state.isPediatric, state.isMuted, icon, labelTop, iconClass, textClass]);
+  }, [state.airwayEstablished, state.airwayType, state.cprMode, state.isCompressing, state.isPediatric, state.isMuted, icon, labelTop, iconClass, textClass, hasStartedCpr]);
 
   // ========================================================
   // 3. ANIMATION 2A: 30:2 / 15:2 VORWARNUNG
   // ========================================================
   useEffect(() => {
+    // HARTER LOCK: Der Modus Toggle ist der Chef!
     if (!state.airwayEstablished || state.cprMode === 'continuous') {
       hideBadge();
       return;
@@ -188,10 +199,10 @@ export function useAirwayEngine() {
     const remaining = limit - state.compressionCount;
 
     if (state.isCompressing && !state.isVentilationPhase && remaining > 0 && remaining <= 5) {
-      showBadge(remaining, true); // Dunkelblaues Badge, das aber pulsiert
+      showBadge(remaining, true); 
       if (remaining <= 3 && navigator.vibrate) navigator.vibrate(20);
     } else if (!state.isVentilationPhase) {
-      hideBadge(); // Hier stirbt der "hängende Eins"-Bug!
+      hideBadge(); 
     }
   }, [state.compressionCount, state.cprMode, state.isCompressing, state.isVentilationPhase, state.isPediatric, state.airwayEstablished]);
 
@@ -199,6 +210,7 @@ export function useAirwayEngine() {
   // 4. ANIMATION 2B: 30:2 / 15:2 DOPPELFLASH
   // ========================================================
   useEffect(() => {
+    // HARTER LOCK
     if (!state.airwayEstablished || state.cprMode === 'continuous' || !state.isVentilationPhase) return;
     
     hideBadge();
