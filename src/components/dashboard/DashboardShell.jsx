@@ -7,12 +7,12 @@ import CenterDisplay from '../CenterDisplay.jsx';
 import PatientSetupModal from '../PatientSetupModal.jsx'; 
 
 import CprButton from './CprButton.jsx';  
-import AirwayButton from './AirwayButton.jsx'; // <--- NEU
+import AirwayButton from './AirwayButton.jsx'; // Unser neuer, schlauer Button
 import { usePatientLogic } from '../../hooks/usePatientLogic.js';
 import { useMasterLoop } from '../../hooks/useMasterLoop.js'; 
 
 export default function DashboardShell() {
-  const { state, dispatch } = useContext(CprContext);
+  const { state } = useContext(CprContext);
   const { toggleCprMode } = usePatientLogic();
   const { toggleCpr } = useMasterLoop(); 
 
@@ -28,20 +28,6 @@ export default function DashboardShell() {
       <i className={`fa-solid ${icon} text-[24px] mb-0.5 pointer-events-none`}></i>
       <span className="text-[9px] font-black uppercase tracking-wider leading-none text-center px-1 pointer-events-none">{label}</span>
     </button>
-  );
-
-  const MainBtn = ({ icon, label, colorClass, badge, onClick }) => (
-    <div className="relative pointer-events-auto">
-      <button onClick={onClick} className={`w-[100px] h-[100px] rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.1)] border-2 flex flex-col items-center justify-center gap-1.5 hover:bg-slate-50 active:scale-95 transition-all ${colorClass}`}>
-         <i className={`fa-solid ${icon} text-[32px] pointer-events-none`}></i>
-         <span className="text-[10px] font-black uppercase tracking-widest leading-none text-center px-1 pointer-events-none">{label}</span>
-      </button>
-      {badge && (
-        <div className="absolute -top-1 -right-1 bg-[#E3000F] text-white text-[12px] font-black w-7 h-7 rounded-full flex items-center justify-center shadow-md border-[3px] border-white">
-          !!!
-        </div>
-      )}
-    </div>
   );
 
   const OrbitPosition = ({ x, y, children, zIndex = 20 }) => (
@@ -61,44 +47,42 @@ export default function DashboardShell() {
   return (
     <div className="absolute inset-0 w-full h-full flex flex-col bg-slate-50 animate-in fade-in duration-500 overflow-hidden">
         
-      {/* 1. OBERE LEISTE */}
+     {/* 1. OBERE LEISTE */}
       <div className={`flex items-stretch justify-between gap-2 px-3 py-2 shrink-0 z-40 relative transition-opacity duration-300 ${!showTopStats ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         
-        <div className="bg-white rounded-[14px] px-3 py-2 shadow-sm border border-slate-200 flex-[0.8] flex flex-col justify-between">
-          <div className="flex justify-between items-center w-full mb-0.5">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Zeit</span>
-            
-            <button 
-              type="button"
-              onClick={() => dispatch({ type: 'TOGGLE_MUTE' })}
-              className="text-slate-300 active:scale-95 transition-all p-2 -mr-2 z-50 relative cursor-pointer"
-            >
-              <i className={`fa-solid ${state.isMuted ? 'fa-volume-xmark text-red-500' : 'fa-volume-high text-slate-500'} pointer-events-none text-lg`}></i>
-            </button>
-
+        {/* LINKER KASTEN (ZEIT & START-UHRZEIT) */}
+        <div className="bg-white rounded-[14px] px-3 py-2 shadow-sm border border-slate-200 flex-[0.85] flex flex-col justify-between">
+          <div className="w-full mb-1">
+            <div className="flex flex-col">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-tight">Einsatzzeit</span>
+              <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest mt-0.5">Start: {state.startTime || '--:--'}</span>
+            </div>
           </div>
-          <div className="text-[30px] font-black text-slate-800 leading-none font-mono tracking-tighter mt-0.5">
+          <div className="text-[32px] font-black text-slate-800 leading-none font-mono tracking-tighter mt-1">
             {formatTime(state.missionSeconds)}
           </div>
         </div>
 
-        <div className="bg-white rounded-[14px] p-2 shadow-sm border border-slate-200 flex-[1.4] flex justify-between items-center">
-          <div className="flex flex-col items-start justify-center h-full gap-1.5">
-            <div className="flex items-center gap-2">
-              <button onClick={toggleCprMode} className="flex rounded-full border border-amber-300 overflow-hidden shadow-sm active:scale-95 transition-transform cursor-pointer">
-                <span className={`text-[10px] font-black px-2.5 py-0.5 uppercase ${state.cprMode !== 'continuous' ? 'bg-amber-100 text-amber-700' : 'bg-white text-slate-400 pointer-events-none'}`}>
-                  {state.isPediatric ? '15:2' : '30:2'}
-                </span>
-                <span className={`text-[10px] font-black px-2.5 py-0.5 uppercase border-l border-amber-200 ${state.cprMode === 'continuous' ? 'bg-amber-100 text-amber-700' : 'bg-white text-slate-400 pointer-events-none'}`}>
-                  KONT
-                </span>
-              </button>
-            </div>
+        {/* RECHTER KASTEN (MODUS & CCF) */}
+        <div className="bg-white rounded-[14px] p-2.5 shadow-sm border border-slate-200 flex-[1.15] flex justify-between items-center">
+          
+          <div className="flex flex-col items-start justify-center h-full">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">CPR Modus</span>
+            
+            <button onClick={toggleCprMode} className="flex rounded-full border border-amber-300 overflow-hidden shadow-sm active:scale-95 transition-transform cursor-pointer">
+              <span className={`text-[11px] font-black px-3 py-1 uppercase ${state.cprMode !== 'continuous' ? 'bg-amber-100 text-amber-700' : 'bg-white text-slate-400 pointer-events-none'}`}>
+                {state.isPediatric ? '15:2' : '30:2'}
+              </span>
+              <span className={`text-[11px] font-black px-3 py-1 uppercase border-l border-amber-200 ${state.cprMode === 'continuous' ? 'bg-amber-100 text-amber-700' : 'bg-white text-slate-400 pointer-events-none'}`}>
+                KONT
+              </span>
+            </button>
           </div>
-          <div className="flex flex-col items-end justify-center h-full pl-2 border-l border-slate-100">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">CCF</span>
-            <div className={`text-[28px] font-black leading-none tracking-tighter mt-1 ${state.currentCcfPercent < 80 ? 'text-red-500' : 'text-emerald-500'}`}>
-              {state.currentCcfPercent || 100}<span className="text-sm">%</span>
+
+          <div className="flex flex-col items-end justify-center h-full pl-3 border-l border-slate-100">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">CCF Ratio</span>
+            <div className={`text-[26px] font-black leading-none tracking-tighter mt-0.5 ${state.currentCcfPercent < 80 ? 'text-red-500' : 'text-emerald-500'}`}>
+              {state.currentCcfPercent || 100}<span className="text-sm ml-0.5">%</span>
             </div>
           </div>
         </div>
@@ -124,19 +108,13 @@ export default function DashboardShell() {
 
       {/* 3. UNTERE LEISTE */}
       <div className={`shrink-0 w-full flex justify-between items-end px-5 pb-8 pt-2 z-50 transition-opacity duration-300 pointer-events-none ${!showBottomButtons ? 'opacity-0' : 'opacity-100'}`}>
-        <MainBtn 
-             onClick={() => dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.AIRWAY_MENU })}
-            icon="fa-lungs" label="Atemweg" badge={!state.airwayEstablished} colorClass="bg-white text-[#E3000F] border-[#E3000F] shadow-[0_0_25px_rgba(227,0,15,0.3)]"
-        />
+        <AirwayButton />
         <CprButton toggleCpr={toggleCpr} />
       </div>
 
-      {/* MODALS (Diese müssen strikt VOR dem schließenden div liegen) */}
       {/* MODALS (Diese müssen strikt VOR dem schließenden div liegen) */}
       {state.isPatientModalOpen && <PatientSetupModal />}
 
     </div>
   );
 }
-
- 
