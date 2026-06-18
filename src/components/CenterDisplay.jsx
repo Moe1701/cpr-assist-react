@@ -14,7 +14,7 @@ export default function CenterDisplay() {
   
   const { 
     state, circleSize, formatCprTime, handleManualAnalyze, 
-    remaining, ringColor, topText, textColor, isPulsing, isEscalated,
+    remaining, ringColor, warningText, textColor, isPulsing, isEscalated,
     radius, strokeDasharray, strokeWidth, displayJoule 
   } = useCenterEngine();
 
@@ -25,11 +25,12 @@ export default function CenterDisplay() {
         return (
           <button 
             onClick={handleManualAnalyze}
-            className={`w-full h-full flex flex-col items-center justify-center p-6 bg-white rounded-full transition-all relative overflow-hidden cursor-pointer ${isEscalated ? 'shadow-[0_0_40px_rgba(227,0,15,0.4)]' : 'shadow-[inset_0_0_20px_rgba(0,0,0,0.02)] hover:bg-slate-50 active:scale-95'}`}
+            // MASSIVE ESKALATION: Roter Hintergrund und dicker Innenschatten, wenn isEscalated!
+            className={`w-full h-full flex flex-col items-center justify-center p-6 rounded-full transition-all relative overflow-hidden cursor-pointer ${isEscalated ? 'bg-red-50 shadow-[inset_0_0_40px_rgba(227,0,15,0.15)]' : 'bg-white shadow-[inset_0_0_20px_rgba(0,0,0,0.02)] hover:bg-slate-50 active:scale-95'}`}
           >
-            {/* BUGFIX: Tailwind Rotation raus, natives SVG Rotate rein! */}
             <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r={radius} fill="none" stroke="#f8fafc" strokeWidth={strokeWidth} transform="rotate(-90 50 50)" />
+              {/* Leichter roter Track-Hintergrund bei Eskalation */}
+              <circle cx="50" cy="50" r={radius} fill="none" stroke={isEscalated ? "#fee2e2" : "#f8fafc"} strokeWidth={strokeWidth} transform="rotate(-90 50 50)" className="transition-colors duration-500" />
               <circle
                   cx="50" cy="50" r={radius}
                   fill="none"
@@ -41,29 +42,31 @@ export default function CenterDisplay() {
                   className={`transition-all duration-1000 ease-linear ${ringColor}`}
               />
             </svg>
-
-            <div className={`text-[10px] font-black uppercase tracking-widest mb-1 z-10 transition-colors ${textColor} ${isPulsing && !isEscalated ? 'animate-pulse' : ''} text-center leading-tight`}>
-              {topText}
-            </div>
             
-            <div className="text-[64px] font-black text-[#1e293b] tracking-tighter leading-none font-mono z-10">
+            {/* 120s Countdown in der Mitte (etwas nach oben gerückt) */}
+            <div className={`text-[66px] font-black tracking-tighter leading-none font-mono z-10 transition-colors duration-500 ${isEscalated ? 'text-[#E3000F]' : 'text-[#1e293b]'}`}>
                {formatCprTime(remaining)}
             </div>
 
-            {/* NEU: Die rote Eskalations-Pill wie im Video */}
-            {isEscalated ? (
-              <div className="bg-[#E3000F] text-white px-3.5 py-1 rounded-full text-[10px] font-black tracking-widest animate-pulse z-10 mt-1 mb-1 shadow-md">
-                ANALYSE FÄLLIG
-              </div>
-            ) : (
-              <div className="h-[22px] mt-1 mb-1"></div> // Platzhalter, damit es nicht springt
-            )}
+            {/* NEU: Warntexte UNTER der Uhr, GRÖSSER und deutlicher */}
+            <div className="h-[28px] mt-2 mb-1 flex items-center justify-center z-10 w-full">
+              {isEscalated ? (
+                <div className="bg-[#E3000F] text-white px-4 py-1.5 rounded-full text-[12px] font-black tracking-widest animate-pulse shadow-lg scale-110">
+                  {warningText}
+                </div>
+              ) : (
+                <div className={`text-[11px] font-black uppercase tracking-widest transition-all duration-300 ${textColor} ${isPulsing ? 'animate-pulse scale-105' : ''} text-center leading-tight`}>
+                  {warningText}
+                </div>
+              )}
+            </div>
             
-            <div className="flex items-center justify-center gap-3 text-[14px] font-black tracking-widest z-10 w-full">
+            {/* Schocks & Joule ganz unten */}
+            <div className={`flex items-center justify-center gap-3 text-[15px] font-black tracking-widest z-10 w-full mt-1 ${isEscalated ? 'opacity-50' : 'opacity-100'} transition-opacity`}>
               <span className="text-amber-500 flex items-center gap-1.5">
                 <i className="fa-solid fa-bolt"></i> {state.shockCount || 0}
               </span>
-              <span className="text-slate-200">|</span>
+              <span className="text-slate-300">|</span>
               <span className="text-[#E3000F]">
                 {displayJoule} J
               </span>
@@ -93,7 +96,8 @@ export default function CenterDisplay() {
 
       <div 
         style={{ width: circleSize, height: circleSize }}
-        className={`rounded-full border-4 border-slate-100 flex items-center justify-center relative overflow-hidden bg-white shrink-0 transition-all duration-500 mx-auto z-20 ${state.appPhase === CPR_CONFIG.PHASES.RUNNING && isEscalated ? 'shadow-[0_0_50px_rgba(227,0,15,0.4)] border-red-100' : 'shadow-[0_15px_40px_rgba(0,0,0,0.08)]'}`}
+        // Bei Eskalation glüht der äußere Rahmen dunkelrot
+        className={`rounded-full border-4 flex items-center justify-center relative overflow-hidden shrink-0 transition-all duration-500 mx-auto z-20 ${state.appPhase === CPR_CONFIG.PHASES.RUNNING && isEscalated ? 'shadow-[0_0_50px_rgba(227,0,15,0.4)] border-red-200 bg-red-50' : 'shadow-[0_15px_40px_rgba(0,0,0,0.08)] border-slate-100 bg-white'}`}
       >
         {renderPhase()}
       </div>
