@@ -28,32 +28,31 @@ export function useCenterEngine() {
   let topText = "BEI ANALYSE DRÜCKEN";
   let textColor = "text-slate-400";
   let isPulsing = false;
+  let isEscalated = false; // <--- NEU: Trigger für die rote Pill!
 
   if (remaining === 0) {
-    ringColor = "text-red-600";
-    topText = "ANALYSE FÄLLIG!";
-    textColor = "text-red-600";
-    isPulsing = true;
+    ringColor = "text-[#E3000F]"; // Rot
+    topText = "BEI ANALYSE DRÜCKEN"; // Bleibt wie im Video!
+    textColor = "text-slate-400"; 
+    isEscalated = true; // Aktiviert den harten Alarm-State
   } else if (remaining <= 15) {
-    ringColor = "text-amber-500";
+    ringColor = "text-amber-500"; // Gelb
     topText = "PULS TASTEN, DEFI LADEN";
     textColor = "text-amber-600";
     isPulsing = true;
   } else if (remaining <= 30) {
-    ringColor = "text-emerald-500";
+    ringColor = "text-emerald-500"; // Grün
     topText = "ANALYSE VORBEREITEN";
     textColor = "text-emerald-600";
   }
 
-  // BUGFIX: SVG Render-Mathematik (Zwingt das SVG auf 12 Uhr + Uhrzeigersinn!)
+  // BUGFIX: SVG Render-Mathematik
   const strokeWidth = 4;
   const radius = 50 - strokeWidth / 2;
   const circumference = 2 * Math.PI * radius;
   
   const elapsed = 120 - remaining; 
   const progress = elapsed / 120; 
-  
-  // Hier ist die Magie: Wir malen einen Strich exakt so lang wie der Progress, gefolgt von einer Lücke, die den Rest ausfüllt!
   const strokeDasharray = `${circumference * progress} ${circumference}`;
 
   const defaultJoule = state.isPediatric && state.patientWeight ? Math.round(state.patientWeight * 4) : 150;
@@ -61,6 +60,6 @@ export function useCenterEngine() {
 
   return {
     state, circleSize, formatCprTime, handleManualAnalyze, remaining, ringColor, topText, textColor, 
-    isPulsing, radius, strokeDasharray, strokeWidth, displayJoule
+    isPulsing, isEscalated, radius, strokeDasharray, strokeWidth, displayJoule
   };
 }
