@@ -13,24 +13,28 @@ export default function AirwayButton() {
   };
 
   // ==========================================
-  // LOGIK 1: ESKALATIONS-AMPEL
+  // LOGIK 1: ESKALATIONS-AMPEL & NAMEN
   // ==========================================
-  let btnClass = "bg-white text-slate-600 border-slate-200 shadow-sm"; // Neutral (Wenn etabliert)
+  let btnClass = "bg-white text-slate-600 border-slate-200 shadow-sm"; 
   let iconClass = "text-slate-400";
-  let label = state.airwayType ? state.airwayType : "Atemweg";
   let icon = "fa-lungs";
   
-  if (state.airwayType === 'Beutel-Maske') icon = "fa-mask-ventilator";
-  else if (state.airwayType === 'Invasiv') icon = "fa-lungs";
+  // Kurznamen für den winzigen Button generieren
+  let label = "Atemweg";
+  if (state.airwayEstablished) {
+    if (state.airwayType === 'Beutel-Maske') { label = "BVM"; icon = "fa-mask-ventilator"; }
+    else if (state.airwayType === 'ET-Tubus') label = "Tubus";
+    else if (state.airwayType === 'Larynxmaske') label = "LAMA";
+    else if (state.airwayType === 'Larynxtubus') label = "LTS";
+    else label = state.airwayType; // z.B. i-gel passt
+  }
 
-  // Ampel-Logik: Nur wenn noch KEIN Atemweg liegt
+  // Ampel-Eskalation: Nur wenn noch KEIN Atemweg liegt
   if (!state.airwayEstablished) {
     if (state.missionSeconds >= 60) {
-      // Rot & Kritisch (Ab 60 Sekunden)
       btnClass = "bg-red-50 text-red-600 border-red-500 shadow-[0_0_20px_rgba(227,0,15,0.4)] animate-pulse";
       iconClass = "text-red-500";
     } else {
-      // Gelb & Warnung (Sekunde 0 bis 59)
       btnClass = "bg-amber-50 text-amber-600 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.3)] animate-pulse";
       iconClass = "text-amber-500";
     }
