@@ -12,22 +12,27 @@ export default function AirwayButton() {
   } = useAirwayEngine();
 
   return (
-    <div className="relative pointer-events-auto z-50">
+    <div className="relative pointer-events-auto z-50 w-[100px] h-[100px]">
       
-      {/* BASIS-BUTTON */}
+      {/* 1. WEISSER BASIS-HINTERGRUND */}
+      {/* Hier liegen die Standard-Rahmen und die Ampel-Farben (gelb/rot pulsierend) */}
+      <div className={`absolute inset-0 rounded-full bg-white border-[3px] transition-colors ${btnClass}`}></div>
+
+      {/* 2. DER GLOW / BEATMUNGS-KREIS */}
+      {/* Dieser Layer liegt ÜBER dem weißen Hintergrund, aber UNTER dem Text. 
+          Er füllt sich Cyan und kann beim Knall-Effekt über den Rand (scale 1.15) hinaus wachsen. */}
+      <div 
+        ref={glowRef} 
+        className="absolute inset-0 rounded-full" 
+        style={{ opacity: 0, transform: 'scale(1)', pointerEvents: 'none', zIndex: 10 }}
+      ></div>
+
+      {/* 3. DER KLICKBARE BUTTON (Text & Icon) */}
       <button 
         onClick={handleClick} 
-        className={`relative w-[100px] h-[100px] rounded-full border-[3px] flex flex-col items-center justify-center pt-1 pb-0 active:scale-95 transition-transform bg-white ${btnClass}`}
+        className="absolute inset-0 w-full h-full rounded-full flex flex-col items-center justify-center pt-1 pb-0 active:scale-95 transition-transform z-20 bg-transparent"
       >
-        {/* DER GLOW-HINTERGRUND (Völlig entkoppelt von React) */}
-        <div 
-          ref={glowRef} 
-          className="absolute inset-0 rounded-full" 
-          style={{ opacity: 0, transform: 'scale(1)', pointerEvents: 'none' }}
-        ></div>
-
-        {/* ICON & TEXT (Z-Index über Glow) */}
-        <div className="relative z-10 flex flex-col items-center justify-center pointer-events-none w-full px-1">
+        <div className="flex flex-col items-center justify-center pointer-events-none w-full px-1">
           <i ref={iconRef} className={`fa-solid ${icon} text-[28px] mb-0.5 transition-colors ${iconClass}`}></i>
           
           <span ref={textRef} className={`text-[9px] font-black uppercase tracking-wider leading-tight text-center transition-colors ${textClass}`}>
@@ -43,17 +48,17 @@ export default function AirwayButton() {
         </div>
       </button>
 
-      {/* DYNAMISCHER COUNTDOWN BADGE */}
+      {/* 4. DYNAMISCHER COUNTDOWN BADGE (30:2 Modus) */}
       <div 
         ref={badgeRef} 
-        className="absolute -top-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-[2px] border-white font-black text-white text-[15px] pointer-events-none opacity-0 z-20"
+        className="absolute -top-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-[2px] border-white font-black text-white text-[15px] pointer-events-none opacity-0 z-30"
       ></div>
       
-      {/* DAS STATISCHE AUSRUFEZEICHEN (Gelb oder Rot) */}
+      {/* 5. DAS STATISCHE AUSRUFEZEICHEN (Gelb oder Rot) */}
       {staticBadge && !state.airwayEstablished && (
         <div 
           ref={escalationBadgeRef} 
-          className={`absolute -top-1 -right-1 text-white text-[12px] font-black w-7 h-7 rounded-full flex items-center justify-center shadow-md border-[2px] border-white pointer-events-none z-10 ${staticBadge.bg}`}
+          className={`absolute -top-1 -right-1 text-white text-[12px] font-black w-7 h-7 rounded-full flex items-center justify-center shadow-md border-[2px] border-white pointer-events-none z-30 ${staticBadge.bg}`}
         >
           {staticBadge.text}
         </div>
