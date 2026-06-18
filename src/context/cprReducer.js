@@ -3,14 +3,15 @@ import { CPR_CONFIG } from '../config/cprConfig.js';
 
 export const initialState = {
   appPhase: CPR_CONFIG.PHASES.ONBOARDING,
-  previousAppPhase: null,   // <--- NEU: Das Kurzzeitgedächtnis
+  previousAppPhase: null,
   isPediatric: false,
   patientWeight: null,
   cprMode: 'continuous', 
   
   bpm: 110,         
   isMuted: false,   
-  shockCount: 0,            
+  shockCount: 0, 
+  lastJoule: null,  // <--- NEU: Merkt sich die letzte Energie
   
   startTime: null,         
   isGridVisible: false,    
@@ -40,27 +41,26 @@ export const initialState = {
 
 export function cprReducer(state, action) {
   switch (action.type) {
-    // <--- NEU: Die smarte Phasen-Wechsel Logik
     case 'SET_PHASE': {
       const isGoingToAirway = action.payload === CPR_CONFIG.PHASES.AIRWAY_MENU || action.payload === CPR_CONFIG.PHASES.AIRWAY_DOC;
       const isComingFromAirway = state.appPhase === CPR_CONFIG.PHASES.AIRWAY_MENU || state.appPhase === CPR_CONFIG.PHASES.AIRWAY_DOC;
       
       let prevPhase = state.previousAppPhase;
-      // Merke dir die alte Phase NUR, wenn wir von außerhalb ins Atemwegs-Menü wechseln
       if (isGoingToAirway && !isComingFromAirway) {
         prevPhase = state.appPhase;
       }
-      
-      return { 
-        ...state, 
-        appPhase: action.payload,
-        previousAppPhase: prevPhase
-      };
+      return { ...state, appPhase: action.payload, previousAppPhase: prevPhase };
     }
 
     case 'SET_BPM': return { ...state, bpm: action.payload };
     case 'TOGGLE_MUTE': return { ...state, isMuted: !state.isMuted };
-    case 'INCREMENT_SHOCK': return { ...state, shockCount: state.shockCount + 1 }; 
+    
+    // <--- NEU: Zählt die Schocks hoch und merkt sich exakt die Joule!
+    case 'RECORD_SHOCK': return { 
+      ...state, 
+      shockCount: state.shockCount + 1,
+      lastJoule: action.payload
+    }; 
     
     case 'SET_PEDIATRIC_DATA': return { 
         ...state, 
@@ -77,31 +77,26 @@ export function cprReducer(state, action) {
     case 'LOG_EVENT': return { ...state, events: [...state.events, action.payload] };
     
     case 'TOGGLE_COMPRESSION': 
-      return { 
-        ...state, 
-        isCompressing: action.payload, 
-        pauseSeconds: action.payload ? 0 : state.pauseSeconds 
-      };
+      return { ...state, isCompressing: action.payload, pauseSeconds: action.payload ? 0 : state.pauseSeconds };
       
     case 'SET_COMPRESSION_COUNT': return { ...state, compressionCount: action.payload };
     case 'SET_VENTILATION_PHASE': return { ...state, isVentilationPhase: action.payload };
     
     case 'SET_AIRWAY': 
-      if (typeof action.payload === 'boolean') {
-        return { ...state, airwayEstablished: action.payload };
-      }
+      if (typeof action.payload === 'boolean') return { ...state, airwayEstablished: action.payload };
       return { 
-        ...state, 
-        airwayEstablished: action.payload.established,
-        airwayType: action.payload.type || null,
-        airwaySize: action.payload.size || null,
-        airwayDepth: action.payload.depth || null
+        ...state, airwayEstablished: action.payload.established,
+        airwayType: action.payload.type || null, airwaySize: action.payload.size || null, airwayDepth: action.payload.depth || null
       };
       
     case 'SET_AIRWAY_TYPE': return { ...state, airwayType: action.payload }; 
     
     case 'TICK_MISSION': return { ...state, missionSeconds: state.missionSeconds + 1 };
     case 'TICK_CYCLE': return { ...state, cycleSeconds: state.cycleSeconds + 1 };
+    
+    // <--- NEU: Setzt den CPR-Zyklus-Timer nach Schock/Analyse sauber zurück
+    case 'RESET_CYCLE': return { ...state, cycleSeconds: 0 };
+    
     case 'TICK_PAUSE': return { ...state, pauseSeconds: state.pauseSeconds + 1 };
     
     case 'TICK_CCF_ARREST': {
@@ -110,11 +105,7 @@ export function cprReducer(state, action) {
       return { ...state, arrestSeconds: newArrest, currentCcfPercent: Math.min(100, Math.round(rawCcf)) };
     }
     case 'TICK_CCF_COMPRESSING': 
-      return { 
-        ...state, 
-        compressingSeconds: state.compressingSeconds + 1, 
-        cprSeconds: state.cprSeconds + 1 
-      };
+      return { ...state, compressingSeconds: state.compressingSeconds + 1, cprSeconds: state.cprSeconds + 1 };
     
     case 'RESET_ALL': return initialState;
     default: return state;
