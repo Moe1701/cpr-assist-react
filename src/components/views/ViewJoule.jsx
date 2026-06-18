@@ -1,4 +1,5 @@
-import React, { useContext, useMemo } from 'react';
+// --- Datei: src/components/views/ViewJoule.jsx ---
+import React, { useContext } from 'react';
 import { CprContext } from '../../context/CprContext.jsx';
 import { CPR_CONFIG } from '../../config/cprConfig.js';
 
@@ -7,6 +8,9 @@ export default function ViewJoule() {
 
   const handleJouleSelect = (joule) => {
     logEvent(CPR_CONFIG.EVENTS.SHOCK, `Schock abgegeben: ${joule}J`);
+    
+    // NEU: Triggert den neuen Befehl im Reducer!
+    dispatch({ type: 'RECORD_SHOCK', payload: joule }); 
     dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.WAITING_CPR_RESUME });
   };
 
