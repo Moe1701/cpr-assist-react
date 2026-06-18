@@ -18,19 +18,17 @@ export default function AirwayButton() {
   let btnClass = "bg-white text-slate-600 border-slate-200 shadow-sm"; 
   let iconClass = "text-slate-400";
   let icon = "fa-lungs";
-  
-  // Kurznamen für den winzigen Button generieren
   let label = "Atemweg";
+  
   if (state.airwayEstablished) {
+    // Wenn etabliert -> Grau/Neutral und passender Text
     if (state.airwayType === 'Beutel-Maske') { label = "BVM"; icon = "fa-mask-ventilator"; }
-    else if (state.airwayType === 'ET-Tubus') label = "Tubus";
-    else if (state.airwayType === 'Larynxmaske') label = "LAMA";
-    else if (state.airwayType === 'Larynxtubus') label = "LTS";
-    else label = state.airwayType; // z.B. i-gel passt
-  }
-
-  // Ampel-Eskalation: Nur wenn noch KEIN Atemweg liegt
-  if (!state.airwayEstablished) {
+    else if (state.airwayType === 'ET-Tubus') { label = "Tubus"; icon = "fa-lungs"; }
+    else if (state.airwayType === 'Larynxmaske') { label = "LAMA"; icon = "fa-lungs"; }
+    else if (state.airwayType === 'Larynxtubus') { label = "LTS"; icon = "fa-lungs"; }
+    else { label = state.airwayType || "Atemweg"; icon = "fa-lungs"; }
+  } else {
+    // Wenn NICHT etabliert -> Ampel Eskalation
     if (state.missionSeconds >= 60) {
       btnClass = "bg-red-50 text-red-600 border-red-500 shadow-[0_0_20px_rgba(227,0,15,0.4)] animate-pulse";
       iconClass = "text-red-500";
@@ -56,7 +54,6 @@ export default function AirwayButton() {
   if (state.cprMode !== 'continuous' && state.isCompressing && !state.isVentilationPhase) {
     const limit = state.isPediatric ? 15 : 30;
     const remaining = limit - state.compressionCount;
-    // Wenn noch 5, 4, 3, 2, oder 1 übrig sind
     if (remaining > 0 && remaining <= 5) {
       bvmCountdown = remaining;
     }
@@ -74,14 +71,14 @@ export default function AirwayButton() {
 
       {/* BVM Countdown Badge (Pulsierend) */}
       {bvmCountdown !== null && (
-        <div className="absolute -top-2 -right-2 bg-red-500 text-white text-[16px] font-black w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-[2px] border-white animate-bounce">
+        <div className="absolute -top-2 -right-2 bg-red-500 text-white text-[16px] font-black w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-[2px] border-white animate-bounce pointer-events-none">
           {bvmCountdown}
         </div>
       )}
       
-      {/* Das Ausrufezeichen-Badge (Nur wenn rot und kein BVM Countdown aktiv ist) */}
+      {/* Das Ausrufezeichen-Badge */}
       {!state.airwayEstablished && state.missionSeconds >= 60 && bvmCountdown === null && (
-        <div className="absolute -top-1 -right-1 bg-red-600 text-white text-[12px] font-black w-7 h-7 rounded-full flex items-center justify-center shadow-md border-[2px] border-white">
+        <div className="absolute -top-1 -right-1 bg-red-600 text-white text-[12px] font-black w-7 h-7 rounded-full flex items-center justify-center shadow-md border-[2px] border-white pointer-events-none">
           !!!
         </div>
       )}
