@@ -82,7 +82,6 @@ export function useAirwayEngine() {
 
   // --- ANIMATION 1: KONT-MODUS (RAF Loop) ---
   useEffect(() => {
-    const isInvasive = state.airwayEstablished && state.airwayType !== 'Beutel-Maske';
     const isContinuous = state.cprMode === 'continuous';
 
     const resetVisuals = () => {
@@ -93,7 +92,8 @@ export function useAirwayEngine() {
       if (escalationBadgeRef.current && !state.airwayEstablished) escalationBadgeRef.current.style.opacity = '1';
     };
 
-    if (!isInvasive || !isContinuous || !state.isCompressing) {
+    // BUGFIX: KONT läuft jetzt IMMER, wenn der Modus KONT ist und die Kompression läuft!
+    if (!isContinuous || !state.isCompressing) {
       resetVisuals();
       return;
     }
@@ -128,11 +128,12 @@ export function useAirwayEngine() {
         textRef.current.innerText = labelTop;
         textRef.current.className = "text-[9px] font-black uppercase tracking-wider leading-tight text-center text-cyan-500";
 
+        // BUGFIX: Das KONT Badge ist jetzt robust eingebaut und immer sichtbar!
         const remainingSecs = Math.ceil((fillDuration - timeInCycle) / 1000);
         if (badgeRef.current) {
           badgeRef.current.innerText = remainingSecs;
           badgeRef.current.className = "absolute -top-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-[2px] border-amber-400 font-black text-amber-600 text-[15px] pointer-events-none bg-amber-100 z-20";
-          badgeRef.current.style.opacity = '1'; // <--- BUGFIX: Macht das Badge im KONT-Modus sichtbar!
+          badgeRef.current.style.opacity = '1'; 
         }
         hasBreathed = false;
       } else {
@@ -177,7 +178,7 @@ export function useAirwayEngine() {
     }
   }, [state.compressionCount, state.cprMode, state.isCompressing, state.isVentilationPhase, state.isPediatric]);
 
-  // --- ANIMATION 2B: 30:2 Doppelflash (Halo-Effekt) ---
+  // --- ANIMATION 2B: 30:2 Doppelflash (Halo-Effekt & Bug-Cleanup) ---
   useEffect(() => {
     if (state.cprMode === 'continuous' || !state.isVentilationPhase) return;
     if (badgeRef.current) badgeRef.current.style.opacity = '0';
@@ -207,6 +208,7 @@ export function useAirwayEngine() {
       }
     };
 
+    // BUGFIX: Diese Funktion räumt nun gnadenlos alles auf den Standard-Zustand zurück auf
     const endVentilation = () => {
       if (glowRef.current) { glowRef.current.style.opacity = '0'; glowRef.current.style.transform = 'scale(1)'; glowRef.current.style.boxShadow = 'none'; }
       if (iconRef.current) iconRef.current.className = `fa-solid ${icon} text-[28px] mb-0.5 transition-colors duration-500 ${iconClass}`;
@@ -219,13 +221,12 @@ export function useAirwayEngine() {
     triggerFlash(); 
     const t1 = setTimeout(resetFlash, 1000); 
     const t2 = setTimeout(triggerFlash, 1500); 
-    // BUGFIX: Diese Verzögerung stellt sicher, dass das UI sauber aufgeräumt wird!
     const t3 = setTimeout(endVentilation, 2500); 
 
     return () => {
       clearTimeout(t1); clearTimeout(t2); clearTimeout(t3);
       if (glowRef.current) { glowRef.current.style.opacity = '0'; glowRef.current.style.transitionDuration = '0ms'; }
-      // BUGFIX: Garantiert, dass der Button auch bei einem asynchronen React-Rerender nicht verbuggt zurückbleibt!
+      // BUGFIX: Garantiert, dass der Modus nach Abbruch/Zyklusende nicht visuell hängen bleibt
       if (iconRef.current) iconRef.current.className = `fa-solid ${icon} text-[28px] mb-0.5 ${iconClass}`;
       if (textRef.current) {
         textRef.current.innerText = labelTop;

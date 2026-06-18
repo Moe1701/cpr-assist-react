@@ -64,18 +64,19 @@ export default function ViewAirwayMenu() {
         </div>
       )}
 
-      <div className="w-[90%] flex flex-col gap-2">
+      <div className="w-[90%] flex flex-col gap-2.5">
         
-        {/* BVM Button in strahlendem Cyan */}
-        <button onClick={handleBvm} className="w-full py-3 rounded-xl font-black uppercase tracking-widest flex items-center justify-center gap-3 active:scale-95 transition-transform bg-cyan-50 border-2 border-cyan-200 text-cyan-700 shadow-sm">
-          <i className="fa-solid fa-mask-ventilator text-xl pointer-events-none"></i> <span className="pointer-events-none">Beutel-Maske</span>
+        {/* BVM Button: Kräftiges Cyan */}
+        <button onClick={handleBvm} className="w-full py-3.5 rounded-[14px] font-black uppercase tracking-widest flex items-center justify-center gap-3 active:scale-95 transition-transform bg-cyan-500 text-white shadow-md shadow-cyan-500/30">
+          <i className="fa-solid fa-mask-ventilator text-2xl pointer-events-none"></i> 
+          <span className="pointer-events-none">Beutel-Maske</span>
         </button>
 
-        {/* Invasive Buttons in elegantem Indigo */}
-        <div className="grid grid-cols-2 gap-2 mt-1">
+        {/* Invasive Buttons: Kräftiges Indigo */}
+        <div className="grid grid-cols-2 gap-2.5 mt-1">
           {['ET-Tubus', 'i-gel', 'Larynxmaske', 'Larynxtubus'].map((aw) => (
-            <button key={aw} onClick={() => handleInvasive(aw)} className="py-3 rounded-xl font-bold uppercase tracking-wider text-[10px] active:scale-95 transition-transform bg-indigo-50 border-2 border-indigo-200 text-indigo-700 shadow-sm flex flex-col items-center justify-center gap-1">
-              <i className="fa-solid fa-lungs text-lg pointer-events-none opacity-80"></i>
+            <button key={aw} onClick={() => handleInvasive(aw)} className="py-3.5 rounded-[14px] font-bold uppercase tracking-wider text-[11px] active:scale-95 transition-transform bg-indigo-500 text-white shadow-md shadow-indigo-500/30 flex flex-col items-center justify-center gap-1.5">
+              <i className="fa-solid fa-lungs text-xl pointer-events-none opacity-90"></i>
               <span className="pointer-events-none">{aw}</span>
             </button>
           ))}
@@ -83,7 +84,7 @@ export default function ViewAirwayMenu() {
       </div>
 
       {state.airwayEstablished && (
-        <button onClick={handleRemove} className="mt-4 w-[90%] py-2 rounded-xl font-bold uppercase tracking-widest text-[9px] bg-red-50 text-red-600 border border-red-200 active:scale-95 transition-transform">
+        <button onClick={handleRemove} className="mt-5 w-[90%] py-2.5 rounded-xl font-bold uppercase tracking-widest text-[10px] bg-red-50 text-red-600 border border-red-200 active:scale-95 transition-transform">
           <span className="pointer-events-none">Atemweg entfernen</span>
         </button>
       )}

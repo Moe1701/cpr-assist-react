@@ -41,14 +41,14 @@ export default function ViewAirwayDoc() {
         <i className="fa-solid fa-arrow-left pointer-events-none"></i>
       </button>
 
-      <h2 className="text-[11px] font-black text-slate-800 uppercase tracking-widest text-center mt-2 mb-2">
+      <h2 className="text-[12px] font-black text-slate-800 uppercase tracking-widest text-center mt-1 mb-3">
         Doku: {state.airwayType || 'Invasiv'}
       </h2>
 
-      {/* NEU: etCO2 und Cuffdruck Warnung */}
-      <div className="w-[85%] bg-amber-50 border border-amber-200 rounded-xl p-2 mb-4 flex items-center justify-center gap-2 text-amber-700 shadow-sm">
-        <i className="fa-solid fa-triangle-exclamation animate-pulse"></i>
-        <span className="text-[9px] font-black uppercase tracking-widest">etCO2 & Cuffdruck prüfen!</span>
+      {/* NEU: Auffällige etCO2 und Cuffdruck Warnung */}
+      <div className="w-[85%] bg-amber-50 border-[2px] border-amber-400 rounded-[14px] p-3 mb-5 flex flex-col items-center justify-center gap-1.5 text-amber-600 shadow-sm animate-pulse">
+        <i className="fa-solid fa-triangle-exclamation text-[22px]"></i>
+        <span className="text-[10px] font-black uppercase tracking-widest text-center leading-tight">etCO2 & Cuffdruck<br/>sofort prüfen!</span>
       </div>
 
       <div className="w-[85%] flex flex-col gap-3 mb-5">
@@ -74,7 +74,7 @@ export default function ViewAirwayDoc() {
         </div>
       </div>
 
-      <button onClick={handleSave} className="w-[85%] py-3 rounded-xl font-black uppercase tracking-widest text-[11px] bg-cyan-500 text-white shadow-[0_5px_15px_rgba(6,182,212,0.4)] active:scale-95 transition-transform flex items-center justify-center gap-2">
+      <button onClick={handleSave} className="w-[85%] py-3.5 rounded-xl font-black uppercase tracking-widest text-[11px] bg-emerald-500 text-white shadow-md shadow-emerald-500/30 active:scale-95 transition-transform flex items-center justify-center gap-2">
         <i className="fa-solid fa-check pointer-events-none"></i> <span className="pointer-events-none">Speichern</span>
       </button>
     </div>
