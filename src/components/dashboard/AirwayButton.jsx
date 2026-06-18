@@ -15,12 +15,9 @@ export default function AirwayButton() {
     <div className="relative pointer-events-auto z-50 w-[100px] h-[100px]">
       
       {/* 1. WEISSER BASIS-HINTERGRUND */}
-      {/* Hier liegen die Standard-Rahmen und die Ampel-Farben (gelb/rot pulsierend) */}
       <div className={`absolute inset-0 rounded-full bg-white border-[3px] transition-colors ${btnClass}`}></div>
 
       {/* 2. DER GLOW / BEATMUNGS-KREIS */}
-      {/* Dieser Layer liegt ÜBER dem weißen Hintergrund, aber UNTER dem Text. 
-          Er füllt sich Cyan und kann beim Knall-Effekt über den Rand (scale 1.15) hinaus wachsen. */}
       <div 
         ref={glowRef} 
         className="absolute inset-0 rounded-full" 
@@ -48,10 +45,11 @@ export default function AirwayButton() {
         </div>
       </button>
 
-      {/* 4. DYNAMISCHER COUNTDOWN BADGE (30:2 Modus) */}
+      {/* 4. DYNAMISCHER COUNTDOWN BADGE (Jetzt identisch mit dem CPR-Badge) */}
       <div 
         ref={badgeRef} 
-        className="absolute -top-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-[2px] border-white font-black text-white text-[15px] pointer-events-none opacity-0 z-30"
+        className="absolute -top-1 -right-1 w-[28px] h-[28px] text-[12px] font-black bg-slate-700 text-white rounded-full flex items-center justify-center shadow-md border-[2px] border-white pointer-events-none z-30"
+        style={{ opacity: 0, display: 'none' }}
       ></div>
       
       {/* 5. DAS STATISCHE AUSRUFEZEICHEN (Gelb oder Rot) */}

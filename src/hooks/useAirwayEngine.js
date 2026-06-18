@@ -47,6 +47,25 @@ export function useAirwayEngine() {
     dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.AIRWAY_MENU });
   };
 
+  // --- KUGELSICHERE BADGE-STEUERUNG ---
+  const hideBadge = () => {
+    if (badgeRef.current) {
+      badgeRef.current.style.opacity = '0';
+      badgeRef.current.style.display = 'none'; // Verhindert hängende Hüllen
+      badgeRef.current.innerText = '';
+    }
+  };
+
+  const showBadge = (text, isPulsing = false) => {
+    if (badgeRef.current) {
+      badgeRef.current.innerText = text;
+      // Exakt das Styling des CPR-Buttons: dunkelblau (slate-700), kleiner (28px)
+      badgeRef.current.className = `absolute -top-1 -right-1 w-[28px] h-[28px] text-[12px] font-black bg-slate-700 text-white rounded-full flex items-center justify-center shadow-md border-[2px] border-white pointer-events-none z-30 ${isPulsing ? 'animate-pulse' : ''}`;
+      badgeRef.current.style.display = 'flex';
+      badgeRef.current.style.opacity = '1';
+    }
+  };
+
   // ========================================================
   // 1. BASIS LAYOUT (Static)
   // ========================================================
@@ -90,7 +109,7 @@ export function useAirwayEngine() {
       if (glowRef.current) { glowRef.current.style.opacity = '0'; glowRef.current.style.transform = 'scale(1)'; glowRef.current.style.boxShadow = 'none'; }
       if (iconRef.current) iconRef.current.className = `fa-solid ${icon} text-[28px] mb-0.5 transition-colors ${iconClass}`;
       if (textRef.current) { textRef.current.innerText = labelTop; textRef.current.className = `text-[9px] font-black uppercase tracking-wider leading-tight text-center transition-colors ${textClass}`; }
-      if (badgeRef.current) badgeRef.current.style.opacity = '0';
+      hideBadge();
       if (escalationBadgeRef.current && !state.airwayEstablished) escalationBadgeRef.current.style.opacity = '1';
     };
 
@@ -129,13 +148,8 @@ export function useAirwayEngine() {
         textRef.current.innerText = labelTop;
         textRef.current.className = "text-[9px] font-black uppercase tracking-wider leading-tight text-center text-cyan-500";
 
-        // FIX: Der dunkelblaue Badge für den KONT Modus
         const remainingSecs = Math.ceil((fillDuration - timeInCycle) / 1000);
-        if (badgeRef.current) {
-          badgeRef.current.innerText = remainingSecs;
-          badgeRef.current.className = "absolute -top-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-[2px] border-white font-black text-white text-[15px] pointer-events-none bg-slate-800 z-20";
-          badgeRef.current.style.opacity = '1'; 
-        }
+        showBadge(remainingSecs, false); // Schlichtes dunkelblaues Badge
         hasBreathed = false;
       } else {
         // Knall-Effekt (Beatmung)
@@ -152,7 +166,7 @@ export function useAirwayEngine() {
         iconRef.current.className = `fa-solid fa-lungs text-[28px] mb-0.5 text-white`;
         textRef.current.innerText = "BEATMEN";
         textRef.current.className = "text-[10px] font-black uppercase tracking-widest leading-tight text-center text-white";
-        if (badgeRef.current) badgeRef.current.style.opacity = '0';
+        hideBadge(); // Verschwindet während des Schocks
       }
       rafId = requestAnimationFrame(loop);
     };
@@ -165,33 +179,19 @@ export function useAirwayEngine() {
   // 3. ANIMATION 2A: 30:2 / 15:2 VORWARNUNG
   // ========================================================
   useEffect(() => {
-    // Wenn nicht etabliert oder in KONT, blende das Badge SOFORT aus!
     if (!state.airwayEstablished || state.cprMode === 'continuous') {
-      if (badgeRef.current) {
-        badgeRef.current.style.opacity = '0';
-        badgeRef.current.innerText = '';
-      }
+      hideBadge();
       return;
     }
     
     const limit = state.isPediatric ? 15 : 30;
     const remaining = limit - state.compressionCount;
 
-    // Countdown läuft nur in den letzten 5 Schlägen
     if (state.isCompressing && !state.isVentilationPhase && remaining > 0 && remaining <= 5) {
-      if (badgeRef.current) {
-        badgeRef.current.innerText = remaining;
-        badgeRef.current.className = "absolute -top-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-[2px] border-amber-400 font-black text-amber-600 text-[15px] pointer-events-none bg-amber-100 animate-pulse z-20";
-        badgeRef.current.style.opacity = '1';
-      }
+      showBadge(remaining, true); // Dunkelblaues Badge, das aber pulsiert
       if (remaining <= 3 && navigator.vibrate) navigator.vibrate(20);
-    } else {
-      // FIX FÜR DIE HÄNGENDE "1": Sobald wir nicht mehr in der 1-5 Range sind,
-      // MUSS das Badge gnadenlos unsichtbar gemacht und geleert werden!
-      if (badgeRef.current) {
-        badgeRef.current.style.opacity = '0';
-        badgeRef.current.innerText = '';
-      }
+    } else if (!state.isVentilationPhase) {
+      hideBadge(); // Hier stirbt der "hängende Eins"-Bug!
     }
   }, [state.compressionCount, state.cprMode, state.isCompressing, state.isVentilationPhase, state.isPediatric, state.airwayEstablished]);
 
@@ -201,7 +201,7 @@ export function useAirwayEngine() {
   useEffect(() => {
     if (!state.airwayEstablished || state.cprMode === 'continuous' || !state.isVentilationPhase) return;
     
-    if (badgeRef.current) badgeRef.current.style.opacity = '0';
+    hideBadge();
     if (escalationBadgeRef.current) escalationBadgeRef.current.style.opacity = '0';
     
     if (glowRef.current) glowRef.current.style.transitionDuration = '300ms';
