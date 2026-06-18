@@ -7,25 +7,22 @@ export function useAirwayTimer() {
   const [isFlashingHub, setIsFlashingHub] = useState(false);
 
   useEffect(() => {
-    // Der Timer läuft nur im Invasiv-Modus (KONT) und wenn CPR aktiv ist!
-    if (!state.airwayEstablished || state.airwayType !== 'Invasiv' || !state.isCompressing) {
+    // smarte Prüfung: Wenn etabliert und NICHT Beutel-Maske, dann ist es invasiv!
+    const isInvasive = state.airwayEstablished && state.airwayType !== 'Beutel-Maske';
+
+    if (!isInvasive || !state.isCompressing) {
       setIsFlashingHub(false);
       return;
     }
 
-    // Erwachsene = 10 Beatmungen/Min (alle 6000ms)
-    // Pädiatrie = 25 Beatmungen/Min (alle 2400ms)
+    // Erwachsene = alle 6000ms | Pädiatrie = alle 2400ms
     const intervalMs = state.isPediatric ? 2400 : 6000;
     
     const timer = setInterval(() => {
-      // 1. Zünde den Flash-State
       setIsFlashingHub(true);
-      
-      // 2. Beende den Flash nach 250 Millisekunden wieder (visuelles Blitzen)
       setTimeout(() => {
         setIsFlashingHub(false);
-      }, 250);
-      
+      }, 250); // Flash-Dauer
     }, intervalMs);
 
     return () => clearInterval(timer);
