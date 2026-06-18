@@ -7,13 +7,17 @@ import PatientSelection from './PatientSelection.jsx';
 import ViewAirwayMenu from './views/ViewAirwayMenu.jsx';
 import ViewAirwayDoc from './views/ViewAirwayDoc.jsx';
 
+// NEU IMPORTIERT: Die fehlenden Analyse-Ansichten
+import ViewDecision from './views/ViewDecision.jsx';
+import ViewJoule from './views/ViewJoule.jsx';
+import ViewCprResume from './views/ViewCprResume.jsx';
+
 export default function CenterDisplay() {
   
-  // Wir holen uns alles fix und fertig aus der Engine!
   const { 
     state, circleSize, formatCprTime, handleManualAnalyze, 
     remaining, ringColor, topText, textColor, isPulsing, 
-    radius, circumference, strokeDashoffset, strokeWidth, displayJoule 
+    radius, strokeDasharray, strokeWidth, displayJoule 
   } = useCenterEngine();
 
   const renderPhase = () => {
@@ -27,13 +31,13 @@ export default function CenterDisplay() {
           >
             <svg className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 100 100">
               <circle cx="50" cy="50" r={radius} fill="none" stroke="#f8fafc" strokeWidth={strokeWidth} />
+              {/* BUGFIX SVG: Nur noch strokeDasharray, kein Offset mehr! */}
               <circle
                   cx="50" cy="50" r={radius}
                   fill="none"
                   stroke="currentColor"
                   strokeWidth={strokeWidth}
-                  strokeDasharray={circumference}
-                  strokeDashoffset={strokeDashoffset}
+                  strokeDasharray={strokeDasharray}
                   strokeLinecap="round"
                   className={`transition-all duration-1000 ease-linear ${ringColor}`}
               />
@@ -61,6 +65,12 @@ export default function CenterDisplay() {
       
       case CPR_CONFIG.PHASES.AIRWAY_MENU: return <ViewAirwayMenu />;
       case CPR_CONFIG.PHASES.AIRWAY_DOC: return <ViewAirwayDoc />;
+      
+      // NEU HINZUGEFÜGT: Der App sagen, was sie rendern soll!
+      case CPR_CONFIG.PHASES.DECISION: return <ViewDecision />;
+      case CPR_CONFIG.PHASES.JOULE: return <ViewJoule />;
+      case CPR_CONFIG.PHASES.WAITING_CPR_RESUME: return <ViewCprResume />;
+      
       default: return <PatientSelection />;
     }
   };
