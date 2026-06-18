@@ -6,8 +6,8 @@ import { CPR_CONFIG } from '../../config/cprConfig.js';
 import CenterDisplay from '../CenterDisplay.jsx';
 import PatientSetupModal from '../PatientSetupModal.jsx'; 
 
-import CprButton from './CprButton.jsx'; 
-
+import CprButton from './CprButton.jsx';  
+import AirwayButton from './AirwayButton.jsx'; // <--- NEU
 import { usePatientLogic } from '../../hooks/usePatientLogic.js';
 import { useMasterLoop } from '../../hooks/useMasterLoop.js'; 
 
