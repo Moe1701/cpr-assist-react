@@ -3,7 +3,6 @@ import { useContext, useEffect, useRef } from 'react';
 import { CprContext } from '../context/CprContext.jsx';
 import { CPR_CONFIG } from '../config/cprConfig.js';
 
-// Synthetisches Atemgeräusch
 const playBreathSound = (isMuted) => {
   if (isMuted || !window.CPR_AudioCtx) return;
   try {
@@ -38,7 +37,6 @@ const playBreathSound = (isMuted) => {
 export function useAirwayEngine() {
   const { state, dispatch } = useContext(CprContext);
 
-  // DOM-Referenzen für 60FPS-Manipulation
   const glowRef = useRef(null);
   const iconRef = useRef(null);
   const textRef = useRef(null);
@@ -49,27 +47,36 @@ export function useAirwayEngine() {
     dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.AIRWAY_MENU });
   };
 
-  // --- BASIS LAYOUT BERECHNEN ---
+  // --- PIXELPERFECT BASIS LAYOUT ---
   let btnClass = "bg-white border-slate-200 shadow-sm"; 
   let iconClass = "text-slate-400";
-  let textClass = "text-slate-400";
+  let textClass = "text-slate-500";
   let icon = "fa-lungs";
-  let label = "Atemweg";
+  let labelTop = "ATEMWEG";
+  let labelBottom = null;
+  let isPill = false;
+  let staticBadge = null;
   
   if (state.airwayEstablished) {
-    iconClass = "text-slate-600"; textClass = "text-slate-600";
-    if (state.airwayType === 'Beutel-Maske') { label = "BVM"; icon = "fa-mask-ventilator"; }
-    else if (state.airwayType === 'ET-Tubus') { label = "Tubus"; icon = "fa-lungs"; }
-    else if (state.airwayType === 'Larynxmaske') { label = "LAMA"; icon = "fa-lungs"; }
-    else if (state.airwayType === 'Larynxtubus') { label = "LTS"; icon = "fa-lungs"; }
-    else { label = state.airwayType || "Atemweg"; }
+    iconClass = "text-slate-500"; 
+    textClass = "text-slate-600";
+    if (state.airwayType === 'Beutel-Maske') { labelTop = "BEUTEL-MASKE"; icon = "fa-mask-ventilator"; }
+    else if (state.airwayType === 'ET-Tubus') { labelTop = "TUBUS"; icon = "fa-lungs"; }
+    else if (state.airwayType === 'Larynxmaske') { labelTop = "LAMA"; icon = "fa-lungs"; }
+    else if (state.airwayType === 'Larynxtubus') { labelTop = "LTS"; icon = "fa-lungs"; }
+    else { labelTop = state.airwayType ? state.airwayType.toUpperCase() : "ATEMWEG"; }
   } else {
+    isPill = true;
     if (state.missionSeconds >= 60) {
-      btnClass = "bg-red-50 border-red-500 shadow-[0_0_20px_rgba(227,0,15,0.4)] animate-pulse";
-      iconClass = "text-red-500"; textClass = "text-red-600";
+      btnClass = "bg-white border-red-500 shadow-[0_0_25px_rgba(227,0,15,0.35)] animate-pulse";
+      iconClass = "text-[#E3000F]"; textClass = "text-[#E3000F]";
+      labelTop = "BEATMUNG"; labelBottom = "ETABLIEREN!!!";
+      staticBadge = { text: "!!!", bg: "bg-[#E3000F]" };
     } else {
-      btnClass = "bg-amber-50 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.3)] animate-pulse";
-      iconClass = "text-amber-500"; textClass = "text-amber-600";
+      btnClass = "bg-white border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.25)] animate-pulse";
+      iconClass = "text-amber-500"; textClass = "text-amber-500";
+      labelTop = "ATEMWEG"; labelBottom = "DOKU FEHLT";
+      staticBadge = { text: "!", bg: "bg-amber-500" };
     }
   }
 
@@ -80,8 +87,8 @@ export function useAirwayEngine() {
 
     const resetVisuals = () => {
       if (glowRef.current) { glowRef.current.style.opacity = '0'; glowRef.current.style.transform = 'scale(1)'; glowRef.current.style.boxShadow = 'none'; }
-      if (iconRef.current) iconRef.current.className = `fa-solid ${icon} text-[32px] transition-colors ${iconClass}`;
-      if (textRef.current) { textRef.current.innerText = label; textRef.current.className = `text-[10px] font-black uppercase tracking-widest leading-none text-center px-1 mt-1 transition-colors ${textClass}`; }
+      if (iconRef.current) iconRef.current.className = `fa-solid ${icon} text-[28px] mb-0.5 transition-colors ${iconClass}`;
+      if (textRef.current) { textRef.current.innerText = labelTop; textRef.current.className = `text-[9px] font-black uppercase tracking-wider leading-tight text-center transition-colors ${textClass}`; }
       if (badgeRef.current) badgeRef.current.style.opacity = '0';
       if (escalationBadgeRef.current && !state.airwayEstablished) escalationBadgeRef.current.style.opacity = '1';
     };
@@ -116,13 +123,13 @@ export function useAirwayEngine() {
         glowRef.current.style.transform = `scale(${1.0 + (0.05 * progress)})`;
         glowRef.current.style.boxShadow = 'none';
 
-        iconRef.current.className = `fa-solid ${icon} text-[32px] text-cyan-500`;
-        textRef.current.innerText = label;
-        textRef.current.className = "text-[10px] font-black uppercase tracking-widest leading-none text-center px-1 mt-1 text-cyan-500";
+        iconRef.current.className = `fa-solid ${icon} text-[28px] mb-0.5 text-cyan-500`;
+        textRef.current.innerText = labelTop;
+        textRef.current.className = "text-[9px] font-black uppercase tracking-wider leading-tight text-center text-cyan-500";
 
         const remainingSecs = Math.ceil((fillDuration - timeInCycle) / 1000);
         badgeRef.current.innerText = remainingSecs;
-        badgeRef.current.className = "absolute -top-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-[2px] border-white font-black text-white text-[16px] pointer-events-none bg-slate-800 opacity-100 z-20";
+        badgeRef.current.className = "absolute -top-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-[2px] border-white font-black text-white text-[15px] pointer-events-none bg-slate-800 opacity-100 z-20";
         hasBreathed = false;
       } else {
         if (!hasBreathed) {
@@ -135,9 +142,9 @@ export function useAirwayEngine() {
         glowRef.current.style.transform = 'scale(1.15)';
         glowRef.current.style.boxShadow = '0 0 20px rgba(34,211,238,0.6)';
 
-        iconRef.current.className = `fa-solid ${icon} text-[32px] text-[#E3000F]`;
+        iconRef.current.className = `fa-solid ${icon} text-[28px] mb-0.5 text-[#E3000F]`;
         textRef.current.innerText = "BEATMEN";
-        textRef.current.className = "text-[10px] font-black uppercase tracking-widest leading-none text-center px-1 mt-1 text-[#E3000F]";
+        textRef.current.className = "text-[10px] font-black uppercase tracking-widest leading-tight text-center text-[#E3000F]";
         badgeRef.current.style.opacity = '0';
       }
       rafId = requestAnimationFrame(loop);
@@ -145,7 +152,7 @@ export function useAirwayEngine() {
 
     rafId = requestAnimationFrame(loop);
     return () => { cancelAnimationFrame(rafId); resetVisuals(); };
-  }, [state.airwayEstablished, state.airwayType, state.cprMode, state.isCompressing, state.isPediatric, state.isMuted, icon, label, iconClass, textClass]);
+  }, [state.airwayEstablished, state.airwayType, state.cprMode, state.isCompressing, state.isPediatric, state.isMuted, icon, labelTop, iconClass, textClass]);
 
   // --- ANIMATION 2A: 30:2 Vorwarnung ---
   useEffect(() => {
@@ -155,18 +162,20 @@ export function useAirwayEngine() {
 
     if (state.isCompressing && !state.isVentilationPhase && remaining > 0 && remaining <= 5) {
       badgeRef.current.innerText = remaining;
-      badgeRef.current.className = "absolute -top-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-[2px] border-white font-black text-white text-[16px] pointer-events-none bg-amber-500 animate-pulse opacity-100 z-20";
+      badgeRef.current.className = "absolute -top-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-[2px] border-white font-black text-white text-[15px] pointer-events-none bg-amber-500 animate-pulse opacity-100 z-20";
       if (remaining <= 3 && navigator.vibrate) navigator.vibrate(20);
     } else if (!state.isVentilationPhase) {
       if (badgeRef.current) badgeRef.current.style.opacity = '0';
     }
   }, [state.compressionCount, state.cprMode, state.isCompressing, state.isVentilationPhase, state.isPediatric]);
 
-  // --- ANIMATION 2B: 30:2 Doppelflash ---
+  // --- ANIMATION 2B: 30:2 Doppelflash (KEIN Textwechsel!) ---
   useEffect(() => {
     if (state.cprMode === 'continuous' || !state.isVentilationPhase) return;
     if (badgeRef.current) badgeRef.current.style.opacity = '0';
     if (escalationBadgeRef.current) escalationBadgeRef.current.style.opacity = '0';
+    
+    // CSS-Transitions wieder einschalten für sanftes Aufblähen
     if (glowRef.current) glowRef.current.style.transitionDuration = '500ms';
 
     const triggerFlash = () => {
@@ -178,20 +187,13 @@ export function useAirwayEngine() {
         glowRef.current.style.transform = 'scale(1.15)';
         glowRef.current.style.boxShadow = '0 0 30px rgba(34,211,238,0.7)';
       }
-      if (iconRef.current) iconRef.current.className = `fa-solid ${icon} text-[32px] text-[#E3000F] transition-colors duration-200`;
-      if (textRef.current) {
-        textRef.current.innerText = "BEATMEN";
-        textRef.current.className = "text-[10px] font-black uppercase tracking-widest leading-none text-center px-1 mt-1 text-[#E3000F] transition-colors duration-200";
-      }
+      // Text bleibt unverändert, nur leichtes Cyan im Icon
+      if (iconRef.current) iconRef.current.className = `fa-solid ${icon} text-[28px] mb-0.5 text-cyan-500 transition-colors duration-200`;
     };
 
     const resetFlash = () => {
-      if (glowRef.current) { glowRef.current.style.opacity = '0.1'; glowRef.current.style.transform = 'scale(1)'; glowRef.current.style.boxShadow = 'none'; }
-      if (iconRef.current) iconRef.current.className = `fa-solid ${icon} text-[32px] text-cyan-500 transition-colors duration-500`;
-      if (textRef.current) {
-        textRef.current.innerText = label;
-        textRef.current.className = "text-[10px] font-black uppercase tracking-widest leading-none text-center px-1 mt-1 text-cyan-500 transition-colors duration-500";
-      }
+      if (glowRef.current) { glowRef.current.style.opacity = '0'; glowRef.current.style.transform = 'scale(1)'; glowRef.current.style.boxShadow = 'none'; }
+      if (iconRef.current) iconRef.current.className = `fa-solid ${icon} text-[28px] mb-0.5 transition-colors duration-500 ${iconClass}`;
     };
 
     triggerFlash(); 
@@ -203,7 +205,7 @@ export function useAirwayEngine() {
       clearTimeout(t1); clearTimeout(t2); clearTimeout(t3);
       if (glowRef.current) { glowRef.current.style.opacity = '0'; glowRef.current.style.transitionDuration = '0ms'; }
     };
-  }, [state.isVentilationPhase, state.cprMode, state.isMuted, icon, label]);
+  }, [state.isVentilationPhase, state.cprMode, state.isMuted, icon, iconClass]);
 
-  return { glowRef, iconRef, textRef, badgeRef, escalationBadgeRef, handleClick, btnClass, icon, label, iconClass, textClass };
+  return { glowRef, iconRef, textRef, badgeRef, escalationBadgeRef, handleClick, btnClass, icon, labelTop, labelBottom, isPill, staticBadge, iconClass, textClass };
 }
