@@ -1,3 +1,4 @@
+// --- Datei: src/components/views/ViewCprResume.jsx ---
 import React, { useContext } from 'react';
 import { CprContext } from '../../context/CprContext.jsx';
 import { CPR_CONFIG } from '../../config/cprConfig.js';
@@ -7,9 +8,12 @@ export default function ViewCprResume() {
 
   const handleResumeCpr = () => {
     logEvent(CPR_CONFIG.EVENTS.RESUME, "Reanimation gestartet / fortgesetzt");
-    dispatch({ type: 'TICK_CYCLE', payload: 0 }); // Zyklustimer auf Null
-    dispatch({ type: 'TOGGLE_COMPRESSION', payload: true }); // Startet Drücken & Metronom
-    dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.RUNNING }); // Switch zum Live-Dashboard
+    
+    // NEU: Bugfix für den Timer. Jetzt startet der 120s Kreis wirklich wieder neu!
+    dispatch({ type: 'RESET_CYCLE' }); 
+    
+    dispatch({ type: 'TOGGLE_COMPRESSION', payload: true }); 
+    dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.RUNNING }); 
   };
 
   return (
