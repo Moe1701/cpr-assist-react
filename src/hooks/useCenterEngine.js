@@ -6,11 +6,9 @@ import { CPR_CONFIG } from '../config/cprConfig.js';
 export function useCenterEngine() {
   const { state, dispatch, logEvent } = useContext(CprContext);
 
-  // 1. Phasen & Größen-Logik
   const isSmallCircle = state.appPhase === CPR_CONFIG.PHASES.RUNNING;
   const circleSize = isSmallCircle ? '224px' : '340px';
 
-  // 2. Formatierungs-Logik
   const formatCprTime = (seconds) => {
     if (isNaN(seconds) || seconds === null) return "00:00";
     const m = Math.floor(seconds / 60).toString().padStart(2, '0');
@@ -18,14 +16,12 @@ export function useCenterEngine() {
     return `${m}:${s}`;
   };
 
-  // 3. Interaktions-Logik
   const handleManualAnalyze = () => {
     dispatch({ type: 'TOGGLE_COMPRESSION', payload: false });
     logEvent(CPR_CONFIG.EVENTS.PAUSE, "Rhythmusanalyse gestartet");
     dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.DECISION });
   };
 
-  // 4. Timer- & Eskalations-Logik
   const remaining = Math.max(0, 120 - (state.cycleSeconds || 0));
   
   let ringColor = "text-cyan-500";
@@ -49,36 +45,22 @@ export function useCenterEngine() {
     textColor = "text-emerald-600";
   }
 
-  // 5. SVG Render-Mathematik (FIX: Füllt sich jetzt im Uhrzeigersinn ab 12 Uhr)
+  // BUGFIX: SVG Render-Mathematik (Zwingt das SVG auf 12 Uhr + Uhrzeigersinn!)
   const strokeWidth = 4;
   const radius = 50 - strokeWidth / 2;
   const circumference = 2 * Math.PI * radius;
   
-  // Die verstrichene Zeit im aktuellen 120s Zyklus
   const elapsed = 120 - remaining; 
-  // Progress geht jetzt von 0.0 (leer) auf 1.0 (voll)
   const progress = elapsed / 120; 
-  // Offset startet bei circumference (Ring unsichtbar) und wandert auf 0 (Ring geschlossen)
-  const strokeDashoffset = circumference * (1 - progress);
+  
+  // Hier ist die Magie: Wir malen einen Strich exakt so lang wie der Progress, gefolgt von einer Lücke, die den Rest ausfüllt!
+  const strokeDasharray = `${circumference * progress} ${circumference}`;
 
-  // 6. Joule Anzeige-Logik
   const defaultJoule = state.isPediatric && state.patientWeight ? Math.round(state.patientWeight * 4) : 150;
   const displayJoule = state.lastJoule || defaultJoule;
 
   return {
-    state,
-    circleSize,
-    formatCprTime,
-    handleManualAnalyze,
-    remaining,
-    ringColor,
-    topText,
-    textColor,
-    isPulsing,
-    radius,
-    circumference,
-    strokeDashoffset,
-    strokeWidth,
-    displayJoule
+    state, circleSize, formatCprTime, handleManualAnalyze, remaining, ringColor, topText, textColor, 
+    isPulsing, radius, strokeDasharray, strokeWidth, displayJoule
   };
 }
