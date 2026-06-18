@@ -10,31 +10,28 @@ export default function ViewAirwayDoc() {
   
   const [size, setSize] = useState('');
   const [depth, setDepth] = useState('');
+  
+  const returnPhase = state.previousAppPhase || CPR_CONFIG.PHASES.RUNNING;
 
   const handleSave = () => {
     const finalSize = size || '?';
     const finalDepth = depth || '?';
     
-    // Speichert den Atemweg in den globalen State
     dispatch({ 
       type: 'SET_AIRWAY', 
       payload: { established: true, type: state.airwayType, size: finalSize, depth: finalDepth } 
     });
     
-    // Erzwingt den KONT-Modus
     dispatch({ type: 'SET_CPR_MODE', payload: 'continuous' });
-    dispatch({ type: 'SET_COMPRESSION_COUNT', payload: 0 }); // Reset Loop
+    dispatch({ type: 'SET_COMPRESSION_COUNT', payload: 0 }); 
     
-    // Rechtssicheres Protokoll
     logEvent(CPR_CONFIG.EVENTS.AIRWAY, `${state.airwayType} etabliert (Gr. ${finalSize}, Tiefe: ${finalDepth}cm)`);
     logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, `Modus: continuous (Auto-Switch durch Invasiv)`);
     
-    // Zurück zum Dashboard
-    dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.RUNNING });
+    dispatch({ type: 'SET_PHASE', payload: returnPhase }); // <--- NEU
   };
 
   const handleCancel = () => {
-    // Zurück zur vorherigen Auswahl
     dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.AIRWAY_MENU });
   };
 

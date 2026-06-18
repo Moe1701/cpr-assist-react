@@ -3,13 +3,14 @@ import { CPR_CONFIG } from '../config/cprConfig.js';
 
 export const initialState = {
   appPhase: CPR_CONFIG.PHASES.ONBOARDING,
+  previousAppPhase: null,   // <--- NEU: Das Kurzzeitgedächtnis
   isPediatric: false,
   patientWeight: null,
   cprMode: 'continuous', 
   
   bpm: 110,         
   isMuted: false,   
-  shockCount: 0,            // <--- NEU: Zählt die Defibrillationen (für Eskalation)
+  shockCount: 0,            
   
   startTime: null,         
   isGridVisible: false,    
@@ -27,8 +28,8 @@ export const initialState = {
   
   airwayEstablished: false,
   airwayType: null,         
-  airwaySize: null,         // <--- NEU: Größe (z.B. "4.0" oder "Gr. 2")
-  airwayDepth: null,        // <--- NEU: Tiefe (z.B. "12")
+  airwaySize: null,         
+  airwayDepth: null,        
   
   compressingSeconds: 0, 
   arrestSeconds: 0,      
@@ -39,10 +40,27 @@ export const initialState = {
 
 export function cprReducer(state, action) {
   switch (action.type) {
-    case 'SET_PHASE': return { ...state, appPhase: action.payload };
+    // <--- NEU: Die smarte Phasen-Wechsel Logik
+    case 'SET_PHASE': {
+      const isGoingToAirway = action.payload === CPR_CONFIG.PHASES.AIRWAY_MENU || action.payload === CPR_CONFIG.PHASES.AIRWAY_DOC;
+      const isComingFromAirway = state.appPhase === CPR_CONFIG.PHASES.AIRWAY_MENU || state.appPhase === CPR_CONFIG.PHASES.AIRWAY_DOC;
+      
+      let prevPhase = state.previousAppPhase;
+      // Merke dir die alte Phase NUR, wenn wir von außerhalb ins Atemwegs-Menü wechseln
+      if (isGoingToAirway && !isComingFromAirway) {
+        prevPhase = state.appPhase;
+      }
+      
+      return { 
+        ...state, 
+        appPhase: action.payload,
+        previousAppPhase: prevPhase
+      };
+    }
+
     case 'SET_BPM': return { ...state, bpm: action.payload };
     case 'TOGGLE_MUTE': return { ...state, isMuted: !state.isMuted };
-    case 'INCREMENT_SHOCK': return { ...state, shockCount: state.shockCount + 1 }; // <--- NEU
+    case 'INCREMENT_SHOCK': return { ...state, shockCount: state.shockCount + 1 }; 
     
     case 'SET_PEDIATRIC_DATA': return { 
         ...state, 
@@ -68,7 +86,6 @@ export function cprReducer(state, action) {
     case 'SET_COMPRESSION_COUNT': return { ...state, compressionCount: action.payload };
     case 'SET_VENTILATION_PHASE': return { ...state, isVentilationPhase: action.payload };
     
-    // <--- NEU: Kompletter Atemwegs-State mit Fallback für alten Code
     case 'SET_AIRWAY': 
       if (typeof action.payload === 'boolean') {
         return { ...state, airwayEstablished: action.payload };
