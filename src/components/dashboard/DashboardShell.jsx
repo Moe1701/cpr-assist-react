@@ -12,7 +12,7 @@ import { usePatientLogic } from '../../hooks/usePatientLogic.js';
 import { useMasterLoop } from '../../hooks/useMasterLoop.js'; 
 
 export default function DashboardShell() {
-  const { state } = useContext(CprContext);
+  const { state, dispatch } = useContext(CprContext);
   const { toggleCprMode } = usePatientLogic();
   const { toggleCpr } = useMasterLoop(); 
 
@@ -23,8 +23,15 @@ export default function DashboardShell() {
     return `${m}:${s}`;
   };
 
-  const SatelliteBtn = ({ icon, label, colorClass = "bg-white text-slate-500 border-slate-200" }) => (
-    <button className={`w-[86px] h-[86px] rounded-full shadow-sm border-[3px] flex flex-col items-center justify-center gap-1 hover:bg-slate-50 active:scale-95 transition-all ${colorClass}`}>
+  const handleMute = (e) => {
+    e.preventDefault(); 
+    e.stopPropagation();
+    dispatch({ type: 'TOGGLE_MUTE' });
+  };
+
+  // HIER WAR DER FEHLER: onClick muss als Prop übergeben und an den Button gehängt werden!
+  const SatelliteBtn = ({ icon, label, colorClass = "bg-white text-slate-500 border-slate-200", onClick }) => (
+    <button onClick={onClick} className={`w-[86px] h-[86px] rounded-full shadow-sm border-[3px] flex flex-col items-center justify-center gap-1 hover:bg-slate-50 active:scale-95 transition-all cursor-pointer ${colorClass}`}>
       <i className={`fa-solid ${icon} text-[24px] mb-0.5 pointer-events-none`}></i>
       <span className="text-[9px] font-black uppercase tracking-wider leading-none text-center px-1 pointer-events-none">{label}</span>
     </button>
@@ -88,7 +95,6 @@ export default function DashboardShell() {
       </div>
 
       {/* 2. MITTLERER BEREICH */}
-      {/* BUGFIX: Dynamische orbitShiftClass entfernt. Der Bereich ist nun felsenfest. */}
       <div className="flex-1 relative w-full flex items-center justify-center z-30 overflow-visible">
         <OrbitPosition x={0} y={0} zIndex={10}><CenterDisplay /></OrbitPosition>
 
@@ -99,7 +105,16 @@ export default function DashboardShell() {
             <OrbitPosition x={141} y={81.5}><SatelliteBtn icon="fa-clipboard-list" label="Hits Anamnese" colorClass="bg-white text-slate-600 border-slate-300" /></OrbitPosition>
             <OrbitPosition x={0} y={163}><SatelliteBtn icon="fa-flag-checkered" label="Ende ROSC" colorClass="bg-white text-slate-700 border-slate-300" /></OrbitPosition>
             <OrbitPosition x={-141} y={81.5}><SatelliteBtn icon="fa-file-lines" label="Log" colorClass="bg-white text-slate-500 border-slate-300" /></OrbitPosition>
-            <OrbitPosition x={-141} y={-81.5}><SatelliteBtn icon="fa-droplet" label="Zugang" colorClass="bg-white text-slate-500 border-slate-300" /></OrbitPosition>
+            
+            {/* HIER WAR DER FEHLER: Das ist der korrekte, dynamische Zugang-Satellit! */}
+            <OrbitPosition x={-141} y={-81.5}>
+              <SatelliteBtn 
+                icon="fa-droplet" 
+                label={state.zugang || "Zugang"} 
+                colorClass={state.zugang ? "bg-cyan-50 border-cyan-400 text-cyan-600" : "bg-white text-slate-500 border-slate-300"}
+                onClick={() => dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.ZUGANG })}
+              />
+            </OrbitPosition>
           </>
         )}
       </div>
@@ -112,7 +127,7 @@ export default function DashboardShell() {
         <CprButton toggleCpr={toggleCpr} />
       </div>
 
-      {/* MODALS (Diese müssen strikt VOR dem schließenden div liegen) */}
+      {/* MODALS */}
       {state.isPatientModalOpen && <PatientSetupModal />}
 
     </div>
