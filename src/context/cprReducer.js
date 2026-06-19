@@ -17,7 +17,8 @@ export const initialState = {
   isGridVisible: false,    
   isPatientModalOpen: false, 
   isAirwayModalOpen: false, 
-  isHitsModalOpen: false, // <--- NEU
+  isHitsModalOpen: false, 
+  isLogModalOpen: false, // <--- NEU
   
   missionSeconds: 0, 
   cprSeconds: 0, 
@@ -44,7 +45,6 @@ export const initialState = {
   events: [],      
   reminders: [],
   
-  // <--- NEU: HITS & SAMPLER DATEN
   hitsStatus: {}, 
   anamneseData: {
     alter: '', gewicht: '',
@@ -76,17 +76,22 @@ export function cprReducer(state, action) {
         patientWeight: action.payload.patientWeight,
         cprMode: 'continuous', 
         startTime: state.startTime || new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }),
-        // Synchronisiere Gewicht sofort in die Anamnese
         anamneseData: { ...state.anamneseData, gewicht: action.payload.patientWeight || '' }
       };
       
     case 'SET_CPR_MODE': return { ...state, cprMode: action.payload };
     case 'TOGGLE_PATIENT_MODAL': return { ...state, isPatientModalOpen: action.payload };
     case 'TOGGLE_AIRWAY_MODAL': return { ...state, isAirwayModalOpen: action.payload }; 
-    case 'TOGGLE_HITS_MODAL': return { ...state, isHitsModalOpen: action.payload }; // <--- NEU
+    case 'TOGGLE_HITS_MODAL': return { ...state, isHitsModalOpen: action.payload }; 
+    case 'TOGGLE_LOG_MODAL': return { ...state, isLogModalOpen: action.payload }; // <--- NEU
     case 'TOGGLE_GRID': return { ...state, isGridVisible: !state.isGridVisible };
+    
     case 'LOG_EVENT': return { ...state, events: [...state.events, action.payload] };
     
+    case 'UNDO_LAST_EVENT': // <--- NEU
+      if (state.events.length === 0) return state;
+      return { ...state, events: state.events.slice(0, -1) };
+
     case 'TOGGLE_COMPRESSION': return { ...state, isCompressing: action.payload, pauseSeconds: action.payload ? 0 : state.pauseSeconds };
     case 'SET_COMPRESSION_COUNT': return { ...state, compressionCount: action.payload };
     case 'SET_VENTILATION_PHASE': return { ...state, isVentilationPhase: action.payload };
@@ -103,10 +108,11 @@ export function cprReducer(state, action) {
     
     case 'GIVE_ADRENALIN': return { ...state, adrCount: state.adrCount + 1, adrSeconds: 1 };
     case 'GIVE_AMIODARON': return { ...state, amioCount: state.amioCount + 1 };
+    case 'UNDO_AMIODARON': return { ...state, amioCount: Math.max(0, state.amioCount - 1) };
     
-    case 'TOGGLE_HITS_ITEM': // <--- NEU
+    case 'TOGGLE_HITS_ITEM': 
       return { ...state, hitsStatus: { ...state.hitsStatus, [action.payload.id]: action.payload.value } };
-    case 'SAVE_ANAMNESE': // <--- NEU
+    case 'SAVE_ANAMNESE': 
       return { ...state, anamneseData: action.payload };
     
     case 'TICK_ADR': {

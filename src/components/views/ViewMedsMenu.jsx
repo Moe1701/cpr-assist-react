@@ -7,9 +7,7 @@ import { MED_DATABASE } from '../../config/medsConfig.js';
 export default function ViewMedsMenu() {
   const { state, dispatch, logEvent } = useContext(CprContext);
   
-  // State für die Navigation: null = Kategorieliste, String = Medikamentenliste der Kategorie
   const [activeCategoryId, setActiveCategoryId] = useState(null);
-
   const returnPhase = state.previousAppPhase || CPR_CONFIG.PHASES.RUNNING;
 
   const handleClose = () => {
@@ -17,8 +15,6 @@ export default function ViewMedsMenu() {
   };
 
   const handleBack = () => {
-    // Wenn wir in einem Untermenü sind, gehe zurück zur Kategorien-Liste.
-    // Wenn wir schon in der Kategorien-Liste sind, schließe das Menü komplett.
     if (activeCategoryId) {
       setActiveCategoryId(null);
     } else {
@@ -29,25 +25,26 @@ export default function ViewMedsMenu() {
   const activeCategory = MED_DATABASE.find(c => c.categoryId === activeCategoryId);
 
   const handleMedClick = (med) => {
-    // Sicherheits-Check: Falls es ein Kind ist, aber das Gewicht noch nicht eingetragen wurde
-    let doseToGive = med.adultDose;
+    let doseToGive = '';
     if (state.isPediatric) {
-      if (state.patientWeight) {
-        doseToGive = med.calcPedDose(state.patientWeight);
-      } else {
-         // Falls im Stress "Gewicht später" gewählt wurde, wird die Gabe mit einem Warnhinweis geloggt
-        doseToGive = '?? (Gewicht fehlt)';
-      }
+      doseToGive = state.patientWeight ? med.getPedDose(state) : '?? (Gewicht fehlt)';
+    } else {
+      doseToGive = med.getAdultDose(state);
     }
 
     logEvent(CPR_CONFIG.EVENTS.DRUG, `${med.label} ${doseToGive} gegeben`);
+    
+    // Falls das Medikament (wie Amiodaron) eine eigene Aktion hat, ausführen
+    if (med.actionType) {
+      dispatch({ type: med.actionType });
+    }
+    
     dispatch({ type: 'SET_PHASE', payload: returnPhase });
   };
 
   return (
     <div className="flex flex-col items-center justify-start w-full h-full pt-6 pb-4 px-5 animate-in zoom-in-95 duration-200 relative">
       
-      {/* Smart Back-Button: Zeigt Pfeil, wenn im Untermenü, sonst X zum Schließen */}
       <button 
         onClick={handleBack} 
         className="absolute top-4 left-4 w-8 h-8 bg-slate-50 rounded-full text-slate-400 flex items-center justify-center active:scale-95 transition-transform z-10 hover:bg-slate-100 cursor-pointer"
@@ -59,13 +56,9 @@ export default function ViewMedsMenu() {
         {activeCategoryId ? activeCategory.categoryName : 'Medikamente'}
       </h2>
 
-      {/* Scrollbarer Container für die Listen */}
       <div className="w-[90%] max-w-[240px] flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-2.5 pb-2">
         
         {!activeCategoryId ? (
-          // ==========================================
-          // ANSICHT 1: KATEGORIEN (UNTERMENÜS)
-          // ==========================================
           MED_DATABASE.map(cat => (
             <button
               key={cat.categoryId}
@@ -80,14 +73,13 @@ export default function ViewMedsMenu() {
             </button>
           ))
         ) : (
-          // ==========================================
-          // ANSICHT 2: MEDIKAMENTE IN DER KATEGORIE
-          // ==========================================
           activeCategory.meds.length > 0 ? (
             activeCategory.meds.map(med => {
-              let displayDose = med.adultDose;
+              let displayDose = '';
               if (state.isPediatric) {
-                displayDose = state.patientWeight ? med.calcPedDose(state.patientWeight) : 'Fehlt!';
+                displayDose = state.patientWeight ? med.getPedDose(state) : 'Fehlt!';
+              } else {
+                displayDose = med.getAdultDose(state);
               }
 
               return (
@@ -104,7 +96,6 @@ export default function ViewMedsMenu() {
               );
             })
           ) : (
-            // Fallback, wenn eine Kategorie (z.B. Katecholamine) noch leer ist
             <div className="text-center text-[10px] font-bold text-slate-400 mt-6 uppercase tracking-widest">
               Noch keine<br/>Einträge
             </div>

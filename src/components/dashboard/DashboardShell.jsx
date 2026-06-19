@@ -5,12 +5,13 @@ import { CPR_CONFIG } from '../../config/cprConfig.js';
 
 import CenterDisplay from '../CenterDisplay.jsx';
 import PatientSetupModal from '../PatientSetupModal.jsx'; 
-import HitsModal from '../views/HitsModal.jsx'; // <--- NEU HINZUGEFÜGT
+import HitsModal from '../views/HitsModal.jsx'; 
+import ViewLogbook from '../views/ViewLogbook.jsx'; // <--- NEU
 
 import CprButton from './CprButton.jsx';  
 import AirwayButton from './AirwayButton.jsx';
 import AdrenalinButton from './AdrenalinButton.jsx';
-import AmiodaronButton from './AmiodaronButton.jsx'; // <--- NEU IMPORTIERT
+import AmiodaronButton from './AmiodaronButton.jsx'; 
 import { usePatientLogic } from '../../hooks/usePatientLogic.js';
 import { useMasterLoop } from '../../hooks/useMasterLoop.js'; 
 
@@ -90,14 +91,13 @@ export default function DashboardShell() {
         </div>
       </div>
 
-      {/* 2. MITTLERER BEREICH */}
+      {/* 2. MITTLERER BEREICH (Fest verankert, kein Springen) */}
       <div className="flex-1 relative w-full flex items-center justify-center z-30 overflow-visible">
         <OrbitPosition x={0} y={0} zIndex={10}><CenterDisplay /></OrbitPosition>
 
         {showSatellites && (
           <>
             <OrbitPosition x={0} y={-163}><AdrenalinButton /></OrbitPosition>
-            
             <OrbitPosition x={141} y={-81.5}><AmiodaronButton /></OrbitPosition>
             
             <OrbitPosition x={141} y={81.5}>
@@ -108,8 +108,19 @@ export default function DashboardShell() {
                 onClick={() => dispatch({ type: 'TOGGLE_HITS_MODAL', payload: true })}
               />
             </OrbitPosition>
-            <OrbitPosition x={0} y={163}><SatelliteBtn icon="fa-flag-checkered" label="Ende ROSC" colorClass="bg-white text-slate-700 border-slate-300" /></OrbitPosition>
-            <OrbitPosition x={-141} y={81.5}><SatelliteBtn icon="fa-file-lines" label="Log" colorClass="bg-white text-slate-500 border-slate-300" /></OrbitPosition>
+            
+            <OrbitPosition x={0} y={163}>
+              <SatelliteBtn icon="fa-flag-checkered" label="Ende ROSC" colorClass="bg-white text-slate-700 border-slate-300" />
+            </OrbitPosition>
+            
+            <OrbitPosition x={-141} y={81.5}>
+              <SatelliteBtn 
+                icon="fa-file-lines" 
+                label="Log" 
+                colorClass="bg-white text-slate-500 border-slate-300" 
+                onClick={() => dispatch({ type: 'TOGGLE_LOG_MODAL', payload: true })}
+              />
+            </OrbitPosition>
             
             <OrbitPosition x={-141} y={-81.5}>
               <SatelliteBtn 
@@ -134,6 +145,7 @@ export default function DashboardShell() {
       {/* MODALS */}
       {state.isPatientModalOpen && <PatientSetupModal />}
       {state.isHitsModalOpen && <HitsModal />}
+      {state.isLogModalOpen && <ViewLogbook />}
 
     </div>
   );

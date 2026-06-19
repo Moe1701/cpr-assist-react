@@ -11,7 +11,8 @@ const loadState = () => {
        const parsed = JSON.parse(saved);
        parsed.isGridVisible = false;
        parsed.isPatientModalOpen = false;
-       parsed.isHitsModalOpen = false; // <--- NEU
+       parsed.isHitsModalOpen = false; 
+       parsed.isLogModalOpen = false; // <--- NEU
        
        if (parsed.bpm === undefined) parsed.bpm = 110;
        if (parsed.isMuted === undefined) parsed.isMuted = false;
@@ -22,8 +23,8 @@ const loadState = () => {
        if (parsed.adrSeconds === undefined) parsed.adrSeconds = 0;
        if (parsed.adrCount === undefined) parsed.adrCount = 0;
        if (parsed.amioCount === undefined) parsed.amioCount = 0; 
-       if (parsed.hitsStatus === undefined) parsed.hitsStatus = {}; // <--- NEU
-       if (parsed.anamneseData === undefined) parsed.anamneseData = initialState.anamneseData; // <--- NEU
+       if (parsed.hitsStatus === undefined) parsed.hitsStatus = {}; 
+       if (parsed.anamneseData === undefined) parsed.anamneseData = initialState.anamneseData; 
        
        return parsed;
     }
@@ -59,8 +60,8 @@ export function CprProvider({ children }) {
       adrSeconds: state.adrSeconds,
       adrCount: state.adrCount,
       amioCount: state.amioCount, 
-      hitsStatus: state.hitsStatus, // <--- NEU
-      anamneseData: state.anamneseData, // <--- NEU
+      hitsStatus: state.hitsStatus, 
+      anamneseData: state.anamneseData, 
       events: state.events,
       reminders: state.reminders,
       currentCcfPercent: state.currentCcfPercent,

@@ -2,49 +2,62 @@
 
 export const MED_DATABASE = [
   {
+    categoryId: 'reanimation',
+    categoryName: 'Reanimation',
+    meds: [
+      { 
+        id: 'amiodaron', 
+        label: 'Amiodaron', 
+        getAdultDose: (state) => state.amioCount === 0 ? '300 mg' : '150 mg', 
+        getPedDose: (state) => `${Math.round(state.patientWeight * 5)} mg`,
+        actionType: 'GIVE_AMIODARON' // Löst den Zähler im Reducer aus
+      }
+    ]
+  },
+  {
     categoryId: 'hits',
     categoryName: 'Reversibel (4H/HITS)',
     meds: [
       { 
         id: 'calcium', 
         label: 'Calcium', 
-        adultDose: '1 g', 
-        calcPedDose: (kg) => `${Math.round(kg * 20)} mg` // 20 mg / kg
+        getAdultDose: () => '1 g', 
+        getPedDose: (state) => `${Math.round(state.patientWeight * 20)} mg`
       },
       { 
         id: 'magnesium', 
         label: 'Magnesium', 
-        adultDose: '2 g', 
-        calcPedDose: (kg) => `${Math.round(kg * 40)} mg` // 40 mg / kg
+        getAdultDose: () => '2 g', 
+        getPedDose: (state) => `${Math.round(state.patientWeight * 40)} mg`
       },
       { 
         id: 'bicarbonat', 
         label: 'Bicarbonat (8,4%)', 
-        adultDose: '50 mmol', 
-        calcPedDose: (kg) => `${Math.round(kg * 1)} mmol` // 1 mmol / kg
+        getAdultDose: () => '50 mmol', 
+        getPedDose: (state) => `${Math.round(state.patientWeight * 1)} mmol`
       },
       { 
         id: 'volumen', 
         label: 'Volumen (NaCl/VEL)', 
-        adultDose: '500 ml', 
-        calcPedDose: (kg) => `${Math.round(kg * 10)} ml` // 10 ml / kg
+        getAdultDose: () => '500 ml', 
+        getPedDose: (state) => `${Math.round(state.patientWeight * 10)} ml`
       },
       { 
         id: 'atropin', 
         label: 'Atropin', 
-        adultDose: '1 mg', 
-        calcPedDose: (kg) => `${Math.round(kg * 20)} µg` // 20 µg / kg
+        getAdultDose: () => '1 mg', 
+        getPedDose: (state) => `${Math.round(state.patientWeight * 20)} µg`
       }
     ]
   },
   {
     categoryId: 'katecholamine',
     categoryName: 'Katecholamine (Perfusor)',
-    meds: [] // Perspektivisch für spätere Updates
+    meds: [] 
   },
   {
     categoryId: 'narkotika',
     categoryName: 'Narkotika / Sedativa',
-    meds: [] // Perspektivisch für spätere Updates
+    meds: [] 
   }
 ];
