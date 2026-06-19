@@ -60,6 +60,7 @@ src/components/AirwayModal.jsx
 src/components/CenterDisplay.jsx
 src/components/dashboard/AdrenalinButton.jsx
 src/components/dashboard/AirwayButton.jsx
+src/components/dashboard/AmiodaronButton.jsx
 src/components/dashboard/CprButton.jsx
 src/components/dashboard/DashboardShell.jsx
 src/components/dashboard/projekt_handbuch.md
@@ -72,6 +73,7 @@ src/components/views/ViewAirwayMenu.jsx
 src/components/views/ViewCprResume.jsx
 src/components/views/ViewDecision.jsx
 src/components/views/ViewJoule.jsx
+src/components/views/ViewMedsMenu.jsx
 src/components/views/ViewObAnalyze.jsx
 src/components/views/ViewObCompressions.jsx
 src/components/views/ViewObInitialBreaths.jsx
@@ -79,6 +81,7 @@ src/components/views/ViewObPatient.jsx
 src/components/views/ViewZugang.jsx
 src/config/broselowData.js
 src/config/cprConfig.js
+src/config/medsConfig.js
 src/context/CprContext.jsx
 src/context/cprReducer.js
 src/hooks/useAirwayEngine.js
@@ -526,6 +529,69 @@ export default function AdrenalinButton() {
 }
 </file>
 
+<file path="src/components/dashboard/AmiodaronButton.jsx">
+// --- Datei: src/components/dashboard/AmiodaronButton.jsx ---
+import React, { useContext } from 'react';
+import { CprContext } from '../../context/CprContext.jsx';
+import { CPR_CONFIG } from '../../config/cprConfig.js';
+
+export default function AmiodaronButton() {
+  const { state, dispatch, logEvent } = useContext(CprContext);
+
+  // ==========================================
+  // PHASE 2: Der "Weitere Meds" Koffer (ab 2 Klicks)
+  // ==========================================
+  if (state.amioCount >= 2) {
+    return (
+      <button 
+        onClick={() => dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.MEDS_MENU })} 
+        className="w-[86px] h-[86px] rounded-full shadow-sm border-[3px] flex flex-col items-center justify-center gap-1 hover:bg-slate-50 active:scale-95 transition-all cursor-pointer bg-white text-indigo-600 border-indigo-400"
+      >
+        <i className="fa-solid fa-suitcase-medical text-[24px] mb-0.5 pointer-events-none"></i>
+        <span className="text-[9px] font-black uppercase tracking-wider leading-none text-center px-1 pointer-events-none">
+          Weitere Meds
+        </span>
+      </button>
+    );
+  }
+
+  // ==========================================
+  // PHASE 1: Der normale Amiodaron Button
+  // ==========================================
+  
+  // Dosis-Berechnung (Kind: 5mg/kg starr | Erwachsener: 300mg -> 150mg)
+  const dose = state.isPediatric && state.patientWeight
+    ? `${Math.round(state.patientWeight * 5)} mg`
+    : (state.amioCount === 0 ? '300 mg' : '150 mg');
+
+  const handleClick = () => {
+    logEvent(CPR_CONFIG.EVENTS.DRUG, `Amiodaron ${dose} gegeben`);
+    dispatch({ type: 'GIVE_AMIODARON' });
+  };
+
+  return (
+    <div className="relative pointer-events-auto w-[86px] h-[86px]">
+      <button
+        onClick={handleClick}
+        className="w-full h-full rounded-full shadow-sm border-[3px] flex flex-col items-center justify-center gap-1 active:scale-95 transition-all cursor-pointer bg-white border-purple-400 hover:bg-slate-50"
+      >
+        <i className="fa-solid fa-syringe text-[24px] mb-0.5 text-purple-600 pointer-events-none"></i>
+        <span className="text-[9px] font-black uppercase tracking-wider leading-none text-center px-1 text-purple-600 pointer-events-none">
+          Amio. {dose}
+        </span>
+      </button>
+
+      {/* Rotes Zähler-Badge */}
+      {state.amioCount > 0 && (
+        <div className="absolute -top-2 -right-2 bg-[#E3000F] text-white text-[12px] font-black px-2 min-w-[26px] h-7 flex items-center justify-center rounded-full shadow-md border-2 border-white z-40 pointer-events-none">
+          {state.amioCount}
+        </div>
+      )}
+    </div>
+  );
+}
+</file>
+
 <file path="src/components/HelpOverlay.jsx">
 // --- Datei: src/components/HelpOverlay.jsx ---
 import React, { useContext } from 'react';
@@ -614,6 +680,125 @@ export default function HelpOverlay({ isActive }) {
         </div>
       )}
 
+    </div>
+  );
+}
+</file>
+
+<file path="src/components/views/ViewMedsMenu.jsx">
+// --- Datei: src/components/views/ViewMedsMenu.jsx ---
+import React, { useContext, useState } from 'react';
+import { CprContext } from '../../context/CprContext.jsx';
+import { CPR_CONFIG } from '../../config/cprConfig.js';
+import { MED_DATABASE } from '../../config/medsConfig.js';
+
+export default function ViewMedsMenu() {
+  const { state, dispatch, logEvent } = useContext(CprContext);
+  
+  // State für die Navigation: null = Kategorieliste, String = Medikamentenliste der Kategorie
+  const [activeCategoryId, setActiveCategoryId] = useState(null);
+
+  const returnPhase = state.previousAppPhase || CPR_CONFIG.PHASES.RUNNING;
+
+  const handleClose = () => {
+    dispatch({ type: 'SET_PHASE', payload: returnPhase });
+  };
+
+  const handleBack = () => {
+    // Wenn wir in einem Untermenü sind, gehe zurück zur Kategorien-Liste.
+    // Wenn wir schon in der Kategorien-Liste sind, schließe das Menü komplett.
+    if (activeCategoryId) {
+      setActiveCategoryId(null);
+    } else {
+      handleClose();
+    }
+  };
+
+  const activeCategory = MED_DATABASE.find(c => c.categoryId === activeCategoryId);
+
+  const handleMedClick = (med) => {
+    // Sicherheits-Check: Falls es ein Kind ist, aber das Gewicht noch nicht eingetragen wurde
+    let doseToGive = med.adultDose;
+    if (state.isPediatric) {
+      if (state.patientWeight) {
+        doseToGive = med.calcPedDose(state.patientWeight);
+      } else {
+         // Falls im Stress "Gewicht später" gewählt wurde, wird die Gabe mit einem Warnhinweis geloggt
+        doseToGive = '?? (Gewicht fehlt)';
+      }
+    }
+
+    logEvent(CPR_CONFIG.EVENTS.DRUG, `${med.label} ${doseToGive} gegeben`);
+    dispatch({ type: 'SET_PHASE', payload: returnPhase });
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-start w-full h-full pt-6 pb-4 px-5 animate-in zoom-in-95 duration-200 relative">
+      
+      {/* Smart Back-Button: Zeigt Pfeil, wenn im Untermenü, sonst X zum Schließen */}
+      <button 
+        onClick={handleBack} 
+        className="absolute top-4 left-4 w-8 h-8 bg-slate-50 rounded-full text-slate-400 flex items-center justify-center active:scale-95 transition-transform z-10 hover:bg-slate-100 cursor-pointer"
+      >
+        <i className={`fa-solid ${activeCategoryId ? 'fa-arrow-left' : 'fa-xmark'} pointer-events-none`}></i>
+      </button>
+
+      <h2 className="text-[11px] font-black text-slate-700 uppercase tracking-widest text-center mt-0 mb-4 px-8 leading-tight pointer-events-none">
+        {activeCategoryId ? activeCategory.categoryName : 'Medikamente'}
+      </h2>
+
+      {/* Scrollbarer Container für die Listen */}
+      <div className="w-[90%] max-w-[240px] flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-2.5 pb-2">
+        
+        {!activeCategoryId ? (
+          // ==========================================
+          // ANSICHT 1: KATEGORIEN (UNTERMENÜS)
+          // ==========================================
+          MED_DATABASE.map(cat => (
+            <button
+              key={cat.categoryId}
+              onClick={() => setActiveCategoryId(cat.categoryId)}
+              className="w-full py-3.5 px-4 rounded-[16px] font-bold uppercase tracking-wider text-[10px] bg-white border-2 border-indigo-50 text-indigo-600 shadow-sm flex items-center justify-between active:scale-95 transition-all hover:bg-indigo-50/50 cursor-pointer"
+            >
+              <span className="text-left pointer-events-none leading-tight">{cat.categoryName}</span>
+              <div className="flex items-center gap-2 pointer-events-none">
+                <span className="text-[9px] text-indigo-300 font-bold bg-indigo-50 px-2 py-0.5 rounded-full">{cat.meds.length}</span>
+                <i className="fa-solid fa-chevron-right text-indigo-300 text-xs"></i>
+              </div>
+            </button>
+          ))
+        ) : (
+          // ==========================================
+          // ANSICHT 2: MEDIKAMENTE IN DER KATEGORIE
+          // ==========================================
+          activeCategory.meds.length > 0 ? (
+            activeCategory.meds.map(med => {
+              let displayDose = med.adultDose;
+              if (state.isPediatric) {
+                displayDose = state.patientWeight ? med.calcPedDose(state.patientWeight) : 'Fehlt!';
+              }
+
+              return (
+                <button
+                  key={med.id}
+                  onClick={() => handleMedClick(med)}
+                  className="w-full py-3 px-3 rounded-[14px] bg-white border border-slate-200 shadow-sm flex flex-col items-center justify-center gap-1 active:scale-95 transition-all hover:bg-slate-50 cursor-pointer"
+                >
+                  <span className="text-[11px] font-black text-slate-700 uppercase tracking-wider pointer-events-none">{med.label}</span>
+                  <span className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-md pointer-events-none ${displayDose === 'Fehlt!' ? 'bg-red-50 text-red-500' : 'bg-emerald-50 text-emerald-600'}`}>
+                    {displayDose}
+                  </span>
+                </button>
+              );
+            })
+          ) : (
+            // Fallback, wenn eine Kategorie (z.B. Katecholamine) noch leer ist
+            <div className="text-center text-[10px] font-bold text-slate-400 mt-6 uppercase tracking-widest">
+              Noch keine<br/>Einträge
+            </div>
+          )
+        )}
+      </div>
     </div>
   );
 }
@@ -710,6 +895,59 @@ export default function ViewZugang() {
     </div>
   );
 }
+</file>
+
+<file path="src/config/medsConfig.js">
+// --- Datei: src/config/medsConfig.js ---
+
+export const MED_DATABASE = [
+  {
+    categoryId: 'hits',
+    categoryName: 'Reversibel (4H/HITS)',
+    meds: [
+      { 
+        id: 'calcium', 
+        label: 'Calcium', 
+        adultDose: '1 g', 
+        calcPedDose: (kg) => `${Math.round(kg * 20)} mg` // 20 mg / kg
+      },
+      { 
+        id: 'magnesium', 
+        label: 'Magnesium', 
+        adultDose: '2 g', 
+        calcPedDose: (kg) => `${Math.round(kg * 40)} mg` // 40 mg / kg
+      },
+      { 
+        id: 'bicarbonat', 
+        label: 'Bicarbonat (8,4%)', 
+        adultDose: '50 mmol', 
+        calcPedDose: (kg) => `${Math.round(kg * 1)} mmol` // 1 mmol / kg
+      },
+      { 
+        id: 'volumen', 
+        label: 'Volumen (NaCl/VEL)', 
+        adultDose: '500 ml', 
+        calcPedDose: (kg) => `${Math.round(kg * 10)} ml` // 10 ml / kg
+      },
+      { 
+        id: 'atropin', 
+        label: 'Atropin', 
+        adultDose: '1 mg', 
+        calcPedDose: (kg) => `${Math.round(kg * 20)} µg` // 20 µg / kg
+      }
+    ]
+  },
+  {
+    categoryId: 'katecholamine',
+    categoryName: 'Katecholamine (Perfusor)',
+    meds: [] // Perspektivisch für spätere Updates
+  },
+  {
+    categoryId: 'narkotika',
+    categoryName: 'Narkotika / Sedativa',
+    meds: [] // Perspektivisch für spätere Updates
+  }
+];
 </file>
 
 <file path="src/MedicalDisclaimer.jsx">
@@ -1517,70 +1755,6 @@ export default function ViewObPatient() {
 }
 </file>
 
-<file path="src/config/cprConfig.js">
-// --- Datei: src/config/cprConfig.js ---
-
-export const CPR_CONFIG = {
-  // 1. ZYKLUS & TIMER (Alle Angaben in exakten Sekunden)
-  TIMERS: {
-    MASTER_LOOP: 120,          
-    DEFI_WARNING: 105,         
-    ADRENALIN_INTERVAL: 240,   
-    VENTILATION_CONT: 6,       
-  },
-
-  // 2. STANDARD-MEDIKAMENTE (Erwachsene)
-  DRUGS_ADULT: {
-    ADRENALIN: "1 mg",
-    AMIO_D1: "300 mg",         
-    AMIO_D2: "150 mg",         
-  },
-
-  // 3. PÄDIATRIE-BERECHNUNG (Gewichtsadaptiert)
-  DRUGS_PEDS_FACTORS: {
-    ADRENALIN_MCG_PER_KG: 10,  
-    AMIO_MG_PER_KG: 5,         
-    JOULE_PER_KG: 4,           
-  },
-
-  // 4. EVENT-TYPEN FÜR DIE DATENBANK
-  EVENTS: {
-    PHASE_CHANGE: "PHASE_CHANGE", 
-    DRUG: "DRUG",                 
-    SHOCK: "SHOCK",               
-    AIRWAY: "AIRWAY",             
-    PAUSE: "PAUSE",               
-    RESUME: "RESUME",             
-    WARNING: "WARNING",           
-    ZUGANG: "ZUGANG", // <--- NEU
-  },
-
-  // 5. PHASEN ALS KONSTANTEN (Verhindert Tippfehler im Code)
-  PHASES: {
-    ONBOARDING: 'ONBOARDING',
-    OB_INITIAL_BREATHS: 'OB_INITIAL_BREATHS',
-    OB_COMPRESSIONS: 'OB_COMPRESSIONS',
-    OB_ANALYZE: 'OB_ANALYZE',
-    DECISION: 'DECISION',
-    JOULE: 'JOULE',
-    WAITING_CPR_RESUME: 'WAITING_CPR_RESUME',
-    RUNNING: 'RUNNING',
-    AIRWAY_MENU: 'AIRWAY_MENU', 
-    AIRWAY_DOC: 'AIRWAY_DOC',
-    ZUGANG: 'ZUGANG' // <--- NEU
-  }
-};
-
-// Hilfsfunktion: Berechnet Pädiatrie-Dosierungen blitzschnell
-export const calculatePedsDose = (weightKg) => {
-  return {
-    adrenalinMcg: weightKg * CPR_CONFIG.DRUGS_PEDS_FACTORS.ADRENALIN_MCG_PER_KG,
-    amioMg: weightKg * CPR_CONFIG.DRUGS_PEDS_FACTORS.AMIO_MG_PER_KG,
-    joule: weightKg * CPR_CONFIG.DRUGS_PEDS_FACTORS.JOULE_PER_KG
-  };
-};
-</file>
-
 <file path="src/hooks/useCenterEngine.js">
 // --- Datei: src/hooks/useCenterEngine.js ---
 import { useContext, useEffect } from 'react';
@@ -1697,6 +1871,43 @@ export function useGlobalTimer() {
 }
 </file>
 
+<file path="src/components/PatientSelection.jsx">
+import React, { useContext } from 'react';
+import { CprContext } from '../context/CprContext.jsx';
+import { CPR_CONFIG } from '../config/cprConfig.js';
+
+import ViewObPatient from './views/ViewObPatient.jsx';
+import ViewObInitialBreaths from './views/ViewObInitialBreaths.jsx';
+import ViewObCompressions from './views/ViewObCompressions.jsx';
+import ViewObAnalyze from './views/ViewObAnalyze.jsx';
+import ViewDecision from './views/ViewDecision.jsx';
+import ViewJoule from './views/ViewJoule.jsx';
+import ViewCprResume from './views/ViewCprResume.jsx';
+
+export default function PatientSelection() {
+  const { state } = useContext(CprContext);
+
+  switch (state.appPhase) {
+    case CPR_CONFIG.PHASES.ONBOARDING:         
+      return <ViewObPatient />;
+    case CPR_CONFIG.PHASES.OB_INITIAL_BREATHS: 
+      return <ViewObInitialBreaths />;
+    case CPR_CONFIG.PHASES.OB_COMPRESSIONS:    
+      return <ViewObCompressions />;
+    case CPR_CONFIG.PHASES.OB_ANALYZE:         
+      return <ViewObAnalyze />;
+    case CPR_CONFIG.PHASES.DECISION:           
+      return <ViewDecision />;
+    case CPR_CONFIG.PHASES.JOULE:              
+      return <ViewJoule />;
+    case CPR_CONFIG.PHASES.WAITING_CPR_RESUME: 
+      return <ViewCprResume />;
+    default:                   
+      return null;
+  }
+}
+</file>
+
 <file path="src/components/views/ViewCprResume.jsx">
 // --- Datei: src/components/views/ViewCprResume.jsx ---
 import React, { useContext } from 'react';
@@ -1740,67 +1951,163 @@ export default function ViewCprResume() {
 }
 </file>
 
-<file path="src/components/dashboard/projekt_handbuch.md">
-# 🚑 CPR ASSIST - PROJEKT HANDBUCH (Single Source of Truth)
+<file path="src/config/cprConfig.js">
+// --- Datei: src/config/cprConfig.js ---
 
-Dieses Dokument dient als "externes Gedächtnis" für die KI. Es enthält alle festgelegten Regeln, Architekturentscheidungen und Abläufe, damit bei neuen Chat-Sitzungen der Kontext sofort wiederhergestellt werden kann.
+export const CPR_CONFIG = {
+  // 1. ZYKLUS & TIMER (Alle Angaben in exakten Sekunden)
+  TIMERS: {
+    MASTER_LOOP: 120,          
+    DEFI_WARNING: 105,         
+    ADRENALIN_INTERVAL: 240,   
+    VENTILATION_CONT: 6,       
+  },
 
-## 1. ARCHITEKTUR & STATE-MANAGEMENT
-* **Global State:** Die App nutzt die React Context API (`CprContext.jsx` & `cprReducer.js`).
-* **Konstanten:** Alle festen Werte (Phasen, Timer, Medikamenten-Dosierungen) liegen streng getrennt in der `src/config/cprConfig.js`. 
-* **Logik-Auslagerung:** Die Geschäftslogik ist in Custom Hooks getrennt:
-    * `useMasterLoop.js`: Steuert die 120s-Zyklen, das hochpräzise Web-Audio Metronom und automatische 30:2 / 15:2 Pausen.
-    * `useCenterEngine.js`: Steuert das zentrale Display (SVG-Timer, Farb-Eskalation, Audio-Alarm bei 0s).
-    * `useAirwayEngine.js`: Die dedizierte 60-FPS Animations-Engine für den Atemwegs-Button.
-    * `usePatientLogic.js`: Behandelt Broselow-Berechnungen und den Wechsel zwischen Erwachsenen/Kindern.
+  // 2. STANDARD-MEDIKAMENTE (Erwachsene)
+  DRUGS_ADULT: {
+    ADRENALIN: "1 mg",
+    AMIO_D1: "300 mg",         
+    AMIO_D2: "150 mg",         
+  },
 
-## 2. APP-PHASEN & ROUTING (ONBOARDING)
-Der Ablauf vom Start bis zur eigentlichen Reanimation folgt einer strikten Reihenfolge:
-1.  `ONBOARDING`: Patient wählen (Erwachsener oder Kind).
-2.  `OB_INITIAL_BREATHS`: Nur bei Kindern (5 initiale Beatmungen).
-3.  `OB_COMPRESSIONS`: Die Frage "Kompression gestartet?". **Ab hier starten die UI-Timer und das Metronom.**
-4.  `OB_ANALYZE`: "Initiale Analyse" -> Hier drücken (Pausiert CPR automatisch).
-5.  `DECISION`: Schockbar / Nicht Schockbar.
-6.  `JOULE`: Energieauswahl (wird bei Pädiatrie nach Gewicht ausgerechnet: 4 J/kg oder 8 J/kg).
-7.  `WAITING_CPR_RESUME`: "CPR Fortsetzen".
-8.  `RUNNING`: Das eigentliche Live-Dashboard mit 120s-Loop.
-9.  `ZUGANG`: Overlay-Menü für i.v./i.o. Anlage.
+  // 3. PÄDIATRIE-BERECHNUNG (Gewichtsadaptiert)
+  DRUGS_PEDS_FACTORS: {
+    ADRENALIN_MCG_PER_KG: 10,  
+    AMIO_MG_PER_KG: 5,         
+    JOULE_PER_KG: 4,           
+  },
 
-## 3. UI-LOGIK: PÄDIATRIE & BROSELOW-SETUP
-Das Setup für Kinder (`PatientSetupModal.jsx`) ist auf extrem schnelle Bedienbarkeit unter Stress (UX "Fat-Finger") optimiert.
-* **Broselow-Schnellwahl:** Große Farb-Kacheln ermöglichen die sofortige Auswahl des passenden Gewichts nach dem Broselow-Maßband.
-* **Synchrone Slider:** Die Schieberegler für Alter und Gewicht berechnen sich über `calculatePediatricVitals` bidirektional. Wird das Alter geändert, passt sich das Gewicht an (und umgekehrt).
-* **Globaler Impact:** Das hier gewählte Gewicht (`state.patientWeight`) ist die "Single Source of Truth" für die restliche App (Joule, Tubusgröße, Med-Dosierung).
+  // 4. EVENT-TYPEN FÜR DIE DATENBANK
+  EVENTS: {
+    PHASE_CHANGE: "PHASE_CHANGE", 
+    DRUG: "DRUG",                 
+    SHOCK: "SHOCK",               
+    AIRWAY: "AIRWAY",             
+    PAUSE: "PAUSE",               
+    RESUME: "RESUME",             
+    WARNING: "WARNING",           
+    ZUGANG: "ZUGANG", 
+  },
 
-## 4. UI-LOGIK: CENTER DISPLAY & SATELLITEN
-* **Morphing:** Das zentrale Display ist ein perfekter Kreis. Im Dashboard (`RUNNING`) verkleinert es sich fließend auf `224px`.
-* **Der 120s-Timer (SVG):** Wird performant als SVG gerendert und eskaliert visuell/akustisch (Cyan -> Grün -> Gelb -> Rot + Audio-Alarm).
-* **Satelliten-Menüs (Overlays):** Klickt man auf einen Satelliten (z.B. Zugang), morpht das Center-Display kurzzeitig zum Eingabe-Menü. Der 120s-Timer und das Metronom laufen im Hintergrund unsichtbar weiter.
+  // 5. PHASEN ALS KONSTANTEN (Verhindert Tippfehler im Code)
+  PHASES: {
+    ONBOARDING: 'ONBOARDING',
+    OB_INITIAL_BREATHS: 'OB_INITIAL_BREATHS',
+    OB_COMPRESSIONS: 'OB_COMPRESSIONS',
+    OB_ANALYZE: 'OB_ANALYZE',
+    DECISION: 'DECISION',
+    JOULE: 'JOULE',
+    WAITING_CPR_RESUME: 'WAITING_CPR_RESUME',
+    RUNNING: 'RUNNING',
+    AIRWAY_MENU: 'AIRWAY_MENU', 
+    AIRWAY_DOC: 'AIRWAY_DOC',
+    ZUGANG: 'ZUGANG', 
+    MEDS_MENU: 'MEDS_MENU' // <--- NEU FÜR DEN KOFFER
+  }
+};
 
-## 5. UI-LOGIK: ZUGANG & PROTOKOLLIERUNG
-* **Smartes Auto-Mapping:** Wählt der Nutzer "i.o.", springen Größe und Ort automatisch auf die korrekten IO-Werte (z.B. "Tibia prox." und "EZ-IO Pink/Blau" je nach Alter). Bei "i.v." springt es auf "Grün 18G" und "Handrücken".
-* **State-Feedback:** Nach dem Speichern ändert der Satelliten-Button auf dem Dashboard seine Farbe (Cyan) und zeigt den gelegten Zugangstyp an.
-* **Das Einsatz-Logbuch:** Jede Aktion feuert ein `logEvent` an den Context, das exakte System-Uhrzeit, Laufzeit der Reanimation und Aktion (z.B. `[17:04:22] (03:15) ZUGANG: Zugang i.v. Rosa 20G Handrücken`) rechtssicher erfasst.
+// Hilfsfunktion: Berechnet Pädiatrie-Dosierungen blitzschnell
+export const calculatePedsDose = (weightKg) => {
+  return {
+    adrenalinMcg: weightKg * CPR_CONFIG.DRUGS_PEDS_FACTORS.ADRENALIN_MCG_PER_KG,
+    amioMg: weightKg * CPR_CONFIG.DRUGS_PEDS_FACTORS.AMIO_MG_PER_KG,
+    joule: weightKg * CPR_CONFIG.DRUGS_PEDS_FACTORS.JOULE_PER_KG
+  };
+};
+</file>
 
-## 6. UI-LOGIK: ATEMWEG & CPR-BUTTON
-### Der smarte Atemweg-Button
-* **Pfad A (Beutel-Maske):** Führt zum Modus `30:2` oder `15:2`. Zeigt in den letzten 5 Kompressionen einen eigenen Countdown.
-* **Pfad B (Invasiv):** Führt in einen sekundären Doku-Screen im Modal. Wechselt erst nach dem Speichern in den `KONT`-Modus (inklusive superschnellem Beatmungs-Countdown).
+<file path="src/App.jsx">
+// --- Datei: src/App.jsx ---
+import React, { useContext, useState } from 'react';
+import { CprProvider, CprContext } from './context/CprContext.jsx';
 
-### Der dynamische CPR-Button
-Der Play/Pause-Knopf ist eine State-Machine:
-1. **Laufende CPR (Weiß):** Metronom-Zähler blitzt synchron zum Audio feuerrot auf.
-2. **Beatmungs-Phase (Cyan):** Button blockiert kurzzeitig und signalisiert die Beatmung.
-3. **Manuelle Pause (Weiß/Grün):** Zählt Pausen-Sekunden hoch. Eskaliert ab 5s zu Gelb, ab 10s zu Rot.
 
-## 7. AUDIO ENGINE & METRONOM (Technisches Setup)
-* **Technologie:** 100% Web Audio API. Keine MP3/WAV-Dateien.
-* **Metronom:** Nutzt einen `OscillatorNode` (800 Hz Sine Wave). Gesteuert über Lookahead-Scheduler (`setTimeout` alle 25ms + `AudioContext.currentTime`).
-* **Mute-Logik:** Greift als Guard (`if (stateRef.current.isMuted)`) *direkt vor* der Tonausgabe, wodurch das visuelle UI im Takt weiterläuft.
+import MedicalDisclaimer from './MedicalDisclaimer.jsx';
+import DashboardShell from './components/dashboard/DashboardShell.jsx';
+import SettingsModal from './components/SettingsModal.jsx';
+import HelpOverlay from './components/HelpOverlay.jsx';
 
-## 8. AKTUELLER STATUS
-* **Erreicht:** Center-Display, Pädiatrie-Modal, MasterLoop, Audio-Engine und das Zugangs-Menü (inkl. Auto-Mapping & Logging) sind vollständig und fehlerfrei in React implementiert. Das "Sleek-Design" (ohne native Browser-Styles) ist als Standard gesetzt.
-* **Nächste Schritte:** Implementierung der Medikamenten-Satelliten (Adrenalin mit 4-Minuten-Timer & gewichtsadaptierter Kinderdosis sowie Amiodaron).
+import './App.css';
+
+function MainApp() {
+  // WICHTIG: Hier wurde 'dispatch' hinzugefügt, damit der Button funktioniert!
+  const { state, dispatch } = useContext(CprContext);
+  
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  
+  
+
+  // Die "Brechstange" (Triple-Click Hard Reset)
+  const handleTripleClick = (e) => {
+    if (e.detail === 3) {
+      localStorage.clear();
+      window.location.reload();
+    }
+  };
+
+  return (
+    <div className="bg-slate-200/50 w-full h-[100dvh] flex justify-center items-center overflow-hidden relative">
+      <div className="w-full max-w-[430px] h-full bg-slate-50 flex flex-col relative shadow-2xl overflow-hidden text-slate-900 select-none">
+        
+        {/* HEADER */}
+        <header className="flex items-center justify-between bg-white px-4 py-3 border-b border-slate-200 shadow-sm z-[70] relative shrink-0">
+          
+          <div className="flex items-center gap-3 p-1 cursor-pointer" onClick={handleTripleClick}>
+            <div className="w-10 h-10 flex items-center justify-center shrink-0 text-[#E3000F]">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"/></svg>
+            </div>
+            <div className="flex flex-col justify-center leading-none pointer-events-none">
+              <span className="text-lg font-black text-slate-900 uppercase tracking-tight">CPR Assist</span>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-0.5">by Moe</span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button className="text-slate-400 text-xl p-2 active:scale-90 transition-transform cursor-pointer">
+              <i className="fa-solid fa-circle-question pointer-events-none"></i>
+            </button>
+            
+            {/* DER SAUBERE MUTE-BUTTON */}
+            <button 
+              type="button"
+              onClick={() => dispatch({ type: 'TOGGLE_MUTE' })}
+              className="text-slate-600 text-xl p-2 active:scale-90 transition-transform cursor-pointer"
+            >
+              <i className={`fa-solid ${state.isMuted ? 'fa-volume-xmark text-red-500' : 'fa-volume-high'} pointer-events-none`}></i>
+            </button>
+            
+            <button 
+              onClick={() => setIsSettingsOpen(true)} 
+              className="text-slate-600 text-xl p-2 active:scale-90 transition-transform ml-1 cursor-pointer"
+            >
+              <i className="fa-solid fa-gear pointer-events-none"></i>
+            </button>
+          </div>
+        </header>
+
+        <MedicalDisclaimer />
+
+        {/* HAUPTBEREICH */}
+        <main className="flex-1 relative z-20 w-full flex flex-col">
+          <DashboardShell />
+        </main>
+        
+        <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+        
+        <HelpOverlay />
+
+      </div>
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <CprProvider>
+      <MainApp />
+    </CprProvider>
+  );
+}
 </file>
 
 <file path="src/components/views/ViewJoule.jsx">
@@ -1936,100 +2243,6 @@ export default function ViewObAnalyze() {
 }
 </file>
 
-<file path="src/App.jsx">
-// --- Datei: src/App.jsx ---
-import React, { useContext, useState } from 'react';
-import { CprProvider, CprContext } from './context/CprContext.jsx';
-
-
-import MedicalDisclaimer from './MedicalDisclaimer.jsx';
-import DashboardShell from './components/dashboard/DashboardShell.jsx';
-import SettingsModal from './components/SettingsModal.jsx';
-import HelpOverlay from './components/HelpOverlay.jsx';
-
-import './App.css';
-
-function MainApp() {
-  // WICHTIG: Hier wurde 'dispatch' hinzugefügt, damit der Button funktioniert!
-  const { state, dispatch } = useContext(CprContext);
-  
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  
-  
-
-  // Die "Brechstange" (Triple-Click Hard Reset)
-  const handleTripleClick = (e) => {
-    if (e.detail === 3) {
-      localStorage.clear();
-      window.location.reload();
-    }
-  };
-
-  return (
-    <div className="bg-slate-200/50 w-full h-[100dvh] flex justify-center items-center overflow-hidden relative">
-      <div className="w-full max-w-[430px] h-full bg-slate-50 flex flex-col relative shadow-2xl overflow-hidden text-slate-900 select-none">
-        
-        {/* HEADER */}
-        <header className="flex items-center justify-between bg-white px-4 py-3 border-b border-slate-200 shadow-sm z-[70] relative shrink-0">
-          
-          <div className="flex items-center gap-3 p-1 cursor-pointer" onClick={handleTripleClick}>
-            <div className="w-10 h-10 flex items-center justify-center shrink-0 text-[#E3000F]">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"/></svg>
-            </div>
-            <div className="flex flex-col justify-center leading-none pointer-events-none">
-              <span className="text-lg font-black text-slate-900 uppercase tracking-tight">CPR Assist</span>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-0.5">by Moe</span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button className="text-slate-400 text-xl p-2 active:scale-90 transition-transform cursor-pointer">
-              <i className="fa-solid fa-circle-question pointer-events-none"></i>
-            </button>
-            
-            {/* DER SAUBERE MUTE-BUTTON */}
-            <button 
-              type="button"
-              onClick={() => dispatch({ type: 'TOGGLE_MUTE' })}
-              className="text-slate-600 text-xl p-2 active:scale-90 transition-transform cursor-pointer"
-            >
-              <i className={`fa-solid ${state.isMuted ? 'fa-volume-xmark text-red-500' : 'fa-volume-high'} pointer-events-none`}></i>
-            </button>
-            
-            <button 
-              onClick={() => setIsSettingsOpen(true)} 
-              className="text-slate-600 text-xl p-2 active:scale-90 transition-transform ml-1 cursor-pointer"
-            >
-              <i className="fa-solid fa-gear pointer-events-none"></i>
-            </button>
-          </div>
-        </header>
-
-        <MedicalDisclaimer />
-
-        {/* HAUPTBEREICH */}
-        <main className="flex-1 relative z-20 w-full flex flex-col">
-          <DashboardShell />
-        </main>
-        
-        <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
-        
-        <HelpOverlay />
-
-      </div>
-    </div>
-  );
-}
-
-export default function App() {
-  return (
-    <CprProvider>
-      <MainApp />
-    </CprProvider>
-  );
-}
-</file>
-
 <file path="src/components/dashboard/AirwayButton.jsx">
 // --- Datei: src/components/dashboard/AirwayButton.jsx ---
 import React, { useContext } from 'react';
@@ -2096,43 +2309,6 @@ export default function AirwayButton() {
       )}
     </div>
   );
-}
-</file>
-
-<file path="src/components/PatientSelection.jsx">
-import React, { useContext } from 'react';
-import { CprContext } from '../context/CprContext.jsx';
-import { CPR_CONFIG } from '../config/cprConfig.js';
-
-import ViewObPatient from './views/ViewObPatient.jsx';
-import ViewObInitialBreaths from './views/ViewObInitialBreaths.jsx';
-import ViewObCompressions from './views/ViewObCompressions.jsx';
-import ViewObAnalyze from './views/ViewObAnalyze.jsx';
-import ViewDecision from './views/ViewDecision.jsx';
-import ViewJoule from './views/ViewJoule.jsx';
-import ViewCprResume from './views/ViewCprResume.jsx';
-
-export default function PatientSelection() {
-  const { state } = useContext(CprContext);
-
-  switch (state.appPhase) {
-    case CPR_CONFIG.PHASES.ONBOARDING:         
-      return <ViewObPatient />;
-    case CPR_CONFIG.PHASES.OB_INITIAL_BREATHS: 
-      return <ViewObInitialBreaths />;
-    case CPR_CONFIG.PHASES.OB_COMPRESSIONS:    
-      return <ViewObCompressions />;
-    case CPR_CONFIG.PHASES.OB_ANALYZE:         
-      return <ViewObAnalyze />;
-    case CPR_CONFIG.PHASES.DECISION:           
-      return <ViewDecision />;
-    case CPR_CONFIG.PHASES.JOULE:              
-      return <ViewJoule />;
-    case CPR_CONFIG.PHASES.WAITING_CPR_RESUME: 
-      return <ViewCprResume />;
-    default:                   
-      return null;
-  }
 }
 </file>
 
@@ -2227,6 +2403,61 @@ export default function ViewObInitialBreaths() {
     </div>
   );
 }
+</file>
+
+<file path="src/components/dashboard/projekt_handbuch.md">
+# 🚑 CPR ASSIST - PROJEKT HANDBUCH (Single Source of Truth)
+
+Dieses Dokument dient als "externes Gedächtnis" für die KI. Es enthält alle festgelegten Regeln, Architekturentscheidungen und Abläufe, damit bei neuen Chat-Sitzungen der Kontext sofort wiederhergestellt werden kann.
+
+## 1. ARCHITEKTUR & STRICT MODULARIZATION ⚠️
+* **Global State:** Die App nutzt die React Context API (`CprContext.jsx` & `cprReducer.js`).
+* **Konstanten & Datenbanken:** Feste Werte liegen in `src/config/cprConfig.js`. Erweiterte Medikamente liegen als strukturierte Datenbank in `src/config/medsConfig.js`.
+* **Logik-Auslagerung (Hooks):** Die Geschäftslogik ist in Custom Hooks getrennt (`useMasterLoop`, `useCenterEngine`, `useAirwayEngine`, `usePatientLogic`).
+* **⚠️ Dateigrößen-Limit (200 Zeilen):** Um Spaghetti-Code zu vermeiden, dürfen Komponenten nicht zu groß werden. Inline-Komponenten werden konsequent ausgelagert. Das UI wird wo immer möglich *datengetrieben* (Data-Driven) aufgebaut.
+
+## 2. APP-PHASEN & ROUTING
+Der Ablauf folgt einer strikten Reihenfolge:
+1.  `ONBOARDING`: Patient wählen (Erwachsener oder Kind).
+2.  `OB_INITIAL_BREATHS`: Nur bei Kindern (5 initiale Beatmungen).
+3.  `OB_COMPRESSIONS`: "Kompression gestartet?". **Ab hier starten UI-Timer und Metronom.**
+4.  `OB_ANALYZE`: "Initiale Analyse" -> Pausiert CPR automatisch.
+5.  `DECISION`: Schockbar / Nicht Schockbar.
+6.  `JOULE`: Energieauswahl (Kinder: automatisch 4 J/kg oder 8 J/kg).
+7.  `WAITING_CPR_RESUME`: "CPR Fortsetzen".
+8.  `RUNNING`: Das Live-Dashboard mit 120s-Loop.
+9.  `ZUGANG`, `AIRWAY_MENU`, `AIRWAY_DOC`, `MEDS_MENU`: Overlay-Menüs, die das Center-Display temporär überlagern, während Hintergrund-Timer (Metronom, 120s, Adrenalin) ungestört weiterlaufen.
+
+## 3. UI-LOGIK: PÄDIATRIE & BROSELOW-SETUP
+* **Broselow-Schnellwahl:** Große Farb-Kacheln für sofortige Gewichts-Auswahl.
+* **Synchrone Slider:** Schieberegler für Alter und Gewicht berechnen sich bidirektional (`calculatePediatricVitals`).
+* **Globaler Impact:** Das gewählte Gewicht (`state.patientWeight`) ist die "Single Source of Truth" für die restliche App (Joule, Tubusgröße, Dosis-Berechnung bei Adrenalin, Amiodaron und erweiterten Medikamenten).
+
+## 4. UI-LOGIK: CENTER DISPLAY
+* **Morphing:** Center-Display ist ein perfekter Kreis (Dashboard: `224px`).
+* **Der 120s-Timer (SVG):** SVG-Rendering, das visuell/akustisch eskaliert (Cyan -> Grün -> Gelb -> Rot + Audio-Alarm).
+
+## 5. UI-LOGIK: SATELLITEN-FUNKTIONEN
+### Zugang & Protokollierung
+* **Smartes Auto-Mapping:** "i.o." wählt automatisch "Tibia prox." & "EZ-IO". "i.v." springt auf "Grün 18G" & "Handrücken".
+* **Das Einsatz-Logbuch:** Jede Aktion feuert ein `logEvent` an den Context, das System-Uhrzeit, Laufzeit der Reanimation und Aktion (z. B. `[17:04:22] (03:15) DRUG: Adrenalin 1 mg gegeben`) rechtssicher erfasst.
+
+### Medikamente (Adrenalin & Amiodaron)
+* **Adrenalin:** 4-Minuten-Timer. Startet manuell bei Klick, eskaliert bei 30s und 0s. 
+* **Amiodaron & Transformation:** Zählt die Gaben mit. Berechnet bei Kindern 5 mg/kg, bei Erwachsenen 300 mg -> 150 mg. Nach der 2. Gabe verwandelt sich der Button auf dem Dashboard in einen Koffer ("Weitere Meds"), um Platz für das `MEDS_MENU` zu machen.
+* **Data-Driven Meds Menu:** Das Menü für weitere Medikamente (Calcium, Atropin etc.) wird vollautomatisch aus der `medsConfig.js` gerendert.
+
+## 6. UI-LOGIK: ATEMWEG & CPR-BUTTON
+* **Atemweg:** "Beutel-Maske" schaltet auf `30:2`/`15:2`. "Invasiv" schaltet nach Doku-Eingabe auf `KONT`.
+* **CPR-Button:** Weiß (laufende CPR mit synchronem Flash), Cyan (Beatmungsphase blockiert), Weiß/Grün (Manuelle Pause, die zeitlich eskaliert).
+
+## 7. AUDIO ENGINE & METRONOM
+* **Technologie:** 100% Web Audio API (`OscillatorNode` mit Lookahead-Scheduler).
+* **Mute-Logik:** Greift als Guard *direkt vor* der Tonausgabe, wodurch das visuelle UI im Takt weiterläuft.
+
+## 8. AKTUELLER STATUS
+* **Erreicht:** Adrenalin-Timer, Amiodaron-Transformation und die `medsConfig.js` Datenbank sind aufgebaut.
+* **Nächster Schritt:** Programmierung der `ViewMedsMenu.jsx`, um den Koffer-Button funktionsfähig zu machen und die Medikamenten-Liste dynamisch im Center-Display anzuzeigen.
 </file>
 
 <file path="src/hooks/useAirwayEngine.js">
@@ -2682,104 +2913,6 @@ export default function PatientSetupModal() {
 }
 </file>
 
-<file path="src/context/CprContext.jsx">
-// --- Datei: src/context/CprContext.jsx ---
-import React, { createContext, useReducer, useEffect, useCallback } from 'react';
-import { cprReducer, initialState } from './cprReducer.js'; 
-
-export const CprContext = createContext();
-
-const loadState = () => {
-  try {
-    const saved = localStorage.getItem('cprAssist_db');
-    if (saved) {
-       const parsed = JSON.parse(saved);
-       parsed.isGridVisible = false;
-       parsed.isPatientModalOpen = false;
-       
-       if (parsed.bpm === undefined) parsed.bpm = 110;
-       if (parsed.isMuted === undefined) parsed.isMuted = false;
-       if (parsed.shockCount === undefined) parsed.shockCount = 0;
-       if (parsed.lastJoule === undefined) parsed.lastJoule = null; 
-       if (parsed.airwayEstablished === undefined) parsed.airwayEstablished = false;
-       if (parsed.zugang === undefined) parsed.zugang = null;
-       if (parsed.adrSeconds === undefined) parsed.adrSeconds = 0;
-       if (parsed.adrCount === undefined) parsed.adrCount = 0;
-       
-       return parsed;
-    }
-    return initialState;
-  } catch (e) {
-    return initialState;
-  }
-};
-
-export function CprProvider({ children }) {
-  const [state, dispatch] = useReducer(cprReducer, initialState, loadState);
-
-  useEffect(() => {
-    const stateToSave = {
-      appPhase: state.appPhase,
-      isPediatric: state.isPediatric,
-      patientWeight: state.patientWeight,
-      cprMode: state.cprMode,
-      bpm: state.bpm,                 
-      isMuted: state.isMuted,         
-      shockCount: state.shockCount,   
-      lastJoule: state.lastJoule,     
-      startTime: state.startTime,
-      missionSeconds: state.missionSeconds,
-      cprSeconds: state.cprSeconds,
-      cycleSeconds: state.cycleSeconds,
-      isCompressing: state.isCompressing,
-      airwayEstablished: state.airwayEstablished,
-      airwayType: state.airwayType,
-      airwaySize: state.airwaySize,   
-      airwayDepth: state.airwayDepth, 
-      zugang: state.zugang,           
-      adrSeconds: state.adrSeconds,
-      adrCount: state.adrCount,
-      events: state.events,
-      reminders: state.reminders,
-      currentCcfPercent: state.currentCcfPercent,
-      compressingSeconds: state.compressingSeconds,
-      arrestSeconds: state.arrestSeconds
-    };
-    localStorage.setItem('cprAssist_db', JSON.stringify(stateToSave));
-  }, [state]);
-
-  const logEvent = useCallback((type, detail = "") => {
-    const now = new Date();
-    const realTimeStr = now.toLocaleTimeString('de-DE', { hour12: false });
-    
-    const formatMissionTime = (totalSeconds) => {
-      const m = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
-      const s = (totalSeconds % 60).toString().padStart(2, '0');
-      return `${m}:${s}`;
-    };
-
-    const formattedEntry = `[${realTimeStr}] (${formatMissionTime(state.missionSeconds)}) ${type}: ${detail}`;
-
-    const newEvent = {
-      id: crypto.randomUUID(),
-      realTime: realTimeStr,
-      missionTime: state.missionSeconds,
-      type: type,
-      detail: detail,
-      fullEntry: formattedEntry
-    };
-    
-    dispatch({ type: 'LOG_EVENT', payload: newEvent });
-  }, [state.missionSeconds]);
-
-  return (
-    <CprContext.Provider value={{ state, dispatch, logEvent }}>
-      {children}
-    </CprContext.Provider>
-  );
-}
-</file>
-
 <file path="src/components/CenterDisplay.jsx">
 // --- Datei: src/components/CenterDisplay.jsx ---
 import React from 'react';
@@ -2793,6 +2926,7 @@ import ViewDecision from './views/ViewDecision.jsx';
 import ViewJoule from './views/ViewJoule.jsx';
 import ViewCprResume from './views/ViewCprResume.jsx';
 import ViewZugang from './views/ViewZugang.jsx';
+import ViewMedsMenu from './views/ViewMedsMenu.jsx';
 
 export default function CenterDisplay() {
   
@@ -2859,6 +2993,7 @@ export default function CenterDisplay() {
       case CPR_CONFIG.PHASES.JOULE: return <ViewJoule />;
       case CPR_CONFIG.PHASES.WAITING_CPR_RESUME: return <ViewCprResume />;
       case CPR_CONFIG.PHASES.ZUGANG: return <ViewZugang />; // <--- NEU
+      case CPR_CONFIG.PHASES.MEDS_MENU: return <ViewMedsMenu />; // <--- NEU HINZUFÜGEN
       default: return <PatientSelection />;
     }
   };
@@ -2881,6 +3016,106 @@ export default function CenterDisplay() {
         {renderPhase()}
       </div>
     </div>
+  );
+}
+</file>
+
+<file path="src/context/CprContext.jsx">
+// --- Datei: src/context/CprContext.jsx ---
+import React, { createContext, useReducer, useEffect, useCallback } from 'react';
+import { cprReducer, initialState } from './cprReducer.js'; 
+
+export const CprContext = createContext();
+
+const loadState = () => {
+  try {
+    const saved = localStorage.getItem('cprAssist_db');
+    if (saved) {
+       const parsed = JSON.parse(saved);
+       parsed.isGridVisible = false;
+       parsed.isPatientModalOpen = false;
+       
+       if (parsed.bpm === undefined) parsed.bpm = 110;
+       if (parsed.isMuted === undefined) parsed.isMuted = false;
+       if (parsed.shockCount === undefined) parsed.shockCount = 0;
+       if (parsed.lastJoule === undefined) parsed.lastJoule = null; 
+       if (parsed.airwayEstablished === undefined) parsed.airwayEstablished = false;
+       if (parsed.zugang === undefined) parsed.zugang = null;
+       if (parsed.adrSeconds === undefined) parsed.adrSeconds = 0;
+       if (parsed.adrCount === undefined) parsed.adrCount = 0;
+       if (parsed.amioCount === undefined) parsed.amioCount = 0; // <--- NEU
+       
+       return parsed;
+    }
+    return initialState;
+  } catch (e) {
+    return initialState;
+  }
+};
+
+export function CprProvider({ children }) {
+  const [state, dispatch] = useReducer(cprReducer, initialState, loadState);
+
+  useEffect(() => {
+    const stateToSave = {
+      appPhase: state.appPhase,
+      isPediatric: state.isPediatric,
+      patientWeight: state.patientWeight,
+      cprMode: state.cprMode,
+      bpm: state.bpm,                 
+      isMuted: state.isMuted,         
+      shockCount: state.shockCount,   
+      lastJoule: state.lastJoule,     
+      startTime: state.startTime,
+      missionSeconds: state.missionSeconds,
+      cprSeconds: state.cprSeconds,
+      cycleSeconds: state.cycleSeconds,
+      isCompressing: state.isCompressing,
+      airwayEstablished: state.airwayEstablished,
+      airwayType: state.airwayType,
+      airwaySize: state.airwaySize,   
+      airwayDepth: state.airwayDepth, 
+      zugang: state.zugang,           
+      adrSeconds: state.adrSeconds,
+      adrCount: state.adrCount,
+      amioCount: state.amioCount, // <--- NEU
+      events: state.events,
+      reminders: state.reminders,
+      currentCcfPercent: state.currentCcfPercent,
+      compressingSeconds: state.compressingSeconds,
+      arrestSeconds: state.arrestSeconds
+    };
+    localStorage.setItem('cprAssist_db', JSON.stringify(stateToSave));
+  }, [state]);
+
+  const logEvent = useCallback((type, detail = "") => {
+    const now = new Date();
+    const realTimeStr = now.toLocaleTimeString('de-DE', { hour12: false });
+    
+    const formatMissionTime = (totalSeconds) => {
+      const m = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+      const s = (totalSeconds % 60).toString().padStart(2, '0');
+      return `${m}:${s}`;
+    };
+
+    const formattedEntry = `[${realTimeStr}] (${formatMissionTime(state.missionSeconds)}) ${type}: ${detail}`;
+
+    const newEvent = {
+      id: crypto.randomUUID(),
+      realTime: realTimeStr,
+      missionTime: state.missionSeconds,
+      type: type,
+      detail: detail,
+      fullEntry: formattedEntry
+    };
+    
+    dispatch({ type: 'LOG_EVENT', payload: newEvent });
+  }, [state.missionSeconds]);
+
+  return (
+    <CprContext.Provider value={{ state, dispatch, logEvent }}>
+      {children}
+    </CprContext.Provider>
   );
 }
 </file>
@@ -3099,6 +3334,7 @@ export const initialState = {
   
   adrSeconds: 0,
   adrCount: 0,
+  amioCount: 0, // <--- NEU FÜR AMIODARON
   
   compressingSeconds: 0, 
   arrestSeconds: 0,      
@@ -3110,8 +3346,9 @@ export const initialState = {
 export function cprReducer(state, action) {
   switch (action.type) {
     case 'SET_PHASE': {
-      const isGoingToOverlay = action.payload === CPR_CONFIG.PHASES.AIRWAY_MENU || action.payload === CPR_CONFIG.PHASES.AIRWAY_DOC || action.payload === CPR_CONFIG.PHASES.ZUGANG;
-      const isComingFromOverlay = state.appPhase === CPR_CONFIG.PHASES.AIRWAY_MENU || state.appPhase === CPR_CONFIG.PHASES.AIRWAY_DOC || state.appPhase === CPR_CONFIG.PHASES.ZUGANG;
+      // MEDS_MENU ist jetzt auch ein Overlay!
+      const isGoingToOverlay = action.payload === CPR_CONFIG.PHASES.AIRWAY_MENU || action.payload === CPR_CONFIG.PHASES.AIRWAY_DOC || action.payload === CPR_CONFIG.PHASES.ZUGANG || action.payload === CPR_CONFIG.PHASES.MEDS_MENU;
+      const isComingFromOverlay = state.appPhase === CPR_CONFIG.PHASES.AIRWAY_MENU || state.appPhase === CPR_CONFIG.PHASES.AIRWAY_DOC || state.appPhase === CPR_CONFIG.PHASES.ZUGANG || state.appPhase === CPR_CONFIG.PHASES.MEDS_MENU;
       
       let prevPhase = state.previousAppPhase;
       if (isGoingToOverlay && !isComingFromOverlay) {
@@ -3153,6 +3390,8 @@ export function cprReducer(state, action) {
     case 'SET_ZUGANG': return { ...state, zugang: action.payload };
     
     case 'GIVE_ADRENALIN': return { ...state, adrCount: state.adrCount + 1, adrSeconds: 1 };
+    case 'GIVE_AMIODARON': return { ...state, amioCount: state.amioCount + 1 }; // <--- NEU
+    
     case 'TICK_ADR': {
       if (state.adrSeconds > 0) {
         const nextAdr = state.adrSeconds + 1;
