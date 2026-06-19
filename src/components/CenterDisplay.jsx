@@ -10,6 +10,7 @@ import ViewDecision from './views/ViewDecision.jsx';
 import ViewJoule from './views/ViewJoule.jsx';
 import ViewCprResume from './views/ViewCprResume.jsx';
 import ViewZugang from './views/ViewZugang.jsx';
+import ViewMedsMenu from './views/ViewMedsMenu.jsx';
 
 export default function CenterDisplay() {
   
@@ -76,6 +77,7 @@ export default function CenterDisplay() {
       case CPR_CONFIG.PHASES.JOULE: return <ViewJoule />;
       case CPR_CONFIG.PHASES.WAITING_CPR_RESUME: return <ViewCprResume />;
       case CPR_CONFIG.PHASES.ZUGANG: return <ViewZugang />; // <--- NEU
+      case CPR_CONFIG.PHASES.MEDS_MENU: return <ViewMedsMenu />; // <--- NEU HINZUFÜGEN
       default: return <PatientSelection />;
     }
   };
