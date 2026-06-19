@@ -5,11 +5,12 @@ import { CPR_CONFIG } from '../../config/cprConfig.js';
 
 import CenterDisplay from '../CenterDisplay.jsx';
 import PatientSetupModal from '../PatientSetupModal.jsx'; 
+import HitsModal from '../views/HitsModal.jsx'; // <--- WICHTIG: Das neue Modal
 
 import CprButton from './CprButton.jsx';  
 import AirwayButton from './AirwayButton.jsx';
 import AdrenalinButton from './AdrenalinButton.jsx';
-import AmiodaronButton from './AmiodaronButton.jsx'; // <--- HIER IST DER NEUE IMPORT
+import AmiodaronButton from './AmiodaronButton.jsx'; 
 import { usePatientLogic } from '../../hooks/usePatientLogic.js';
 import { useMasterLoop } from '../../hooks/useMasterLoop.js'; 
 
@@ -69,8 +70,10 @@ export default function DashboardShell() {
   return (
     <div className="absolute inset-0 w-full h-full flex flex-col bg-slate-50 animate-in fade-in duration-500 overflow-hidden">
         
+      {/* 1. OBERE LEISTE */}
       <div className={`flex items-stretch justify-between gap-2 px-3 py-2 shrink-0 z-40 relative transition-opacity duration-300 ${!showTopStats ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         
+        {/* LINKER KASTEN (ZEIT & START-UHRZEIT) */}
         <div className="bg-white rounded-[14px] px-3 py-2 shadow-sm border border-slate-200 flex-[0.8] flex flex-col justify-between">
           <div className="flex justify-between items-center w-full mb-0.5">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Zeit</span>
@@ -90,6 +93,7 @@ export default function DashboardShell() {
           </div>
         </div>
 
+        {/* RECHTER KASTEN (MODUS & CCF) */}
         <div className="bg-white rounded-[14px] p-2 shadow-sm border border-slate-200 flex-[1.4] flex justify-between items-center">
           <div className="flex flex-col items-start justify-center h-full gap-1.5">
             <div className="flex items-center gap-2">
@@ -112,6 +116,7 @@ export default function DashboardShell() {
         </div>
       </div>
 
+      {/* 2. MITTLERER BEREICH (Center Display & Satelliten) */}
       <div className={`flex-1 relative w-full flex items-center justify-center transition-transform duration-500 z-30 overflow-visible ${orbitShiftClass}`}>
         <OrbitPosition x={0} y={0} zIndex={10}><CenterDisplay /></OrbitPosition>
 
@@ -121,14 +126,26 @@ export default function DashboardShell() {
               <AdrenalinButton />
             </OrbitPosition>
             
-            {/* HIER WURDE DER PLATZHALTER ERSETZT */}
             <OrbitPosition x={141} y={-81.5}>
               <AmiodaronButton />
             </OrbitPosition>
             
-            <OrbitPosition x={141} y={81.5}><SatelliteBtn icon="fa-clipboard-list" label="Hits Anamnese" colorClass="bg-white text-slate-600 border-slate-300" /></OrbitPosition>
-            <OrbitPosition x={0} y={163}><SatelliteBtn icon="fa-flag-checkered" label="Ende ROSC" colorClass="bg-white text-slate-700 border-slate-300" /></OrbitPosition>
-            <OrbitPosition x={-141} y={81.5}><SatelliteBtn icon="fa-file-lines" label="Log" colorClass="bg-white text-slate-500 border-slate-300" /></OrbitPosition>
+            <OrbitPosition x={141} y={81.5}>
+              <SatelliteBtn 
+                icon="fa-clipboard-list" 
+                label="Hits Anamnese" 
+                colorClass="bg-white text-slate-600 border-slate-300" 
+                onClick={() => dispatch({ type: 'TOGGLE_HITS_MODAL', payload: true })}
+              />
+            </OrbitPosition>
+            
+            <OrbitPosition x={0} y={163}>
+              <SatelliteBtn icon="fa-flag-checkered" label="Ende ROSC" colorClass="bg-white text-slate-700 border-slate-300" />
+            </OrbitPosition>
+            
+            <OrbitPosition x={-141} y={81.5}>
+              <SatelliteBtn icon="fa-file-lines" label="Log" colorClass="bg-white text-slate-500 border-slate-300" />
+            </OrbitPosition>
             
             <OrbitPosition x={-141} y={-81.5}>
               <SatelliteBtn 
@@ -144,6 +161,7 @@ export default function DashboardShell() {
 
       <div className="absolute bottom-0 w-full h-40 bg-gradient-to-t from-slate-200/90 to-transparent z-10 pointer-events-none"></div>
 
+      {/* 3. UNTERE LEISTE (Main Buttons) */}
       <div className={`shrink-0 w-full flex justify-between items-end px-5 pb-8 pt-2 z-50 transition-opacity duration-300 pointer-events-none ${!showBottomButtons ? 'opacity-0' : 'opacity-100'}`}>
         <MainBtn 
             onClick={() => dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.AIRWAY_MENU })}
@@ -152,7 +170,9 @@ export default function DashboardShell() {
         <CprButton toggleCpr={toggleCpr} />
       </div>
 
+      {/* MODALS */}
       {state.isPatientModalOpen && <PatientSetupModal />}
+      {state.isHitsModalOpen && <HitsModal />} 
     </div>
   );
 }

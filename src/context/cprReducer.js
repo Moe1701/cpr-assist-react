@@ -17,6 +17,7 @@ export const initialState = {
   isGridVisible: false,    
   isPatientModalOpen: false, 
   isAirwayModalOpen: false, 
+  isHitsModalOpen: false, // <--- NEU
   
   missionSeconds: 0, 
   cprSeconds: 0, 
@@ -35,19 +36,26 @@ export const initialState = {
   
   adrSeconds: 0,
   adrCount: 0,
-  amioCount: 0, // <--- NEU FÜR AMIODARON
+  amioCount: 0, 
   
   compressingSeconds: 0, 
   arrestSeconds: 0,      
   currentCcfPercent: 100,
   events: [],      
-  reminders: []
+  reminders: [],
+  
+  // <--- NEU: HITS & SAMPLER DATEN
+  hitsStatus: {}, 
+  anamneseData: {
+    alter: '', gewicht: '',
+    beobachtet: null, laienrea: null, brustschmerz: null, therapie: null,
+    sampler: { s: "", a: "", m: "", p: "", l: "", e: "", r: "" }
+  }
 };
 
 export function cprReducer(state, action) {
   switch (action.type) {
     case 'SET_PHASE': {
-      // MEDS_MENU ist jetzt auch ein Overlay!
       const isGoingToOverlay = action.payload === CPR_CONFIG.PHASES.AIRWAY_MENU || action.payload === CPR_CONFIG.PHASES.AIRWAY_DOC || action.payload === CPR_CONFIG.PHASES.ZUGANG || action.payload === CPR_CONFIG.PHASES.MEDS_MENU;
       const isComingFromOverlay = state.appPhase === CPR_CONFIG.PHASES.AIRWAY_MENU || state.appPhase === CPR_CONFIG.PHASES.AIRWAY_DOC || state.appPhase === CPR_CONFIG.PHASES.ZUGANG || state.appPhase === CPR_CONFIG.PHASES.MEDS_MENU;
       
@@ -67,12 +75,15 @@ export function cprReducer(state, action) {
         isPediatric: action.payload.isPediatric,
         patientWeight: action.payload.patientWeight,
         cprMode: 'continuous', 
-        startTime: state.startTime || new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
+        startTime: state.startTime || new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }),
+        // Synchronisiere Gewicht sofort in die Anamnese
+        anamneseData: { ...state.anamneseData, gewicht: action.payload.patientWeight || '' }
       };
       
     case 'SET_CPR_MODE': return { ...state, cprMode: action.payload };
     case 'TOGGLE_PATIENT_MODAL': return { ...state, isPatientModalOpen: action.payload };
     case 'TOGGLE_AIRWAY_MODAL': return { ...state, isAirwayModalOpen: action.payload }; 
+    case 'TOGGLE_HITS_MODAL': return { ...state, isHitsModalOpen: action.payload }; // <--- NEU
     case 'TOGGLE_GRID': return { ...state, isGridVisible: !state.isGridVisible };
     case 'LOG_EVENT': return { ...state, events: [...state.events, action.payload] };
     
@@ -91,7 +102,12 @@ export function cprReducer(state, action) {
     case 'SET_ZUGANG': return { ...state, zugang: action.payload };
     
     case 'GIVE_ADRENALIN': return { ...state, adrCount: state.adrCount + 1, adrSeconds: 1 };
-    case 'GIVE_AMIODARON': return { ...state, amioCount: state.amioCount + 1 }; // <--- NEU
+    case 'GIVE_AMIODARON': return { ...state, amioCount: state.amioCount + 1 };
+    
+    case 'TOGGLE_HITS_ITEM': // <--- NEU
+      return { ...state, hitsStatus: { ...state.hitsStatus, [action.payload.id]: action.payload.value } };
+    case 'SAVE_ANAMNESE': // <--- NEU
+      return { ...state, anamneseData: action.payload };
     
     case 'TICK_ADR': {
       if (state.adrSeconds > 0) {
