@@ -9,6 +9,7 @@ import ViewAirwayDoc from './views/ViewAirwayDoc.jsx';
 import ViewDecision from './views/ViewDecision.jsx';
 import ViewJoule from './views/ViewJoule.jsx';
 import ViewCprResume from './views/ViewCprResume.jsx';
+import ViewZugang from './views/ViewZugang.jsx';
 
 export default function CenterDisplay() {
   
@@ -25,11 +26,9 @@ export default function CenterDisplay() {
         return (
           <button 
             onClick={handleManualAnalyze}
-            // MASSIVE ESKALATION: Roter Hintergrund und dicker Innenschatten, wenn isEscalated!
             className={`w-full h-full flex flex-col items-center justify-center p-6 rounded-full transition-all relative overflow-hidden cursor-pointer ${isEscalated ? 'bg-red-50 shadow-[inset_0_0_40px_rgba(227,0,15,0.15)]' : 'bg-white shadow-[inset_0_0_20px_rgba(0,0,0,0.02)] hover:bg-slate-50 active:scale-95'}`}
           >
             <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100">
-              {/* Leichter roter Track-Hintergrund bei Eskalation */}
               <circle cx="50" cy="50" r={radius} fill="none" stroke={isEscalated ? "#fee2e2" : "#f8fafc"} strokeWidth={strokeWidth} transform="rotate(-90 50 50)" className="transition-colors duration-500" />
               <circle
                   cx="50" cy="50" r={radius}
@@ -43,12 +42,10 @@ export default function CenterDisplay() {
               />
             </svg>
             
-            {/* 120s Countdown in der Mitte (etwas nach oben gerückt) */}
             <div className={`text-[66px] font-black tracking-tighter leading-none font-mono z-10 transition-colors duration-500 ${isEscalated ? 'text-[#E3000F]' : 'text-[#1e293b]'}`}>
                {formatCprTime(remaining)}
             </div>
 
-            {/* NEU: Warntexte UNTER der Uhr, GRÖSSER und deutlicher */}
             <div className="h-[28px] mt-2 mb-1 flex items-center justify-center z-10 w-full">
               {isEscalated ? (
                 <div className="bg-[#E3000F] text-white px-4 py-1.5 rounded-full text-[12px] font-black tracking-widest animate-pulse shadow-lg scale-110">
@@ -61,7 +58,6 @@ export default function CenterDisplay() {
               )}
             </div>
             
-            {/* Schocks & Joule ganz unten */}
             <div className={`flex items-center justify-center gap-3 text-[15px] font-black tracking-widest z-10 w-full mt-1 ${isEscalated ? 'opacity-50' : 'opacity-100'} transition-opacity`}>
               <span className="text-amber-500 flex items-center gap-1.5">
                 <i className="fa-solid fa-bolt"></i> {state.shockCount || 0}
@@ -79,6 +75,7 @@ export default function CenterDisplay() {
       case CPR_CONFIG.PHASES.DECISION: return <ViewDecision />;
       case CPR_CONFIG.PHASES.JOULE: return <ViewJoule />;
       case CPR_CONFIG.PHASES.WAITING_CPR_RESUME: return <ViewCprResume />;
+      case CPR_CONFIG.PHASES.ZUGANG: return <ViewZugang />; // <--- NEU
       default: return <PatientSelection />;
     }
   };
@@ -96,7 +93,6 @@ export default function CenterDisplay() {
 
       <div 
         style={{ width: circleSize, height: circleSize }}
-        // Bei Eskalation glüht der äußere Rahmen dunkelrot
         className={`rounded-full border-4 flex items-center justify-center relative overflow-hidden shrink-0 transition-all duration-500 mx-auto z-20 ${state.appPhase === CPR_CONFIG.PHASES.RUNNING && isEscalated ? 'shadow-[0_0_50px_rgba(227,0,15,0.4)] border-red-200 bg-red-50' : 'shadow-[0_15px_40px_rgba(0,0,0,0.08)] border-slate-100 bg-white'}`}
       >
         {renderPhase()}

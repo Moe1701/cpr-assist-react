@@ -11,7 +11,7 @@ export const initialState = {
   bpm: 110,         
   isMuted: false,   
   shockCount: 0, 
-  lastJoule: null,  // <--- NEU: Merkt sich die letzte Energie
+  lastJoule: null,  
   
   startTime: null,         
   isGridVisible: false,    
@@ -32,6 +32,8 @@ export const initialState = {
   airwaySize: null,         
   airwayDepth: null,        
   
+  zugang: null, // <--- NEU
+  
   compressingSeconds: 0, 
   arrestSeconds: 0,      
   currentCcfPercent: 100,
@@ -42,11 +44,11 @@ export const initialState = {
 export function cprReducer(state, action) {
   switch (action.type) {
     case 'SET_PHASE': {
-      const isGoingToAirway = action.payload === CPR_CONFIG.PHASES.AIRWAY_MENU || action.payload === CPR_CONFIG.PHASES.AIRWAY_DOC;
-      const isComingFromAirway = state.appPhase === CPR_CONFIG.PHASES.AIRWAY_MENU || state.appPhase === CPR_CONFIG.PHASES.AIRWAY_DOC;
+      const isGoingToOverlay = action.payload === CPR_CONFIG.PHASES.AIRWAY_MENU || action.payload === CPR_CONFIG.PHASES.AIRWAY_DOC || action.payload === CPR_CONFIG.PHASES.ZUGANG;
+      const isComingFromOverlay = state.appPhase === CPR_CONFIG.PHASES.AIRWAY_MENU || state.appPhase === CPR_CONFIG.PHASES.AIRWAY_DOC || state.appPhase === CPR_CONFIG.PHASES.ZUGANG;
       
       let prevPhase = state.previousAppPhase;
-      if (isGoingToAirway && !isComingFromAirway) {
+      if (isGoingToOverlay && !isComingFromOverlay) {
         prevPhase = state.appPhase;
       }
       return { ...state, appPhase: action.payload, previousAppPhase: prevPhase };
@@ -55,7 +57,6 @@ export function cprReducer(state, action) {
     case 'SET_BPM': return { ...state, bpm: action.payload };
     case 'TOGGLE_MUTE': return { ...state, isMuted: !state.isMuted };
     
-    // <--- NEU: Zählt die Schocks hoch und merkt sich exakt die Joule!
     case 'RECORD_SHOCK': return { 
       ...state, 
       shockCount: state.shockCount + 1,
@@ -90,11 +91,11 @@ export function cprReducer(state, action) {
       };
       
     case 'SET_AIRWAY_TYPE': return { ...state, airwayType: action.payload }; 
+    case 'SET_ZUGANG': return { ...state, zugang: action.payload }; // <--- NEU
     
     case 'TICK_MISSION': return { ...state, missionSeconds: state.missionSeconds + 1 };
     case 'TICK_CYCLE': return { ...state, cycleSeconds: state.cycleSeconds + 1 };
     
-    // <--- NEU: Setzt den CPR-Zyklus-Timer nach Schock/Analyse sauber zurück
     case 'RESET_CYCLE': return { ...state, cycleSeconds: 0 };
     
     case 'TICK_PAUSE': return { ...state, pauseSeconds: state.pauseSeconds + 1 };

@@ -32,6 +32,7 @@ export const CPR_CONFIG = {
     PAUSE: "PAUSE",               
     RESUME: "RESUME",             
     WARNING: "WARNING",           
+    ZUGANG: "ZUGANG", // <--- NEU
   },
 
   // 5. PHASEN ALS KONSTANTEN (Verhindert Tippfehler im Code)
@@ -44,8 +45,9 @@ export const CPR_CONFIG = {
     JOULE: 'JOULE',
     WAITING_CPR_RESUME: 'WAITING_CPR_RESUME',
     RUNNING: 'RUNNING',
-    AIRWAY_MENU: 'AIRWAY_MENU', // <--- NEU: Center-Display Menü
-    AIRWAY_DOC: 'AIRWAY_DOC'    // <--- NEU: Center-Display Doku (Größe/Tiefe)
+    AIRWAY_MENU: 'AIRWAY_MENU', 
+    AIRWAY_DOC: 'AIRWAY_DOC',
+    ZUGANG: 'ZUGANG' // <--- NEU
   }
 };
 

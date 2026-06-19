@@ -15,8 +15,9 @@ const loadState = () => {
        if (parsed.bpm === undefined) parsed.bpm = 110;
        if (parsed.isMuted === undefined) parsed.isMuted = false;
        if (parsed.shockCount === undefined) parsed.shockCount = 0;
-       if (parsed.lastJoule === undefined) parsed.lastJoule = null; // <--- NEU
+       if (parsed.lastJoule === undefined) parsed.lastJoule = null; 
        if (parsed.airwayEstablished === undefined) parsed.airwayEstablished = false;
+       if (parsed.zugang === undefined) parsed.zugang = null; // <--- NEU
        
        return parsed;
     }
@@ -38,7 +39,7 @@ export function CprProvider({ children }) {
       bpm: state.bpm,                 
       isMuted: state.isMuted,         
       shockCount: state.shockCount,   
-      lastJoule: state.lastJoule,     // <--- NEU: Sichert den Joule-Wert!
+      lastJoule: state.lastJoule,     
       startTime: state.startTime,
       missionSeconds: state.missionSeconds,
       cprSeconds: state.cprSeconds,
@@ -48,6 +49,7 @@ export function CprProvider({ children }) {
       airwayType: state.airwayType,
       airwaySize: state.airwaySize,   
       airwayDepth: state.airwayDepth, 
+      zugang: state.zugang,           // <--- NEU
       events: state.events,
       reminders: state.reminders,
       currentCcfPercent: state.currentCcfPercent,
