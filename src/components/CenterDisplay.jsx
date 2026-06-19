@@ -1,74 +1,90 @@
 // --- Datei: src/components/CenterDisplay.jsx ---
-import React, { useContext } from 'react';
-import { CprContext } from '../context/CprContext.jsx';
+import React from 'react';
 import { CPR_CONFIG } from '../config/cprConfig.js';
+import { useCenterEngine } from '../hooks/useCenterEngine.js';
 
 import PatientSelection from './PatientSelection.jsx';
 import ViewAirwayMenu from './views/ViewAirwayMenu.jsx';
 import ViewAirwayDoc from './views/ViewAirwayDoc.jsx';
+import ViewDecision from './views/ViewDecision.jsx';
+import ViewJoule from './views/ViewJoule.jsx';
+import ViewCprResume from './views/ViewCprResume.jsx';
 
 export default function CenterDisplay() {
-  const { state } = useContext(CprContext);
-
-  // Bestimmt die Größe des Kreises.
-  // Wenn wir in RUNNING sind, ist er klein (224px).
-  // Beim Onboarding UND in den neuen Atemwegs-Menüs vergrößert er sich auf 340px.
-  const isSmallCircle = state.appPhase === CPR_CONFIG.PHASES.RUNNING;
-  const circleSize = isSmallCircle ? '224px' : '340px';
-
-  const formatCprTime = (seconds) => {
-    if (isNaN(seconds) || seconds === null) return "00:00";
-    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-    const s = (seconds % 60).toString().padStart(2, '0');
-    return `${m}:${s}`;
-  };
+  
+  const { 
+    state, circleSize, formatCprTime, handleManualAnalyze, 
+    remaining, ringColor, warningText, textColor, isPulsing, isEscalated,
+    radius, strokeDasharray, strokeWidth, displayJoule 
+  } = useCenterEngine();
 
   const renderPhase = () => {
     switch (state.appPhase) {
-      // 1. Das Live-Dashboard (120s Loop)
-      case CPR_CONFIG.PHASES.RUNNING:
+      
+      case CPR_CONFIG.PHASES.RUNNING: 
         return (
-          <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-white rounded-full shadow-[inset_0_0_20px_rgba(0,0,0,0.02)] animate-in zoom-in-95 duration-500 relative">
-            <div className="absolute top-5 w-10 h-1.5 bg-cyan-500 rounded-full"></div>
-            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em] mb-1">
-              Nächste Analyse
+          <button 
+            onClick={handleManualAnalyze}
+            // MASSIVE ESKALATION: Roter Hintergrund und dicker Innenschatten, wenn isEscalated!
+            className={`w-full h-full flex flex-col items-center justify-center p-6 rounded-full transition-all relative overflow-hidden cursor-pointer ${isEscalated ? 'bg-red-50 shadow-[inset_0_0_40px_rgba(227,0,15,0.15)]' : 'bg-white shadow-[inset_0_0_20px_rgba(0,0,0,0.02)] hover:bg-slate-50 active:scale-95'}`}
+          >
+            <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100">
+              {/* Leichter roter Track-Hintergrund bei Eskalation */}
+              <circle cx="50" cy="50" r={radius} fill="none" stroke={isEscalated ? "#fee2e2" : "#f8fafc"} strokeWidth={strokeWidth} transform="rotate(-90 50 50)" className="transition-colors duration-500" />
+              <circle
+                  cx="50" cy="50" r={radius}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={strokeWidth}
+                  strokeDasharray={strokeDasharray}
+                  strokeLinecap="round"
+                  transform="rotate(-90 50 50)"
+                  className={`transition-all duration-1000 ease-linear ${ringColor}`}
+              />
+            </svg>
+            
+            {/* 120s Countdown in der Mitte (etwas nach oben gerückt) */}
+            <div className={`text-[66px] font-black tracking-tighter leading-none font-mono z-10 transition-colors duration-500 ${isEscalated ? 'text-[#E3000F]' : 'text-[#1e293b]'}`}>
+               {formatCprTime(remaining)}
+            </div>
+
+            {/* NEU: Warntexte UNTER der Uhr, GRÖSSER und deutlicher */}
+            <div className="h-[28px] mt-2 mb-1 flex items-center justify-center z-10 w-full">
+              {isEscalated ? (
+                <div className="bg-[#E3000F] text-white px-4 py-1.5 rounded-full text-[12px] font-black tracking-widest animate-pulse shadow-lg scale-110">
+                  {warningText}
+                </div>
+              ) : (
+                <div className={`text-[11px] font-black uppercase tracking-widest transition-all duration-300 ${textColor} ${isPulsing ? 'animate-pulse scale-105' : ''} text-center leading-tight`}>
+                  {warningText}
+                </div>
+              )}
             </div>
             
-            {/* 120s Countdown im Dashboard */}
-            <div className="text-[64px] font-black text-slate-800 tracking-tighter leading-none mb-3 font-mono">
-               {formatCprTime(120 - (state.cycleSeconds || 0))}
-            </div>
-            
-            <div className="flex items-center gap-3 text-[13px] font-black tracking-widest mt-1">
+            {/* Schocks & Joule ganz unten */}
+            <div className={`flex items-center justify-center gap-3 text-[15px] font-black tracking-widest z-10 w-full mt-1 ${isEscalated ? 'opacity-50' : 'opacity-100'} transition-opacity`}>
               <span className="text-amber-500 flex items-center gap-1.5">
                 <i className="fa-solid fa-bolt"></i> {state.shockCount || 0}
               </span>
-              <span className="text-slate-200">|</span>
+              <span className="text-slate-300">|</span>
               <span className="text-[#E3000F]">
-                {state.isPediatric && state.patientWeight ? Math.round(state.patientWeight * 4) : 150} J
+                {displayJoule} J
               </span>
             </div>
-          </div>
+          </button>
         );
       
-      // 2. Das neue Atemwegs-Auswahlmenü
-      case CPR_CONFIG.PHASES.AIRWAY_MENU:
-        return <ViewAirwayMenu />;
-      
-      // 3. Die Doku für den invasiven Atemweg
-      case CPR_CONFIG.PHASES.AIRWAY_DOC:
-        return <ViewAirwayDoc />;
-        
-      // 4. Alle anderen Phasen (Onboarding, Analyse etc.) gehen an den Unter-Router
-      default:
-        return <PatientSelection />;
+      case CPR_CONFIG.PHASES.AIRWAY_MENU: return <ViewAirwayMenu />;
+      case CPR_CONFIG.PHASES.AIRWAY_DOC: return <ViewAirwayDoc />;
+      case CPR_CONFIG.PHASES.DECISION: return <ViewDecision />;
+      case CPR_CONFIG.PHASES.JOULE: return <ViewJoule />;
+      case CPR_CONFIG.PHASES.WAITING_CPR_RESUME: return <ViewCprResume />;
+      default: return <PatientSelection />;
     }
   };
 
   return (
     <div className="relative flex flex-col items-center justify-center transition-all duration-500">
-      
-      {/* Überschrift beim Onboarding über dem Kreis schwebend */}
       {state.appPhase === CPR_CONFIG.PHASES.ONBOARDING && (
         <div className="absolute -top-[75px] w-full flex flex-col items-center justify-center text-center animate-in fade-in slide-in-from-bottom-4 duration-500 z-10">
            <h1 className="text-[26px] font-black text-slate-800 uppercase tracking-[0.2em] drop-shadow-sm leading-none mb-1">
@@ -78,10 +94,10 @@ export default function CenterDisplay() {
         </div>
       )}
 
-      {/* Das absolut runde, sich anpassende Hauptfenster */}
       <div 
         style={{ width: circleSize, height: circleSize }}
-        className="rounded-full shadow-[0_15px_40px_rgba(0,0,0,0.08)] border-4 border-slate-100 flex items-center justify-center relative overflow-hidden bg-white shrink-0 transition-all duration-500 mx-auto z-20"
+        // Bei Eskalation glüht der äußere Rahmen dunkelrot
+        className={`rounded-full border-4 flex items-center justify-center relative overflow-hidden shrink-0 transition-all duration-500 mx-auto z-20 ${state.appPhase === CPR_CONFIG.PHASES.RUNNING && isEscalated ? 'shadow-[0_0_50px_rgba(227,0,15,0.4)] border-red-200 bg-red-50' : 'shadow-[0_15px_40px_rgba(0,0,0,0.08)] border-slate-100 bg-white'}`}
       >
         {renderPhase()}
       </div>

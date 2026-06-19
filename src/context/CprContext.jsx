@@ -12,10 +12,10 @@ const loadState = () => {
        parsed.isGridVisible = false;
        parsed.isPatientModalOpen = false;
        
-       // Sicherheits-Fallbacks für neue oder alte Cache-Werte
        if (parsed.bpm === undefined) parsed.bpm = 110;
        if (parsed.isMuted === undefined) parsed.isMuted = false;
        if (parsed.shockCount === undefined) parsed.shockCount = 0;
+       if (parsed.lastJoule === undefined) parsed.lastJoule = null; // <--- NEU
        if (parsed.airwayEstablished === undefined) parsed.airwayEstablished = false;
        
        return parsed;
@@ -37,7 +37,8 @@ export function CprProvider({ children }) {
       cprMode: state.cprMode,
       bpm: state.bpm,                 
       isMuted: state.isMuted,         
-      shockCount: state.shockCount,   // <--- NEU
+      shockCount: state.shockCount,   
+      lastJoule: state.lastJoule,     // <--- NEU: Sichert den Joule-Wert!
       startTime: state.startTime,
       missionSeconds: state.missionSeconds,
       cprSeconds: state.cprSeconds,
@@ -45,8 +46,8 @@ export function CprProvider({ children }) {
       isCompressing: state.isCompressing,
       airwayEstablished: state.airwayEstablished,
       airwayType: state.airwayType,
-      airwaySize: state.airwaySize,   // <--- NEU
-      airwayDepth: state.airwayDepth, // <--- NEU
+      airwaySize: state.airwaySize,   
+      airwayDepth: state.airwayDepth, 
       events: state.events,
       reminders: state.reminders,
       currentCcfPercent: state.currentCcfPercent,
@@ -60,14 +61,12 @@ export function CprProvider({ children }) {
     const now = new Date();
     const realTimeStr = now.toLocaleTimeString('de-DE', { hour12: false });
     
-    // Formatiert die fortlaufende Einsatzuhr präzise in MM:SS
     const formatMissionTime = (totalSeconds) => {
       const m = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
       const s = (totalSeconds % 60).toString().padStart(2, '0');
       return `${m}:${s}`;
     };
 
-    // Das neue, absolut rechtssichere Format: [Uhrzeit] (Einsatzzeit) Aktion
     const formattedEntry = `[${realTimeStr}] (${formatMissionTime(state.missionSeconds)}) ${type}: ${detail}`;
 
     const newEvent = {
@@ -76,7 +75,7 @@ export function CprProvider({ children }) {
       missionTime: state.missionSeconds,
       type: type,
       detail: detail,
-      fullEntry: formattedEntry // <--- Der komplette String für das Protokoll
+      fullEntry: formattedEntry
     };
     
     dispatch({ type: 'LOG_EVENT', payload: newEvent });
