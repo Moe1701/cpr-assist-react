@@ -35,6 +35,7 @@ export const initialState = {
   
   adrSeconds: 0,
   adrCount: 0,
+  amioCount: 0, // <--- NEU FÜR AMIODARON
   
   compressingSeconds: 0, 
   arrestSeconds: 0,      
@@ -46,8 +47,9 @@ export const initialState = {
 export function cprReducer(state, action) {
   switch (action.type) {
     case 'SET_PHASE': {
-      const isGoingToOverlay = action.payload === CPR_CONFIG.PHASES.AIRWAY_MENU || action.payload === CPR_CONFIG.PHASES.AIRWAY_DOC || action.payload === CPR_CONFIG.PHASES.ZUGANG;
-      const isComingFromOverlay = state.appPhase === CPR_CONFIG.PHASES.AIRWAY_MENU || state.appPhase === CPR_CONFIG.PHASES.AIRWAY_DOC || state.appPhase === CPR_CONFIG.PHASES.ZUGANG;
+      // MEDS_MENU ist jetzt auch ein Overlay!
+      const isGoingToOverlay = action.payload === CPR_CONFIG.PHASES.AIRWAY_MENU || action.payload === CPR_CONFIG.PHASES.AIRWAY_DOC || action.payload === CPR_CONFIG.PHASES.ZUGANG || action.payload === CPR_CONFIG.PHASES.MEDS_MENU;
+      const isComingFromOverlay = state.appPhase === CPR_CONFIG.PHASES.AIRWAY_MENU || state.appPhase === CPR_CONFIG.PHASES.AIRWAY_DOC || state.appPhase === CPR_CONFIG.PHASES.ZUGANG || state.appPhase === CPR_CONFIG.PHASES.MEDS_MENU;
       
       let prevPhase = state.previousAppPhase;
       if (isGoingToOverlay && !isComingFromOverlay) {
@@ -89,6 +91,8 @@ export function cprReducer(state, action) {
     case 'SET_ZUGANG': return { ...state, zugang: action.payload };
     
     case 'GIVE_ADRENALIN': return { ...state, adrCount: state.adrCount + 1, adrSeconds: 1 };
+    case 'GIVE_AMIODARON': return { ...state, amioCount: state.amioCount + 1 }; // <--- NEU
+    
     case 'TICK_ADR': {
       if (state.adrSeconds > 0) {
         const nextAdr = state.adrSeconds + 1;

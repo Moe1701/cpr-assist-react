@@ -32,7 +32,7 @@ export const CPR_CONFIG = {
     PAUSE: "PAUSE",               
     RESUME: "RESUME",             
     WARNING: "WARNING",           
-    ZUGANG: "ZUGANG", // <--- NEU
+    ZUGANG: "ZUGANG", 
   },
 
   // 5. PHASEN ALS KONSTANTEN (Verhindert Tippfehler im Code)
@@ -47,7 +47,8 @@ export const CPR_CONFIG = {
     RUNNING: 'RUNNING',
     AIRWAY_MENU: 'AIRWAY_MENU', 
     AIRWAY_DOC: 'AIRWAY_DOC',
-    ZUGANG: 'ZUGANG' // <--- NEU
+    ZUGANG: 'ZUGANG', 
+    MEDS_MENU: 'MEDS_MENU' // <--- NEU FÜR DEN KOFFER
   }
 };
 

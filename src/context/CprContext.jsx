@@ -20,6 +20,7 @@ const loadState = () => {
        if (parsed.zugang === undefined) parsed.zugang = null;
        if (parsed.adrSeconds === undefined) parsed.adrSeconds = 0;
        if (parsed.adrCount === undefined) parsed.adrCount = 0;
+       if (parsed.amioCount === undefined) parsed.amioCount = 0; // <--- NEU
        
        return parsed;
     }
@@ -54,6 +55,7 @@ export function CprProvider({ children }) {
       zugang: state.zugang,           
       adrSeconds: state.adrSeconds,
       adrCount: state.adrCount,
+      amioCount: state.amioCount, // <--- NEU
       events: state.events,
       reminders: state.reminders,
       currentCcfPercent: state.currentCcfPercent,
