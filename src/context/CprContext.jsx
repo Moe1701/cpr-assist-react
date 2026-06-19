@@ -17,7 +17,9 @@ const loadState = () => {
        if (parsed.shockCount === undefined) parsed.shockCount = 0;
        if (parsed.lastJoule === undefined) parsed.lastJoule = null; 
        if (parsed.airwayEstablished === undefined) parsed.airwayEstablished = false;
-       if (parsed.zugang === undefined) parsed.zugang = null; // <--- NEU
+       if (parsed.zugang === undefined) parsed.zugang = null;
+       if (parsed.adrSeconds === undefined) parsed.adrSeconds = 0;
+       if (parsed.adrCount === undefined) parsed.adrCount = 0;
        
        return parsed;
     }
@@ -49,7 +51,9 @@ export function CprProvider({ children }) {
       airwayType: state.airwayType,
       airwaySize: state.airwaySize,   
       airwayDepth: state.airwayDepth, 
-      zugang: state.zugang,           // <--- NEU
+      zugang: state.zugang,           
+      adrSeconds: state.adrSeconds,
+      adrCount: state.adrCount,
       events: state.events,
       reminders: state.reminders,
       currentCcfPercent: state.currentCcfPercent,

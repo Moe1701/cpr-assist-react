@@ -31,8 +31,10 @@ export const initialState = {
   airwayType: null,         
   airwaySize: null,         
   airwayDepth: null,        
+  zugang: null, 
   
-  zugang: null, // <--- NEU
+  adrSeconds: 0,
+  adrCount: 0,
   
   compressingSeconds: 0, 
   arrestSeconds: 0,      
@@ -56,12 +58,7 @@ export function cprReducer(state, action) {
 
     case 'SET_BPM': return { ...state, bpm: action.payload };
     case 'TOGGLE_MUTE': return { ...state, isMuted: !state.isMuted };
-    
-    case 'RECORD_SHOCK': return { 
-      ...state, 
-      shockCount: state.shockCount + 1,
-      lastJoule: action.payload
-    }; 
+    case 'RECORD_SHOCK': return { ...state, shockCount: state.shockCount + 1, lastJoule: action.payload }; 
     
     case 'SET_PEDIATRIC_DATA': return { 
         ...state, 
@@ -77,9 +74,7 @@ export function cprReducer(state, action) {
     case 'TOGGLE_GRID': return { ...state, isGridVisible: !state.isGridVisible };
     case 'LOG_EVENT': return { ...state, events: [...state.events, action.payload] };
     
-    case 'TOGGLE_COMPRESSION': 
-      return { ...state, isCompressing: action.payload, pauseSeconds: action.payload ? 0 : state.pauseSeconds };
-      
+    case 'TOGGLE_COMPRESSION': return { ...state, isCompressing: action.payload, pauseSeconds: action.payload ? 0 : state.pauseSeconds };
     case 'SET_COMPRESSION_COUNT': return { ...state, compressionCount: action.payload };
     case 'SET_VENTILATION_PHASE': return { ...state, isVentilationPhase: action.payload };
     
@@ -91,13 +86,21 @@ export function cprReducer(state, action) {
       };
       
     case 'SET_AIRWAY_TYPE': return { ...state, airwayType: action.payload }; 
-    case 'SET_ZUGANG': return { ...state, zugang: action.payload }; // <--- NEU
+    case 'SET_ZUGANG': return { ...state, zugang: action.payload };
+    
+    case 'GIVE_ADRENALIN': return { ...state, adrCount: state.adrCount + 1, adrSeconds: 1 };
+    case 'TICK_ADR': {
+      if (state.adrSeconds > 0) {
+        const nextAdr = state.adrSeconds + 1;
+        if (nextAdr >= 240) return { ...state, adrSeconds: 0 };
+        return { ...state, adrSeconds: nextAdr };
+      }
+      return state;
+    }
     
     case 'TICK_MISSION': return { ...state, missionSeconds: state.missionSeconds + 1 };
     case 'TICK_CYCLE': return { ...state, cycleSeconds: state.cycleSeconds + 1 };
-    
     case 'RESET_CYCLE': return { ...state, cycleSeconds: 0 };
-    
     case 'TICK_PAUSE': return { ...state, pauseSeconds: state.pauseSeconds + 1 };
     
     case 'TICK_CCF_ARREST': {

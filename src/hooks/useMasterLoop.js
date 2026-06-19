@@ -21,9 +21,6 @@ export function useMasterLoop() {
     logEvent(CPR_CONFIG.EVENTS.PAUSE, isComp ? "Kompression FORTGESETZT" : "Kompression PAUSE");
   }, [dispatch, logEvent]);
 
-  // ========================================================
-  // DIE ATEMWEG-LOGIK (Beutel-Maske vs. Invasiv)
-  // ========================================================
   const setAirway = useCallback((airwayType) => {
     dispatch({ type: 'SET_AIRWAY', payload: !!airwayType });
     dispatch({ type: 'SET_AIRWAY_TYPE', payload: airwayType });
@@ -86,11 +83,9 @@ export function useMasterLoop() {
     }, 1500);
   }, [dispatch, playVentSound]);
 
-  // DER GLOBALE TICKER (mit Timer-Fix)
   useEffect(() => {
     let lastTick = Date.now();
     const masterTimer = setInterval(() => {
-      // Wenn im Startmenü: Ziehe die Zeit stur mit, starte keinen Zähler
       if (stateRef.current.appPhase === 'ONBOARDING') {
         lastTick = Date.now();
         return;
@@ -100,6 +95,10 @@ export function useMasterLoop() {
       if (now - lastTick >= 1000) {
         lastTick += 1000;
         dispatch({ type: 'TICK_MISSION' });
+
+        if (stateRef.current.adrSeconds > 0) {
+          dispatch({ type: 'TICK_ADR' });
+        }
 
         const isPastSetup = !['ONBOARDING', 'OB_INITIAL_BREATHS'].includes(stateRef.current.appPhase);
         if (isPastSetup) {
@@ -113,7 +112,6 @@ export function useMasterLoop() {
     return () => clearInterval(masterTimer);
   }, [dispatch]);
 
-  // DIE WEB-AUDIO LOOKAHEAD ENGINE
   useEffect(() => {
     if (!state.isCompressing) return;
 
