@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>CPR Assist React</title>
+    
+    <!-- PWA & Icons -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#E3000F">
+    <link rel="apple-touch-icon" href="/icon-192.png">
+    <link rel="icon" type="image/png" href="/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Tailwind via CDN (Fürs Testing, falls dein lokales Tailwind noch nicht läuft) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome (Nur CSS-Version, verhindert JS-Icon-Duplizierung) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans h-[100dvh] flex flex-col m-0 overflow-hidden no-select relative">
+    
+    <!-- HIER BAUT REACT UNSERE APP.JSX EIN (Die Leinwand) -->
+    <div id="root" class="w-full h-full"></div>
+    
+    <!-- VITE ENTRY POINT -->
+    <script type="module" src="/src/main.jsx"></script>
+    
+</body>
+</html>
