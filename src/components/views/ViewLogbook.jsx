@@ -14,7 +14,7 @@ export default function ViewLogbook() {
 
   if (!state.isLogModalOpen) return null;
 
-  // FIX: Sicherheitsabfrage beim Rückgängig-Machen
+  // Sicherheitsabfrage beim Rückgängig-Machen
   const handleUndo = () => {
     if (window.confirm("Letztes Ereignis wirklich aus dem Protokoll löschen?")) {
       dispatch({ type: 'UNDO_LAST_EVENT' });
@@ -24,15 +24,18 @@ export default function ViewLogbook() {
   return (
     <div className="fixed inset-0 z-[80] flex flex-col justify-end pointer-events-none bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
       
-      <div className="w-full h-[95dvh] bg-slate-50 shadow-[0_-15px_50px_rgba(0,0,0,0.3)] flex flex-col rounded-t-3xl overflow-hidden pointer-events-auto animate-in slide-in-from-bottom-full duration-300">
+      {/* FIX: h-[85dvh] und max-h-[85%] sorgen dafür, dass das Modal NIE unter die Android-Statusleiste rutscht */}
+      <div className="w-full h-[85dvh] max-h-[85%] bg-slate-50 shadow-[0_-15px_50px_rgba(0,0,0,0.3)] flex flex-col rounded-t-3xl overflow-hidden pointer-events-auto animate-in slide-in-from-bottom-full duration-300">
         
-        {/* HEADER */}
-        <div className="flex flex-col px-5 py-4 border-b border-slate-200 bg-slate-50 shrink-0 gap-4 z-20">
+        {/* HEADER: Padding oben (pt-5) leicht erhöht als zusätzlicher Puffer */}
+        <div className="flex flex-col px-5 pt-5 pb-4 border-b border-slate-200 bg-slate-50 shrink-0 gap-4 z-20">
           <div className="flex justify-between items-center w-full">
             <h3 className="font-black text-slate-800 uppercase tracking-wider text-lg">Protokoll</h3>
+            
+            {/* DER EIGENTLICHE SCHLIESSEN BUTTON (jetzt garantiert sichtbar!) */}
             <button 
               onClick={() => dispatch({ type: 'TOGGLE_LOG_MODAL', payload: false })}
-              className="bg-slate-800 text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase shadow-sm active:scale-95 transition-transform cursor-pointer"
+              className="bg-slate-800 text-white px-5 py-2.5 rounded-xl text-[11px] font-black uppercase shadow-sm active:scale-95 transition-transform cursor-pointer"
             >
               Schließen
             </button>
@@ -52,11 +55,10 @@ export default function ViewLogbook() {
             </div>
             
             <div className="flex gap-2">
-              {/* FIX: Aufruf der neuen handleUndo Funktion */}
               <button 
                 onClick={handleUndo}
                 className="bg-red-50 text-red-600 border border-red-200 px-3 py-2 rounded-xl text-[12px] active:scale-95 cursor-pointer hover:bg-red-100"
-                title="Letztes Ereignis rückgängig machen"
+                title="Letztes Ereignis löschen"
               >
                 <i className="fa-solid fa-rotate-left pointer-events-none"></i>
               </button>
