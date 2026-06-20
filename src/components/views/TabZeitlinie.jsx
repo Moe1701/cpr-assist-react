@@ -12,7 +12,7 @@ export default function TabZeitlinie() {
     return `${m}:${s}`;
   };
 
-  // --- ICON & PARSER ENGINE ---
+  // --- ICON & PARSER ENGINE (FIX: Mehr Catch-Phrases) ---
   const getIconData = (action) => {
     const t = action.toLowerCase();
     if (t.includes("schock") && !t.includes("schockbar")) {
@@ -26,19 +26,19 @@ export default function TabZeitlinie() {
     if (t.includes("amio")) return { content: <i className="fa-solid fa-capsules text-purple-600"></i> };
     if (t.includes("atemweg") || t.includes("beatmung")) return { content: <i className="fa-solid fa-lungs text-cyan-600"></i> };
     if (t.includes("zugang")) return { content: <i className="fa-solid fa-droplet text-indigo-500"></i> };
-    if (t.includes("start rea") || t.includes("kompression begonnen")) return { content: <i className="fa-solid fa-play text-emerald-500"></i> };
+    // FIX: Fängt jetzt alle Start- und Fortsetzen-Events ab
+    if (t.includes("gestartet") || t.includes("fortgesetzt") || t.includes("start")) return { content: <i className="fa-solid fa-play text-emerald-500"></i> };
     if (t.includes("rosc")) return { content: <i className="fa-solid fa-heart-pulse text-emerald-500"></i> };
     if (t.includes("abbruch") || t.includes("beendet")) return { content: <i className="fa-solid fa-stop text-slate-800"></i> };
-    if (t.includes("hits") || t.includes("sampler")) return { content: <i className="fa-solid fa-clipboard-list text-slate-400"></i> };
-    return null; // Events ohne spezielles Icon filtern wir raus
+    if (t.includes("hits") || t.includes("sampler") || t.includes("anamnese")) return { content: <i className="fa-solid fa-clipboard-list text-slate-400"></i> };
+    return null; 
   };
 
-  // --- DATEN-VERARBEITUNG (Läuft nur neu, wenn Events sich ändern) ---
+  // --- DATEN-VERARBEITUNG (FIX: Präzise Pausen-Erkennung) ---
   const { cycles, pauses, currentAppSec } = useMemo(() => {
     const data = state.events || [];
     let currentAppSec = state.missionSeconds || 0;
     
-    // Falls wir ein altes Protokoll ansehen, nimm die Zeit des letzten Events
     if (data.length > 0 && data[data.length - 1].missionTime > currentAppSec) {
         currentAppSec = data[data.length - 1].missionTime;
     }
@@ -46,19 +46,24 @@ export default function TabZeitlinie() {
     // 1. Pausen berechnen
     let pausesArr = [];
     let currentPauseStart = null;
+    
     data.forEach(d => {
         const t = d.fullEntry.toLowerCase();
         const sec = d.missionTime;
-        if ((t.includes('kompression') || t.includes('cpr')) && (t.includes('paus') || t.includes('stop') || t.includes('unterbroch'))) {
+        
+        // Wenn das Wort Pause vorkommt -> Start der roten Linie
+        if (t.includes('pause')) {
             if (currentPauseStart === null) currentPauseStart = sec;
-        } else if ((t.includes('kompression') || t.includes('cpr')) && (t.includes('fortgesetzt') || t.includes('start') || t.includes('weiter'))) {
+        } 
+        // Wenn es weitergeht oder ROSC eintritt -> Ende der roten Linie
+        else if (t.includes('fortgesetzt') || t.includes('gestartet') || t.includes('rosc')) {
             if (currentPauseStart !== null) {
                 pausesArr.push({ start: currentPauseStart, end: sec, duration: sec - currentPauseStart });
                 currentPauseStart = null;
             }
         }
     });
-    // Laufende Pause am Ende mitnehmen
+    
     if (currentPauseStart !== null && currentAppSec > currentPauseStart) {
         pausesArr.push({ start: currentPauseStart, end: currentAppSec, duration: currentAppSec - currentPauseStart });
     }
@@ -114,15 +119,12 @@ export default function TabZeitlinie() {
           return (
             <div key={cycleIdx} className="relative w-full h-[110px] mb-2 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden shrink-0">
               
-              {/* Labels Links/Rechts */}
               <div className="absolute top-1/2 left-1 -translate-y-1/2 text-[8px] font-black text-slate-400 bg-white/80 px-1 z-10">{formatTime(block.startSec)}</div>
               <div className="absolute top-1/2 right-1 -translate-y-1/2 text-[8px] font-black text-slate-400 bg-white/80 px-1 z-10">{formatTime(block.endSec)}</div>
               
               <div className="absolute inset-y-0 left-7 right-7 pointer-events-none">
-                  {/* Mittellinie */}
                   <div className="absolute top-1/2 left-0 right-0 h-[2px] bg-slate-100 rounded-full -translate-y-1/2 shadow-inner z-0"></div>
                   
-                  {/* 15s Ticks */}
                   {[15, 30, 45, 60, 75, 90, 105].map(t => {
                       const pct = (t / 120) * 100;
                       const isCenter = t === 60;
@@ -136,7 +138,6 @@ export default function TabZeitlinie() {
                       );
                   })}
 
-                  {/* CPR Pausen (Rote Balken) */}
                   {pauses.map((p, pIdx) => {
                       const pStart = Math.max(p.start, block.startSec);
                       const pEnd = Math.min(p.end, block.endSec);
@@ -153,7 +154,6 @@ export default function TabZeitlinie() {
                       );
                   })}
 
-                  {/* Live-Marker (Roter Strich der mitläuft) */}
                   {isActiveBlock && (
                       <div className="live-time-marker absolute top-0 bottom-0 w-[2px] bg-red-500 z-[15] shadow-[0_0_8px_rgba(239,68,68,0.8)]" 
                            style={{ left: `${((currentAppSec - block.startSec) / cycleDuration) * 100}%` }}>
@@ -162,7 +162,6 @@ export default function TabZeitlinie() {
                       </div>
                   )}
 
-                  {/* Events als Icons einzeichnen */}
                   {block.cycleEvents.map((ev, idx) => {
                       const pct = ((ev.missionTime - block.startSec) / cycleDuration) * 100;
                       const yOff = yOffsets[idx % yOffsets.length];
@@ -173,11 +172,8 @@ export default function TabZeitlinie() {
 
                       return (
                         <React.Fragment key={ev.id}>
-                          {/* Anchor Dot */}
                           <div className="absolute top-1/2 w-1 h-1 rounded-full bg-slate-400 -translate-x-1/2 -translate-y-1/2 z-[11]" style={{ left: `${pct}%` }}></div>
-                          {/* Linie nach oben/unten */}
                           <div className={`absolute w-px bg-slate-300 -translate-x-1/2 ${linePosClass} z-10`} style={{ left: `${pct}%`, height: `${lineH}px` }}></div>
-                          {/* Das eigentliche Icon */}
                           <div className={`absolute -translate-x-1/2 flex flex-col items-center justify-center z-20 ${anchorTransform}`} 
                                style={{ left: `${pct}%`, top: `calc(50% ${isTop ? '-' : '+'} ${lineH}px)`, zIndex: 20 + idx }}>
                               {ev.iconData.isJoule 
