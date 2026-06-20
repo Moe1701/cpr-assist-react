@@ -18,11 +18,14 @@ export const initialState = {
   isPatientModalOpen: false, 
   isAirwayModalOpen: false, 
   isHitsModalOpen: false, 
-  isLogModalOpen: false, // <--- NEU
+  isLogModalOpen: false,
+  isAbbruchModalOpen: false, 
+  abbruchReason: null,       
   
   missionSeconds: 0, 
   cprSeconds: 0, 
   cycleSeconds: 0, 
+  roscSeconds: 0,
   
   isCompressing: false,
   pauseSeconds: 0, 
@@ -46,6 +49,7 @@ export const initialState = {
   reminders: [],
   
   hitsStatus: {}, 
+  roscChecklist: {},
   anamneseData: {
     alter: '', gewicht: '',
     beobachtet: null, laienrea: null, brustschmerz: null, therapie: null,
@@ -56,8 +60,9 @@ export const initialState = {
 export function cprReducer(state, action) {
   switch (action.type) {
     case 'SET_PHASE': {
-      const isGoingToOverlay = action.payload === CPR_CONFIG.PHASES.AIRWAY_MENU || action.payload === CPR_CONFIG.PHASES.AIRWAY_DOC || action.payload === CPR_CONFIG.PHASES.ZUGANG || action.payload === CPR_CONFIG.PHASES.MEDS_MENU;
-      const isComingFromOverlay = state.appPhase === CPR_CONFIG.PHASES.AIRWAY_MENU || state.appPhase === CPR_CONFIG.PHASES.AIRWAY_DOC || state.appPhase === CPR_CONFIG.PHASES.ZUGANG || state.appPhase === CPR_CONFIG.PHASES.MEDS_MENU;
+      const overlays = [CPR_CONFIG.PHASES.AIRWAY_MENU, CPR_CONFIG.PHASES.AIRWAY_DOC, CPR_CONFIG.PHASES.ZUGANG, CPR_CONFIG.PHASES.MEDS_MENU];
+      const isGoingToOverlay = overlays.includes(action.payload);
+      const isComingFromOverlay = overlays.includes(state.appPhase);
       
       let prevPhase = state.previousAppPhase;
       if (isGoingToOverlay && !isComingFromOverlay) {
@@ -65,56 +70,41 @@ export function cprReducer(state, action) {
       }
       return { ...state, appPhase: action.payload, previousAppPhase: prevPhase };
     }
-
     case 'SET_BPM': return { ...state, bpm: action.payload };
     case 'TOGGLE_MUTE': return { ...state, isMuted: !state.isMuted };
     case 'RECORD_SHOCK': return { ...state, shockCount: state.shockCount + 1, lastJoule: action.payload }; 
-    
     case 'SET_PEDIATRIC_DATA': return { 
         ...state, 
-        isPediatric: action.payload.isPediatric,
-        patientWeight: action.payload.patientWeight,
-        cprMode: 'continuous', 
-        startTime: state.startTime || new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }),
+        isPediatric: action.payload.isPediatric, patientWeight: action.payload.patientWeight,
+        cprMode: 'continuous', startTime: state.startTime || new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }),
         anamneseData: { ...state.anamneseData, gewicht: action.payload.patientWeight || '' }
       };
-      
     case 'SET_CPR_MODE': return { ...state, cprMode: action.payload };
     case 'TOGGLE_PATIENT_MODAL': return { ...state, isPatientModalOpen: action.payload };
     case 'TOGGLE_AIRWAY_MODAL': return { ...state, isAirwayModalOpen: action.payload }; 
     case 'TOGGLE_HITS_MODAL': return { ...state, isHitsModalOpen: action.payload }; 
-    case 'TOGGLE_LOG_MODAL': return { ...state, isLogModalOpen: action.payload }; // <--- NEU
+    case 'TOGGLE_LOG_MODAL': return { ...state, isLogModalOpen: action.payload };
+    case 'TOGGLE_ABBRUCH_MODAL': return { ...state, isAbbruchModalOpen: action.payload };
+    case 'SET_ABBRUCH_REASON': return { ...state, abbruchReason: action.payload };
     case 'TOGGLE_GRID': return { ...state, isGridVisible: !state.isGridVisible };
-    
     case 'LOG_EVENT': return { ...state, events: [...state.events, action.payload] };
-    
-    case 'UNDO_LAST_EVENT': // <--- NEU
-      if (state.events.length === 0) return state;
-      return { ...state, events: state.events.slice(0, -1) };
-
+    case 'UNDO_LAST_EVENT': return state.events.length === 0 ? state : { ...state, events: state.events.slice(0, -1) };
     case 'TOGGLE_COMPRESSION': return { ...state, isCompressing: action.payload, pauseSeconds: action.payload ? 0 : state.pauseSeconds };
     case 'SET_COMPRESSION_COUNT': return { ...state, compressionCount: action.payload };
     case 'SET_VENTILATION_PHASE': return { ...state, isVentilationPhase: action.payload };
-    
     case 'SET_AIRWAY': 
       if (typeof action.payload === 'boolean') return { ...state, airwayEstablished: action.payload };
-      return { 
-        ...state, airwayEstablished: action.payload.established,
-        airwayType: action.payload.type || null, airwaySize: action.payload.size || null, airwayDepth: action.payload.depth || null
-      };
-      
+      return { ...state, airwayEstablished: action.payload.established, airwayType: action.payload.type || null, airwaySize: action.payload.size || null, airwayDepth: action.payload.depth || null };
     case 'SET_AIRWAY_TYPE': return { ...state, airwayType: action.payload }; 
     case 'SET_ZUGANG': return { ...state, zugang: action.payload };
-    
     case 'GIVE_ADRENALIN': return { ...state, adrCount: state.adrCount + 1, adrSeconds: 1 };
     case 'GIVE_AMIODARON': return { ...state, amioCount: state.amioCount + 1 };
     case 'UNDO_AMIODARON': return { ...state, amioCount: Math.max(0, state.amioCount - 1) };
-    
-    case 'TOGGLE_HITS_ITEM': 
-      return { ...state, hitsStatus: { ...state.hitsStatus, [action.payload.id]: action.payload.value } };
-    case 'SAVE_ANAMNESE': 
-      return { ...state, anamneseData: action.payload };
-    
+    case 'TOGGLE_HITS_ITEM': return { ...state, hitsStatus: { ...state.hitsStatus, [action.payload.id]: action.payload.value } };
+    case 'SAVE_ANAMNESE': return { ...state, anamneseData: action.payload };
+    case 'TOGGLE_ROSC_ITEM': return { ...state, roscChecklist: { ...state.roscChecklist, [action.payload]: !state.roscChecklist[action.payload] } };
+    case 'TICK_ROSC': return { ...state, roscSeconds: state.roscSeconds + 1 };
+    case 'RESET_ROSC_TIMER': return { ...state, roscSeconds: 0 };
     case 'TICK_ADR': {
       if (state.adrSeconds > 0) {
         const nextAdr = state.adrSeconds + 1;
@@ -123,20 +113,15 @@ export function cprReducer(state, action) {
       }
       return state;
     }
-    
     case 'TICK_MISSION': return { ...state, missionSeconds: state.missionSeconds + 1 };
     case 'TICK_CYCLE': return { ...state, cycleSeconds: state.cycleSeconds + 1 };
     case 'RESET_CYCLE': return { ...state, cycleSeconds: 0 };
     case 'TICK_PAUSE': return { ...state, pauseSeconds: state.pauseSeconds + 1 };
-    
     case 'TICK_CCF_ARREST': {
       const newArrest = state.arrestSeconds + 1;
-      const rawCcf = (state.compressingSeconds / newArrest) * 100;
-      return { ...state, arrestSeconds: newArrest, currentCcfPercent: Math.min(100, Math.round(rawCcf)) };
+      return { ...state, arrestSeconds: newArrest, currentCcfPercent: Math.min(100, Math.round((state.compressingSeconds / newArrest) * 100)) };
     }
-    case 'TICK_CCF_COMPRESSING': 
-      return { ...state, compressingSeconds: state.compressingSeconds + 1, cprSeconds: state.cprSeconds + 1 };
-    
+    case 'TICK_CCF_COMPRESSING': return { ...state, compressingSeconds: state.compressingSeconds + 1, cprSeconds: state.cprSeconds + 1 };
     case 'RESET_ALL': return initialState;
     default: return state;
   }

@@ -1,62 +1,43 @@
 // --- Datei: src/config/cprConfig.js ---
-
 export const CPR_CONFIG = {
-  // 1. ZYKLUS & TIMER (Alle Angaben in exakten Sekunden)
-  TIMERS: {
-    MASTER_LOOP: 120,          
-    DEFI_WARNING: 105,         
-    ADRENALIN_INTERVAL: 240,   
-    VENTILATION_CONT: 6,       
-  },
-
-  // 2. STANDARD-MEDIKAMENTE (Erwachsene)
-  DRUGS_ADULT: {
-    ADRENALIN: "1 mg",
-    AMIO_D1: "300 mg",         
-    AMIO_D2: "150 mg",         
-  },
-
-  // 3. PÄDIATRIE-BERECHNUNG (Gewichtsadaptiert)
-  DRUGS_PEDS_FACTORS: {
-    ADRENALIN_MCG_PER_KG: 10,  
-    AMIO_MG_PER_KG: 5,         
-    JOULE_PER_KG: 4,           
-  },
-
-  // 4. EVENT-TYPEN FÜR DIE DATENBANK
-  EVENTS: {
-    PHASE_CHANGE: "PHASE_CHANGE", 
-    DRUG: "DRUG",                 
-    SHOCK: "SHOCK",               
-    AIRWAY: "AIRWAY",             
-    PAUSE: "PAUSE",               
-    RESUME: "RESUME",             
-    WARNING: "WARNING",           
-    ZUGANG: "ZUGANG", 
-  },
-
-  // 5. PHASEN ALS KONSTANTEN (Verhindert Tippfehler im Code)
   PHASES: {
-    ONBOARDING: 'ONBOARDING',
-    OB_INITIAL_BREATHS: 'OB_INITIAL_BREATHS',
-    OB_COMPRESSIONS: 'OB_COMPRESSIONS',
-    OB_ANALYZE: 'OB_ANALYZE',
-    DECISION: 'DECISION',
-    JOULE: 'JOULE',
-    WAITING_CPR_RESUME: 'WAITING_CPR_RESUME',
-    RUNNING: 'RUNNING',
-    AIRWAY_MENU: 'AIRWAY_MENU', 
-    AIRWAY_DOC: 'AIRWAY_DOC',
-    ZUGANG: 'ZUGANG', 
-    MEDS_MENU: 'MEDS_MENU' // <--- NEU FÜR DEN KOFFER
+    ONBOARDING: 'onboarding',
+    OB_INITIAL_BREATHS: 'ob_initial_breaths',
+    OB_COMPRESSIONS: 'ob_compressions',
+    OB_ANALYZE: 'ob_analyze',
+    DECISION: 'decision',
+    JOULE: 'joule',
+    WAITING_CPR_RESUME: 'waiting_cpr_resume',
+    RUNNING: 'running',
+    ZUGANG: 'zugang',
+    AIRWAY_MENU: 'airway_menu',
+    AIRWAY_DOC: 'airway_doc',
+    MEDS_MENU: 'meds_menu',
+    ROSC: 'rosc',
+    DEBRIEFING: 'debriefing'
+  },
+  EVENTS: {
+    DRUG: 'Medikament',
+    SHOCK: 'Schock',
+    AIRWAY: 'Atemweg',
+    ACCESS: 'Zugang',
+    INFO: 'Info',
+    HITS: 'HITS'
   }
 };
 
-// Hilfsfunktion: Berechnet Pädiatrie-Dosierungen blitzschnell
-export const calculatePedsDose = (weightKg) => {
-  return {
-    adrenalinMcg: weightKg * CPR_CONFIG.DRUGS_PEDS_FACTORS.ADRENALIN_MCG_PER_KG,
-    amioMg: weightKg * CPR_CONFIG.DRUGS_PEDS_FACTORS.AMIO_MG_PER_KG,
-    joule: weightKg * CPR_CONFIG.DRUGS_PEDS_FACTORS.JOULE_PER_KG
-  };
+export const CHECKLISTS = {
+  ROSC_DATA: [
+    { cat: 'A', title: 'Airway', items: [{ label: 'Atemweg & Cuffdruck (20-30 cmH2O)' }, { label: 'Magensonde (Dekompressions)' }] },
+    { cat: 'B', title: 'Breathing', items: [{ label: 'Auskultation (Seitengleich?)' }, { label: 'Oxygenierung', sub: 'SpO2 Ziel: 94-98%' }, { label: 'Normoventilation', sub: 'etCO2 Ziel: 35-45 mmHg' }, { label: 'Oberkörper 30° hochlagern' }] },
+    { cat: 'C', title: 'Circulation', items: [{ label: '12-Kanal EKG', sub: 'Suche nach STEMI / Ischämie' }, { label: 'Blutdruck stabilisieren', sub: 'Ziel: MAP > 65 mmHg | syst > 100' }, { label: 'Rekap-Zeit prüfen (< 2 Sek.)' }, { label: 'Zugänge prüfen & Katecholamine' }] },
+    { cat: 'D', title: 'Disability (Neuro)', items: [{ label: 'Pupillen kontrollieren' }, { label: 'GCS ermitteln' }, { label: 'Analgosedierung sichern' }, { label: 'Blutzucker messen', sub: 'Ziel: 140 - 180 mg/dl' }] },
+    { cat: 'E', title: 'Exposure & Environment', items: [{ label: 'Bodycheck', sub: 'Keine Diagnose durch die Hose!' }, { label: 'Temperaturmanagement', sub: 'Ziel: 36 °C (Fieber strikt meiden!)' }, { label: 'Ursachenforschung (HITS) re-evaluieren' }, { label: 'Zielklinik / CAC anmelden', sub: 'Vorab-Info über EKG & Status' }, { label: 'Angehörige informieren / betreuen' }] }
+  ],
+  ABBRUCH_REASONS: [
+    { id: 'erfolglos', label: 'Erfolglose Reanimation', icon: 'fa-heart-crack', color: 'text-red-500' },
+    { id: 'dnr', label: 'Patientenverfügung / DNR', icon: 'fa-file-signature', color: 'text-indigo-500' },
+    { id: 'angehoerige', label: 'Wunsch der Angehörigen', icon: 'fa-users', color: 'text-amber-500' },
+    { id: 'todeszeichen', label: 'Sichere Todeszeichen', icon: 'fa-book-skull', color: 'text-slate-800' }
+  ]
 };
