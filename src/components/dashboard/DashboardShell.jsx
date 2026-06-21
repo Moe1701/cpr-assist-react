@@ -20,6 +20,28 @@ import AmiodaronButton from './AmiodaronButton.jsx';
 import { usePatientLogic } from '../../hooks/usePatientLogic.js';
 import { useMasterLoop } from '../../hooks/useMasterLoop.js'; 
 
+// =========================================================================
+// BUGFIX: Diese Komponenten MÜSSEN außerhalb der Hauptfunktion liegen, 
+// da sie sonst im 1-Sekunden-Takt ihren internen Zustand (useState) löschen!
+// =========================================================================
+
+const SatelliteBtn = ({ icon, label, colorClass = "bg-white text-slate-500 border-slate-200", onClick }) => (
+  <button onClick={onClick} className={`w-[86px] h-[86px] rounded-full shadow-sm border-[3px] flex flex-col items-center justify-center gap-1 hover:bg-slate-50 active:scale-95 transition-all cursor-pointer ${colorClass}`}>
+    <i className={`fa-solid ${icon} text-[24px] mb-0.5 pointer-events-none`}></i>
+    <span className="text-[9px] font-black uppercase tracking-wider leading-none text-center px-1 pointer-events-none">{label}</span>
+  </button>
+);
+
+const OrbitPosition = ({ x, y, children, zIndex = 20 }) => (
+  <div className="absolute pointer-events-none" style={{ zIndex, top: '50%', left: '50%', marginLeft: `${x}px`, marginTop: `${y}px`, transform: 'translate(-50%, -50%)' }}>
+    <div className="pointer-events-auto">{children}</div>
+  </div>
+);
+
+// =========================================================================
+// HAUPT-SHELL
+// =========================================================================
+
 export default function DashboardShell() {
   const { state, dispatch } = useContext(CprContext);
   const { toggleCprMode } = usePatientLogic();
@@ -32,19 +54,6 @@ export default function DashboardShell() {
     return `${m}:${s}`;
   };
 
-  const SatelliteBtn = ({ icon, label, colorClass = "bg-white text-slate-500 border-slate-200", onClick }) => (
-    <button onClick={onClick} className={`w-[86px] h-[86px] rounded-full shadow-sm border-[3px] flex flex-col items-center justify-center gap-1 hover:bg-slate-50 active:scale-95 transition-all cursor-pointer ${colorClass}`}>
-      <i className={`fa-solid ${icon} text-[24px] mb-0.5 pointer-events-none`}></i>
-      <span className="text-[9px] font-black uppercase tracking-wider leading-none text-center px-1 pointer-events-none">{label}</span>
-    </button>
-  );
-
-  const OrbitPosition = ({ x, y, children, zIndex = 20 }) => (
-    <div className="absolute pointer-events-none" style={{ zIndex, top: '50%', left: '50%', marginLeft: `${x}px`, marginTop: `${y}px`, transform: 'translate(-50%, -50%)' }}>
-      <div className="pointer-events-auto">{children}</div>
-    </div>
-  );
-
   const isRunning = state.appPhase === CPR_CONFIG.PHASES.RUNNING;
   const isSetup = state.appPhase === CPR_CONFIG.PHASES.ONBOARDING || state.appPhase === CPR_CONFIG.PHASES.OB_INITIAL_BREATHS;
   
@@ -54,6 +63,8 @@ export default function DashboardShell() {
 
   return (
     <div className="absolute inset-0 w-full h-full flex flex-col bg-slate-50 animate-in fade-in duration-500 overflow-hidden">
+      
+      {/* HEADER STATS */}
       <div className={`flex items-stretch justify-between gap-2 px-3 py-2 shrink-0 z-40 relative transition-opacity duration-300 ${!showTopStats ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         <div className="bg-white rounded-[14px] px-3 py-2 shadow-sm border border-slate-200 flex-[0.85] flex flex-col justify-between">
           <div className="w-full mb-1">
@@ -81,6 +92,7 @@ export default function DashboardShell() {
         </div>
       </div>
 
+      {/* SATELLITEN ORBIT */}
       <div className="flex-1 relative w-full flex items-center justify-center z-30 overflow-visible">
         <OrbitPosition x={0} y={0} zIndex={10}><CenterDisplay /></OrbitPosition>
 
@@ -91,18 +103,21 @@ export default function DashboardShell() {
             <OrbitPosition x={141} y={81.5}><SatelliteBtn icon="fa-clipboard-list" label="Hits Anamnese" colorClass="bg-white text-slate-600 border-slate-300" onClick={() => dispatch({ type: 'TOGGLE_HITS_MODAL', payload: true })} /></OrbitPosition>
             <OrbitPosition x={0} y={163}><SatelliteBtn icon="fa-flag-checkered" label="ROSC / Abbruch" colorClass="bg-white text-slate-700 border-slate-300" onClick={() => dispatch({ type: 'TOGGLE_OUTCOME_MODAL', payload: true })} /></OrbitPosition>
             <OrbitPosition x={-141} y={81.5}><SatelliteBtn icon="fa-file-lines" label="Log" colorClass="bg-white text-slate-500 border-slate-300" onClick={() => dispatch({ type: 'TOGGLE_LOG_MODAL', payload: true })} /></OrbitPosition>
-            <OrbitPosition x={-141} y={-81.5}><SatelliteBtn icon="fa-droplet" label={state.zugang || "Zugang"} colorClass={state.zugang ? "bg-cyan-50 border-cyan-400 text-cyan-600" : "bg-white text-slate-500 border-slate-300"} onClick={() => dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.ZUGANG })} /></OrbitPosition>
+            <OrbitPosition x={-141} y={-81.5}><SatelliteBtn icon="fa-droplet" label={state.zugang || "Zugang"} colorClass={state.zugang ? "bg-cyan-50 border-cyan-400 text-cyan-600" : "bg-white text-slate-500 border-slate-300"} onClick={() => dispatch({ type: 'SET_PHASE', CPR_CONFIG.PHASES.ZUGANG })} /></OrbitPosition>
           </>
         )}
       </div>
 
+      {/* GRADIENT FOOTER */}
       <div className="absolute bottom-0 w-full h-40 bg-gradient-to-t from-slate-200/90 to-transparent z-10 pointer-events-none"></div>
 
+      {/* FIXED BUTTONS (AIRWAY & CPR) */}
       <div className={`shrink-0 w-full flex justify-between items-end px-5 pb-8 pt-2 z-50 transition-opacity duration-300 pointer-events-none ${!showBottomButtons ? 'opacity-0' : 'opacity-100'}`}>
         <AirwayButton />
         <CprButton toggleCpr={toggleCpr} />
       </div>
 
+      {/* MODALS & FULLSCREEN VIEWS */}
       {state.isPatientModalOpen && <PatientSetupModal />}
       {state.isHitsModalOpen && <HitsModal />}
       {state.isLogModalOpen && <ViewLogbook />}
