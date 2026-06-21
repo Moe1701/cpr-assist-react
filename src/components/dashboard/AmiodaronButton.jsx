@@ -8,12 +8,11 @@ export default function AmiodaronButton() {
 
   const handleUndo = (e) => {
     e.stopPropagation();
-    dispatch({ type: 'UNDO_AMIODARON' });
+    if (window.confirm("Letztes Ereignis (Amiodaron) aus Protokoll löschen?")) {
+      dispatch({ type: 'UNDO_LAST_EVENT' });
+    }
   };
 
-  // ==========================================
-  // PHASE 2: Der "Weitere Meds" Koffer (ab 2 Klicks)
-  // ==========================================
   if (state.amioCount >= 2) {
     return (
       <div className="relative pointer-events-auto w-[86px] h-[86px]">
@@ -27,7 +26,6 @@ export default function AmiodaronButton() {
           </span>
         </button>
 
-        {/* Undo-Button (Rückgängig) */}
         <button 
           onClick={handleUndo} 
           className="absolute -top-1 -left-1 bg-slate-100 text-slate-500 w-7 h-7 flex items-center justify-center rounded-full shadow-sm border-2 border-white z-40 active:scale-90 hover:bg-slate-200 cursor-pointer"
@@ -38,11 +36,6 @@ export default function AmiodaronButton() {
     );
   }
 
-  // ==========================================
-  // PHASE 1: Der normale Amiodaron Button
-  // ==========================================
-  
-  // Dosis-Berechnung (Kind: 5mg/kg starr | Erwachsener: 300mg -> 150mg)
   const dose = state.isPediatric && state.patientWeight
     ? `${Math.round(state.patientWeight * 5)} mg`
     : (state.amioCount === 0 ? '300 mg' : '150 mg');
@@ -64,7 +57,6 @@ export default function AmiodaronButton() {
         </span>
       </button>
 
-      {/* Undo-Button (Rückgängig) - Erscheint nach dem 1. Klick */}
       {state.amioCount > 0 && (
         <button 
           onClick={handleUndo} 
@@ -74,7 +66,6 @@ export default function AmiodaronButton() {
         </button>
       )}
 
-      {/* Rotes Zähler-Badge */}
       {state.amioCount > 0 && (
         <div className="absolute -top-2 -right-2 bg-[#E3000F] text-white text-[12px] font-black px-2 min-w-[26px] h-7 flex items-center justify-center rounded-full shadow-md border-2 border-white z-40 pointer-events-none">
           {state.amioCount}
