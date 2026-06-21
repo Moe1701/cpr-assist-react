@@ -11,8 +11,8 @@ export default function ViewRosc() {
 
   const handleReArrest = () => {
     logEvent("ROSC", "RE-ARREST! CPR fortgesetzt.");
-    dispatch({ type: 'TOGGLE_COMPRESSION', payload: false }); 
-    dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.RUNNING });
+    // Nutzt jetzt den sauberen Reducer-Befehl für den Cleanup!
+    dispatch({ type: 'CLEANUP_RE_ARREST' });
   };
 
   const handleEnd = () => {
@@ -26,6 +26,7 @@ export default function ViewRosc() {
   };
 
   const formatTime = (seconds) => {
+    if (isNaN(seconds) || seconds === null) return "00:00";
     const m = Math.floor(seconds / 60).toString().padStart(2, '0');
     const s = (seconds % 60).toString().padStart(2, '0');
     return `${m}:${s}`;
