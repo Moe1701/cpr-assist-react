@@ -9,7 +9,7 @@ export default function AmiodaronButton() {
   const handleUndo = (e) => {
     e.stopPropagation();
     if (window.confirm("Letztes Ereignis (Amiodaron) aus Protokoll löschen?")) {
-      dispatch({ type: 'UNDO_LAST_EVENT' });
+      dispatch({ type: 'UNDO_AMIODARON' });
     }
   };
 
