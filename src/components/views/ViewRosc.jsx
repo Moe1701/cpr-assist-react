@@ -11,12 +11,11 @@ export default function ViewRosc() {
 
   const handleReArrest = () => {
     logEvent("ROSC", "RE-ARREST! CPR fortgesetzt.");
-    // Nutzt jetzt den sauberen Reducer-Befehl für den Cleanup!
     dispatch({ type: 'CLEANUP_RE_ARREST' });
   };
 
   const handleEnd = () => {
-    dispatch({ type: 'TOGGLE_ABBRUCH_MODAL', payload: true });
+    dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.DEBRIEFING });
   };
 
   const toggleItem = (label) => {
@@ -51,7 +50,7 @@ export default function ViewRosc() {
       <div className="flex-1 overflow-y-auto custom-scrollbar px-3 pt-3 pb-28 relative">
         <div className="flex gap-2 mb-3 shrink-0">
             <button onClick={handleReArrest} className="flex-1 bg-[#E3000F] text-white py-3 rounded-xl shadow-md font-black uppercase text-xs tracking-widest active:scale-95 flex flex-col items-center justify-center cursor-pointer hover:bg-red-700">RE-ARREST</button>
-            <button onClick={handleEnd} className="flex-1 bg-slate-800 text-white py-3 rounded-xl shadow-md font-black uppercase text-xs tracking-widest active:scale-95 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-700">EINSATZ ENDE</button>
+            <button onClick={handleEnd} className="flex-1 bg-slate-800 text-white py-3 rounded-xl shadow-md font-black uppercase text-xs tracking-widest active:scale-95 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-700">PROTOKOLL ABSCHLIESSEN</button>
         </div>
         <div className="flex gap-2 mb-3 shrink-0">
             <button onClick={() => dispatch({ type: 'TOGGLE_HITS_MODAL', payload: true })} className="flex-1 bg-white border border-slate-200 text-slate-700 py-2.5 rounded-xl shadow-sm font-bold uppercase text-[10px] tracking-widest active:scale-95 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-50"><i className="fa-solid fa-clipboard-list mb-1 text-slate-400"></i> SAMPLER / HITS</button>
