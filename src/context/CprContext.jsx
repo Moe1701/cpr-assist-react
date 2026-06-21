@@ -2,6 +2,7 @@
 import React, { createContext, useReducer, useEffect, useCallback } from 'react';
 import { cprReducer, initialState } from './cprReducer.js'; 
 
+// 1. Hier wird der Context exportiert (das fehlte Vercel!)
 export const CprContext = createContext();
 
 const loadState = () => {
@@ -36,6 +37,7 @@ const loadState = () => {
   }
 };
 
+// 2. Hier wird der Provider exportiert (das fehlte Vercel auch!)
 export function CprProvider({ children }) {
   const [state, dispatch] = useReducer(cprReducer, initialState, loadState);
 
