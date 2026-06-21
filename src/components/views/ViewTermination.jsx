@@ -11,6 +11,7 @@ export default function ViewTermination() {
   const handleRevoke = () => {
     logEvent("SYSTEM", "Abbruch widerrufen! CPR fortgesetzt.");
     dispatch({ type: 'SET_ABBRUCH_REASON', payload: null });
+    dispatch({ type: 'RESET_CYCLE' }); // <--- KRITISCHER FIX: 120s Loop beginnt von vorn!
     dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.RUNNING });
   };
 
