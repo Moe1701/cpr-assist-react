@@ -100,8 +100,11 @@ export function useMasterLoop() {
         
         const phase = stateRef.current.appPhase;
         
-        // 1. Absolute Einsatzzeit (Läuft immer)
-        dispatch({ type: 'TICK_MISSION' });
+        // 1. Absolute Einsatzzeit (Fix: Einfrieren bei Abbruch/Debriefing!)
+        const isEnded = [CPR_CONFIG.PHASES.TERMINATION, CPR_CONFIG.PHASES.DEBRIEFING].includes(phase);
+        if (!isEnded) {
+          dispatch({ type: 'TICK_MISSION' });
+        }
 
         // 2. Adrenalin-Timer (Läuft, falls aktiv)
         if (stateRef.current.adrSeconds > 0) {
