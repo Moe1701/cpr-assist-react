@@ -14,6 +14,7 @@ export const CPR_CONFIG = {
     AIRWAY_DOC: 'airway_doc',
     MEDS_MENU: 'meds_menu',
     ROSC: 'rosc',
+    TERMINATION: 'termination',
     DEBRIEFING: 'debriefing'
   },
   EVENTS: {
@@ -34,7 +35,8 @@ export const CHECKLISTS = {
     { cat: 'D', title: 'Disability (Neuro)', items: [{ label: 'Pupillen kontrollieren' }, { label: 'GCS ermitteln' }, { label: 'Analgosedierung sichern' }, { label: 'Blutzucker messen', sub: 'Ziel: 140 - 180 mg/dl' }] },
     { cat: 'E', title: 'Exposure & Environment', items: [{ label: 'Bodycheck', sub: 'Keine Diagnose durch die Hose!' }, { label: 'Temperaturmanagement', sub: 'Ziel: 36 °C (Fieber strikt meiden!)' }, { label: 'Ursachenforschung (HITS) re-evaluieren' }, { label: 'Zielklinik / CAC anmelden', sub: 'Vorab-Info über EKG & Status' }, { label: 'Angehörige informieren / betreuen' }] }
   ],
-  ABBRUCH_REASONS: [
+  OUTCOMES: [
+    { id: 'rosc', label: 'ROSC (Spontankreislauf)', icon: 'fa-heart-pulse', color: 'text-emerald-500' },
     { id: 'erfolglos', label: 'Erfolglose Reanimation', icon: 'fa-heart-crack', color: 'text-red-500' },
     { id: 'dnr', label: 'Patientenverfügung / DNR', icon: 'fa-file-signature', color: 'text-indigo-500' },
     { id: 'angehoerige', label: 'Wunsch der Angehörigen', icon: 'fa-users', color: 'text-amber-500' },
