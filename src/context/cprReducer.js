@@ -19,7 +19,7 @@ export const initialState = {
   isAirwayModalOpen: false, 
   isHitsModalOpen: false, 
   isLogModalOpen: false,
-  isAbbruchModalOpen: false, 
+  isOutcomeModalOpen: false, 
   abbruchReason: null,       
   
   missionSeconds: 0, 
@@ -84,12 +84,11 @@ export function cprReducer(state, action) {
     case 'TOGGLE_AIRWAY_MODAL': return { ...state, isAirwayModalOpen: action.payload }; 
     case 'TOGGLE_HITS_MODAL': return { ...state, isHitsModalOpen: action.payload }; 
     case 'TOGGLE_LOG_MODAL': return { ...state, isLogModalOpen: action.payload };
-    case 'TOGGLE_ABBRUCH_MODAL': return { ...state, isAbbruchModalOpen: action.payload };
+    case 'TOGGLE_OUTCOME_MODAL': return { ...state, isOutcomeModalOpen: action.payload };
     case 'SET_ABBRUCH_REASON': return { ...state, abbruchReason: action.payload };
     case 'TOGGLE_GRID': return { ...state, isGridVisible: !state.isGridVisible };
     case 'LOG_EVENT': return { ...state, events: [...state.events, action.payload] };
     
-    // SMART UNDO LOGIC
     case 'UNDO_LAST_EVENT': {
       if (state.events.length === 0) return state;
       const lastEvent = state.events[state.events.length - 1];
@@ -107,16 +106,8 @@ export function cprReducer(state, action) {
       return { ...state, events: newEvents, adrCount: newAdr, amioCount: newAmio, shockCount: newShock };
     }
 
-    // ROSC CLEANUP LOGIC
     case 'CLEANUP_RE_ARREST': 
-      return { 
-        ...state, 
-        roscSeconds: 0, 
-        roscChecklist: {}, 
-        isCompressing: false, 
-        appPhase: CPR_CONFIG.PHASES.RUNNING 
-      };
-
+      return { ...state, roscSeconds: 0, roscChecklist: {}, isCompressing: false, appPhase: CPR_CONFIG.PHASES.RUNNING };
     case 'TOGGLE_COMPRESSION': return { ...state, isCompressing: action.payload, pauseSeconds: action.payload ? 0 : state.pauseSeconds };
     case 'SET_COMPRESSION_COUNT': return { ...state, compressionCount: action.payload };
     case 'SET_VENTILATION_PHASE': return { ...state, isVentilationPhase: action.payload };
