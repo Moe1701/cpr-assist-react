@@ -123,7 +123,14 @@ export function cprReducer(state, action) {
     }
 
     case 'CLEANUP_RE_ARREST': 
-      return { ...state, roscSeconds: 0, roscChecklist: {}, isCompressing: false, appPhase: CPR_CONFIG.PHASES.RUNNING };
+      return { 
+        ...state, 
+        roscSeconds: 0, 
+        cycleSeconds: 0, // <--- KRITISCHER FIX: 120s Loop beginnt von vorn!
+        roscChecklist: {}, 
+        isCompressing: false, 
+        appPhase: CPR_CONFIG.PHASES.RUNNING 
+      };
     case 'TOGGLE_COMPRESSION': return { ...state, isCompressing: action.payload, pauseSeconds: action.payload ? 0 : state.pauseSeconds };
     case 'SET_COMPRESSION_COUNT': return { ...state, compressionCount: action.payload };
     case 'SET_VENTILATION_PHASE': return { ...state, isVentilationPhase: action.payload };
