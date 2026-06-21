@@ -83,10 +83,13 @@ export function useMasterLoop() {
     }, 1500);
   }, [dispatch, playVentSound]);
 
+  // ==============================================
+  // DER KORRIGIERTE MASTER-TIMER
+  // ==============================================
   useEffect(() => {
     let lastTick = Date.now();
     const masterTimer = setInterval(() => {
-      if (stateRef.current.appPhase === 'ONBOARDING') {
+      if (stateRef.current.appPhase === CPR_CONFIG.PHASES.ONBOARDING) {
         lastTick = Date.now();
         return;
       }
@@ -94,24 +97,52 @@ export function useMasterLoop() {
       const now = Date.now();
       if (now - lastTick >= 1000) {
         lastTick += 1000;
+        
+        const phase = stateRef.current.appPhase;
+        
+        // 1. Absolute Einsatzzeit (Läuft immer)
         dispatch({ type: 'TICK_MISSION' });
 
+        // 2. Adrenalin-Timer (Läuft, falls aktiv)
         if (stateRef.current.adrSeconds > 0) {
           dispatch({ type: 'TICK_ADR' });
         }
 
-        const isPastSetup = !['ONBOARDING', 'OB_INITIAL_BREATHS'].includes(stateRef.current.appPhase);
-        if (isPastSetup) {
-          dispatch({ type: 'TICK_CCF_ARREST' });
-          if (stateRef.current.isCompressing) dispatch({ type: 'TICK_CCF_COMPRESSING' });
-          else if (!stateRef.current.isVentilationPhase) dispatch({ type: 'TICK_PAUSE' });
+        // 3. ROSC Stabilisierungs-Timer (Läuft NUR im ROSC)
+        if (phase === CPR_CONFIG.PHASES.ROSC) {
+          dispatch({ type: 'TICK_ROSC' });
         }
-        if (stateRef.current.appPhase === CPR_CONFIG.PHASES.RUNNING) dispatch({ type: 'TICK_CYCLE' });
+
+        // 4. CPR Qualitäts-Messung & Pausen (Läuft NICHT in End-States)
+        const isResuscitating = ![
+          CPR_CONFIG.PHASES.ONBOARDING, 
+          CPR_CONFIG.PHASES.OB_INITIAL_BREATHS, 
+          CPR_CONFIG.PHASES.ROSC, 
+          CPR_CONFIG.PHASES.TERMINATION, 
+          CPR_CONFIG.PHASES.DEBRIEFING
+        ].includes(phase);
+
+        if (isResuscitating) {
+          dispatch({ type: 'TICK_CCF_ARREST' });
+          if (stateRef.current.isCompressing) {
+             dispatch({ type: 'TICK_CCF_COMPRESSING' });
+          } else if (!stateRef.current.isVentilationPhase) {
+             dispatch({ type: 'TICK_PAUSE' });
+          }
+        }
+
+        // 5. Rhythmusanalyse 120s Loop (Läuft nur im Haupt-Dashboard)
+        if (phase === CPR_CONFIG.PHASES.RUNNING) {
+          dispatch({ type: 'TICK_CYCLE' });
+        }
       }
     }, 100);
     return () => clearInterval(masterTimer);
   }, [dispatch]);
 
+  // ==============================================
+  // METRONOM SCHEDULER
+  // ==============================================
   useEffect(() => {
     if (!state.isCompressing) return;
 

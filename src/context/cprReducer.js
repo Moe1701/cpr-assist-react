@@ -89,6 +89,7 @@ export function cprReducer(state, action) {
     case 'TOGGLE_GRID': return { ...state, isGridVisible: !state.isGridVisible };
     case 'LOG_EVENT': return { ...state, events: [...state.events, action.payload] };
     
+    // --- SMART UNDO FÜR ALLGEMEINES LOGBUCH ---
     case 'UNDO_LAST_EVENT': {
       if (state.events.length === 0) return state;
       const lastEvent = state.events[state.events.length - 1];
@@ -97,13 +98,28 @@ export function cprReducer(state, action) {
       let newAdr = state.adrCount;
       let newAmio = state.amioCount;
       let newShock = state.shockCount;
+      let newAdrSecs = state.adrSeconds;
       
       const txt = lastEvent.fullEntry.toLowerCase();
-      if (txt.includes('adrenalin')) newAdr = Math.max(0, newAdr - 1);
+      if (txt.includes('adrenalin')) {
+        newAdr = Math.max(0, newAdr - 1);
+        newAdrSecs = 0; // Timer sofort killen
+      }
       if (txt.includes('amiodaron') || txt.includes('amio')) newAmio = Math.max(0, newAmio - 1);
       if (txt.includes('schock abgegeben')) newShock = Math.max(0, newShock - 1);
 
-      return { ...state, events: newEvents, adrCount: newAdr, amioCount: newAmio, shockCount: newShock };
+      return { ...state, events: newEvents, adrCount: newAdr, amioCount: newAmio, shockCount: newShock, adrSeconds: newAdrSecs };
+    }
+
+    // --- SMART UNDO SPEZIELL FÜR AMIODARON ---
+    case 'UNDO_AMIODARON': {
+      const reversedIndex = [...state.events].reverse().findIndex(e => e.fullEntry.toLowerCase().includes('amio'));
+      if (reversedIndex === -1) return state;
+
+      const actualIndex = state.events.length - 1 - reversedIndex;
+      const newEvents = state.events.filter((_, i) => i !== actualIndex);
+
+      return { ...state, events: newEvents, amioCount: Math.max(0, state.amioCount - 1) };
     }
 
     case 'CLEANUP_RE_ARREST': 
