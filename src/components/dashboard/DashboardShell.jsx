@@ -94,11 +94,77 @@ export default function DashboardShell() {
 
       {/* SATELLITEN ORBIT */}
       <div className="flex-1 relative w-full flex items-center justify-center z-30 overflow-visible">
-        <OrbitPosition x={0} y={0} zIndex={10}><CenterDisplay /></OrbitPosition>
+        <OrbitPosition x={0} y={0} zIndex={10}>
+          <CenterDisplay />
+        </OrbitPosition>
 
         {showSatellites && (
           <>
-            <OrbitPosition x={0} y={-163}><AdrenalinButton /></OrbitPosition>
-            <OrbitPosition x={141} y={-81.5}><AmiodaronButton /></OrbitPosition>
-            <OrbitPosition x={141} y={81.5}><SatelliteBtn icon="fa-clipboard-list" label="Hits Anamnese" colorClass="bg-white text-slate-600 border-slate-300" onClick={() => dispatch({ type: 'TOGGLE_HITS_MODAL', payload: true })} /></OrbitPosition>
-            <OrbitPosition x={0} y={163}><SatelliteBtn icon="fa-
+            <OrbitPosition x={0} y={-163}>
+              <AdrenalinButton />
+            </OrbitPosition>
+
+            <OrbitPosition x={141} y={-81.5}>
+              <AmiodaronButton />
+            </OrbitPosition>
+
+            <OrbitPosition x={141} y={81.5}>
+              <SatelliteBtn 
+                icon="fa-clipboard-list" 
+                label="Hits Anamnese" 
+                colorClass="bg-white text-slate-600 border-slate-300" 
+                onClick={() => dispatch({ type: 'TOGGLE_HITS_MODAL', payload: true })} 
+              />
+            </OrbitPosition>
+
+            <OrbitPosition x={0} y={163}>
+              <SatelliteBtn 
+                icon="fa-flag-checkered" 
+                label="ROSC / Abbruch" 
+                colorClass="bg-white text-slate-700 border-slate-300" 
+                onClick={() => dispatch({ type: 'TOGGLE_OUTCOME_MODAL', payload: true })} 
+              />
+            </OrbitPosition>
+
+            <OrbitPosition x={-141} y={81.5}>
+              <SatelliteBtn 
+                icon="fa-file-lines" 
+                label="Log" 
+                colorClass="bg-white text-slate-500 border-slate-300" 
+                onClick={() => dispatch({ type: 'TOGGLE_LOG_MODAL', payload: true })} 
+              />
+            </OrbitPosition>
+
+            <OrbitPosition x={-141} y={-81.5}>
+              <SatelliteBtn 
+                icon="fa-droplet" 
+                label={state.zugang || "Zugang"} 
+                colorClass={state.zugang ? "bg-cyan-50 border-cyan-400 text-cyan-600" : "bg-white text-slate-500 border-slate-300"} 
+                onClick={() => dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.ZUGANG })} 
+              />
+            </OrbitPosition>
+          </>
+        )}
+      </div>
+
+      {/* GRADIENT FOOTER */}
+      <div className="absolute bottom-0 w-full h-40 bg-gradient-to-t from-slate-200/90 to-transparent z-10 pointer-events-none"></div>
+
+      {/* FIXED BUTTONS (AIRWAY & CPR) */}
+      <div className={`shrink-0 w-full flex justify-between items-end px-5 pb-8 pt-2 z-50 transition-opacity duration-300 pointer-events-none ${!showBottomButtons ? 'opacity-0' : 'opacity-100'}`}>
+        <AirwayButton />
+        <CprButton toggleCpr={toggleCpr} />
+      </div>
+
+      {/* MODALS & FULLSCREEN VIEWS */}
+      {state.isPatientModalOpen && <PatientSetupModal />}
+      {state.isHitsModalOpen && <HitsModal />}
+      {state.isLogModalOpen && <ViewLogbook />}
+      
+      <OutcomeModal />
+      <ViewRosc />
+      <ViewTermination />
+      <ViewDebriefing />
+    </div>
+  );
+}
