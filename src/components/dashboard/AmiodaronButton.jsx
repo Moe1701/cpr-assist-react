@@ -9,7 +9,7 @@ export default function AmiodaronButton() {
   const handleUndo = (e) => {
     e.stopPropagation();
     if (window.confirm("Letztes Ereignis (Amiodaron) aus Protokoll löschen?")) {
-      dispatch({ type: 'UNDO_LAST_EVENT' });
+      dispatch({ type: 'UNDO_AMIODARON' });
     }
   };
 
@@ -36,8 +36,9 @@ export default function AmiodaronButton() {
     );
   }
 
-  const dose = state.isPediatric && state.patientWeight
-    ? `${Math.round(state.patientWeight * 5)} mg`
+  // KRITISCHER FIX: Sicherer Fallback für Kinder ohne Gewicht
+  const dose = state.isPediatric
+    ? (state.patientWeight ? `${Math.round(state.patientWeight * 5)} mg` : '?? mg (Gewicht!)')
     : (state.amioCount === 0 ? '300 mg' : '150 mg');
 
   const handleClick = () => {
@@ -45,15 +46,17 @@ export default function AmiodaronButton() {
     dispatch({ type: 'GIVE_AMIODARON' });
   };
 
+  const hasWeightWarning = dose.includes('??');
+
   return (
     <div className="relative pointer-events-auto w-[86px] h-[86px]">
       <button
         onClick={handleClick}
-        className="w-full h-full rounded-full shadow-sm border-[3px] flex flex-col items-center justify-center gap-1 active:scale-95 transition-all cursor-pointer bg-white border-purple-400 hover:bg-slate-50"
+        className={`w-full h-full rounded-full shadow-sm border-[3px] flex flex-col items-center justify-center gap-1 active:scale-95 transition-all cursor-pointer hover:bg-slate-50 ${hasWeightWarning ? 'bg-red-50 border-red-400 text-red-500' : 'bg-white border-purple-400 text-purple-600'}`}
       >
-        <i className="fa-solid fa-syringe text-[24px] mb-0.5 text-purple-600 pointer-events-none"></i>
-        <span className="text-[9px] font-black uppercase tracking-wider leading-none text-center px-1 text-purple-600 pointer-events-none">
-          Amio. {dose}
+        <i className="fa-solid fa-syringe text-[24px] mb-0.5 pointer-events-none"></i>
+        <span className="text-[9px] font-black uppercase tracking-wider leading-none text-center px-1 pointer-events-none">
+          Amio. {hasWeightWarning ? '?? mg' : dose}
         </span>
       </button>
 

@@ -3,26 +3,28 @@ import { formatTime, drawFooter } from './pdfHelpers.js';
 
 export const renderSbarPage = (doc, state, parsed, isSummary) => {
     let ageStr = state.isPediatric ? (state.patientWeight ? `Kind (${state.patientWeight} kg)` : 'Kind') : 'Erwachsener';
-    let adrTotal = state.adrCount > 0 ? ((state.isPediatric && state.patientWeight) ? (state.adrCount * Math.round(state.patientWeight * 10)) + " µg" : state.adrCount + " mg") : "0 mg";
-    let amioTotal = state.amioCount > 0 ? ((state.isPediatric && state.patientWeight) ? (state.amioCount * Math.round(state.patientWeight * 5)) + " mg" : (state.amioCount === 1 ? '300 mg' : '450 mg')) : "0 mg";
+    
+    // KRITISCHER FIX FÜR PDF EXPORT
+    let adrTotal = "0 mg";
+    if (state.adrCount > 0) adrTotal = state.isPediatric ? (state.patientWeight ? `${state.adrCount * Math.round(state.patientWeight * 10)} µg` : `${state.adrCount}x (Gewicht fehlt)`) : `${state.adrCount} mg`;
+    
+    let amioTotal = "0 mg";
+    if (state.amioCount > 0) amioTotal = state.isPediatric ? (state.patientWeight ? `${state.amioCount * Math.round(state.patientWeight * 5)} mg` : `${state.amioCount}x (Gewicht fehlt)`) : (state.amioCount === 1 ? '300 mg' : '450 mg');
     
     const aData = state.anamneseData;
     const activeHits = Object.entries(state.hitsStatus).filter(([_, isActive]) => isActive).map(([key]) => key);
     const samplerCount = Object.values(aData.sampler).filter(v => v !== '').length;
 
     doc.setFontSize(22); doc.setTextColor(15, 23, 42); doc.setFont("helvetica", "bold"); doc.text("REANIMATIONSPROTOKOLL", 15, 20);
-    // HIER WIRD DER TITEL DYNAMISCH ANGEPASST
     doc.setFontSize(10); doc.setTextColor(100, 116, 139); doc.setFont("helvetica", "normal"); doc.text(`MODUS: ${isSummary ? 'SCHOCKRAUM ÜBERGABE' : 'DEBRIEFING & AUDIT'}`, 15, 26);
     doc.text(`Datum: ${new Date().toLocaleDateString('de-DE')}`, 195, 20, {align: 'right'}); doc.text(`Einsatzbeginn: ${state.startTime || '--:--'} Uhr`, 195, 26, {align: 'right'});
     doc.setDrawColor(227, 0, 15); doc.setLineWidth(1); doc.line(15, 30, 195, 30);
   
-    // S - SITUATION
     let y = 40; doc.setFontSize(14); doc.setTextColor(227, 0, 15); doc.setFont("helvetica", "bold"); doc.text("S - SITUATION", 15, y); doc.setDrawColor(241, 245, 249); doc.setLineWidth(0.5); doc.line(15, y+2, 195, y+2); y+=8;
     doc.setFontSize(9); doc.setTextColor(100, 116, 139); doc.setFont("helvetica", "bold"); doc.text("PATIENT", 15, y); doc.text("GESAMTDAUER", 75, y); doc.text("AKTUELLER STATUS", 135, y);
     y+=6; doc.setFontSize(12); doc.setTextColor(15, 23, 42); doc.text(ageStr, 15, y); doc.text(`${formatTime(state.missionSeconds)} Min`, 75, y); 
     const lines = doc.splitTextToSize(parsed.endStatus.toUpperCase(), 60); doc.text(lines, 135, y);
   
-    // B - BACKGROUND
     y += 20; doc.setFontSize(14); doc.setTextColor(227, 0, 15); doc.setFont("helvetica", "bold"); doc.text("B - BACKGROUND (ANAMNESE)", 15, y); doc.setDrawColor(241, 245, 249); doc.setLineWidth(0.5); doc.line(15, y+2, 195, y+2); y+=8;
     doc.setFontSize(10); doc.setTextColor(100, 116, 139); doc.text("Beobachtet:", 15, y); doc.setTextColor(15, 23, 42); doc.text(aData.beobachtet || '?', 40, y);
     doc.setTextColor(100, 116, 139); doc.text("Laien-REA:", 75, y); doc.setTextColor(15, 23, 42); doc.text(aData.laienrea || '?', 100, y);
@@ -31,7 +33,6 @@ export const renderSbarPage = (doc, state, parsed, isSummary) => {
     if(samplerCount > 0) { Object.entries(aData.sampler).filter(([_,v])=>v).forEach(([k,v]) => { doc.text(`${k.toUpperCase()}: ${v}`, 15, y); y+=5; }); } 
     else { doc.text("Keine SAMPLER-Daten erfasst.", 15, y); y+=5; }
     
-    // A - ASSESSMENT
     y += 10; doc.setFontSize(14); doc.setTextColor(227, 0, 15); doc.setFont("helvetica", "bold"); doc.text("A - ASSESSMENT (DIAGNOSTIK)", 15, y); doc.setDrawColor(241, 245, 249); doc.setLineWidth(0.5); doc.line(15, y+2, 195, y+2); y+=8;
     doc.setFontSize(10); doc.setTextColor(100, 116, 139); doc.text("Reversible Ursachen (HITS):", 15, y); doc.text("CPR Qualität (CCF):", 135, y);
     y+=6; doc.setTextColor(15, 23, 42); doc.setFont("helvetica", "normal");
@@ -40,11 +41,10 @@ export const renderSbarPage = (doc, state, parsed, isSummary) => {
     doc.setFontSize(22); doc.setFont("helvetica", "bold"); doc.setTextColor(state.currentCcfPercent >= 80 ? 16 : 227, state.currentCcfPercent >= 80 ? 185 : 0, state.currentCcfPercent >= 80 ? 129 : 15); doc.text(`${state.currentCcfPercent || 100}%`, 135, y);
     doc.setFontSize(9); doc.setTextColor(100, 116, 139); doc.setFont("helvetica", "normal"); doc.text("Zielwert: > 80%", 135, y+5);
   
-    // R - RESPONSE
     y += 20; doc.setFontSize(14); doc.setTextColor(227, 0, 15); doc.setFont("helvetica", "bold"); doc.text("R - RESPONSE (MASSNAHMEN)", 15, y); doc.setDrawColor(241, 245, 249); doc.setLineWidth(0.5); doc.line(15, y+2, 195, y+2); y+=8;
     const dR = (l, v) => { doc.setFontSize(10); doc.setFont("helvetica", "bold"); doc.setTextColor(100, 116, 139); doc.text(l, 15, y); doc.setTextColor(15, 23, 42); doc.setFont("helvetica", "normal"); doc.text(`|  ${v}`, 60, y); y+=8; };
     dR("Atemweg", state.airwayType || 'Nicht dokumentiert'); dR("Zugang", state.zugang || 'Nicht dokumentiert');
-    dR("Defibrillationen", `${state.shockCount || 0}x Schocks abgegeben`); dR("Adrenalin", `Gesamt: ${adrTotal} (${state.adrCount} Gaben)`); dR("Amiodaron", `Gesamt: ${amioTotal} (${state.amioCount} Gaben)`);
+    dR("Defibrillationen", `${state.shockCount || 0}x Schocks abgegeben`); dR("Adrenalin", `Gesamt: ${adrTotal}`); dR("Amiodaron", `Gesamt: ${amioTotal}`);
     drawFooter(doc);
 };
 
