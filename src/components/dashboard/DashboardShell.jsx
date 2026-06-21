@@ -7,8 +7,10 @@ import CenterDisplay from '../CenterDisplay.jsx';
 import PatientSetupModal from '../PatientSetupModal.jsx'; 
 import HitsModal from '../views/HitsModal.jsx'; 
 import ViewLogbook from '../views/ViewLogbook.jsx'; 
+
+import OutcomeModal from '../views/OutcomeModal.jsx';
+import ViewTermination from '../views/ViewTermination.jsx';
 import ViewRosc from '../views/ViewRosc.jsx';
-import AbbruchModal from '../views/AbbruchModal.jsx';
 import ViewDebriefing from '../views/ViewDebriefing.jsx';
 
 import CprButton from './CprButton.jsx';  
@@ -19,7 +21,7 @@ import { usePatientLogic } from '../../hooks/usePatientLogic.js';
 import { useMasterLoop } from '../../hooks/useMasterLoop.js'; 
 
 export default function DashboardShell() {
-  const { state, dispatch, logEvent } = useContext(CprContext);
+  const { state, dispatch } = useContext(CprContext);
   const { toggleCprMode } = usePatientLogic();
   const { toggleCpr } = useMasterLoop(); 
 
@@ -49,14 +51,6 @@ export default function DashboardShell() {
   const showTopStats = !isSetup;
   const showSatellites = isRunning;
   const showBottomButtons = !isSetup; 
-
-  const handleRoscTrigger = () => {
-    dispatch({ type: 'RESET_ROSC_TIMER' });
-    dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.ROSC });
-    const m = Math.floor(state.missionSeconds / 60);
-    const s = state.missionSeconds % 60;
-    if (logEvent) logEvent('ROSC', `ROSC eingetreten nach ${m} Min ${s} Sek`);
-  };
 
   return (
     <div className="absolute inset-0 w-full h-full flex flex-col bg-slate-50 animate-in fade-in duration-500 overflow-hidden">
@@ -95,7 +89,7 @@ export default function DashboardShell() {
             <OrbitPosition x={0} y={-163}><AdrenalinButton /></OrbitPosition>
             <OrbitPosition x={141} y={-81.5}><AmiodaronButton /></OrbitPosition>
             <OrbitPosition x={141} y={81.5}><SatelliteBtn icon="fa-clipboard-list" label="Hits Anamnese" colorClass="bg-white text-slate-600 border-slate-300" onClick={() => dispatch({ type: 'TOGGLE_HITS_MODAL', payload: true })} /></OrbitPosition>
-            <OrbitPosition x={0} y={163}><SatelliteBtn icon="fa-flag-checkered" label="Ende ROSC" colorClass="bg-white text-slate-700 border-slate-300" onClick={handleRoscTrigger} /></OrbitPosition>
+            <OrbitPosition x={0} y={163}><SatelliteBtn icon="fa-flag-checkered" label="ROSC / Abbruch" colorClass="bg-white text-slate-700 border-slate-300" onClick={() => dispatch({ type: 'TOGGLE_OUTCOME_MODAL', payload: true })} /></OrbitPosition>
             <OrbitPosition x={-141} y={81.5}><SatelliteBtn icon="fa-file-lines" label="Log" colorClass="bg-white text-slate-500 border-slate-300" onClick={() => dispatch({ type: 'TOGGLE_LOG_MODAL', payload: true })} /></OrbitPosition>
             <OrbitPosition x={-141} y={-81.5}><SatelliteBtn icon="fa-droplet" label={state.zugang || "Zugang"} colorClass={state.zugang ? "bg-cyan-50 border-cyan-400 text-cyan-600" : "bg-white text-slate-500 border-slate-300"} onClick={() => dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.ZUGANG })} /></OrbitPosition>
           </>
@@ -113,8 +107,9 @@ export default function DashboardShell() {
       {state.isHitsModalOpen && <HitsModal />}
       {state.isLogModalOpen && <ViewLogbook />}
       
+      <OutcomeModal />
       <ViewRosc />
-      <AbbruchModal />
+      <ViewTermination />
       <ViewDebriefing />
     </div>
   );
