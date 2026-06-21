@@ -1,5 +1,5 @@
 // --- Datei: src/utils/pdf/pdfCanvasTimeline.js ---
-import { formatTime, formatRelative, drawSafeRoundRect, getIconData } from './pdfHelpers.js';
+import { formatTime, drawSafeRoundRect, getIconData } from './pdfHelpers.js';
 
 export const generateTimelinePages = (doc, data, pausesObj, maxSec) => {
     const cycleDuration = 240;
@@ -12,7 +12,7 @@ export const generateTimelinePages = (doc, data, pausesObj, maxSec) => {
         
         canvas.width = baseWidth * scale; canvas.height = baseHeight * scale; ctx.scale(scale, scale);
         ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, baseWidth, baseHeight);
-        ctx.fillStyle = '#64748b'; ctx.font = 'bold 20px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillStyle = '#1e293b'; ctx.font = 'bold 22px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
         ctx.fillText(`GRAFISCHES ZEITLINIEN-GRID (Seite ${p + 1})`, baseWidth / 2, 40);
         
         const paddingX = 80; const usableWidth = baseWidth - (paddingX * 2);
@@ -26,11 +26,17 @@ export const generateTimelinePages = (doc, data, pausesObj, maxSec) => {
             ctx.beginPath(); ctx.moveTo(paddingX, lineY); ctx.lineTo(baseWidth - paddingX, lineY);
             ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.stroke();
             
-            for (let t = 15; t < cycleDuration; t += 15) {
+            // X-Achse Ticks & Labels (Alle 60s Label)
+            for (let t = 0; t <= cycleDuration; t += 15) {
                 const tickSec = currentDrawSec + t; const xTick = paddingX + (t / cycleDuration) * usableWidth;
-                let tickH = (t % 60 === 0) ? 14 : 6;
+                let isMinute = (t % 60 === 0); let tickH = isMinute ? 18 : 8;
+                
                 ctx.beginPath(); ctx.moveTo(xTick, lineY - tickH/2); ctx.lineTo(xTick, lineY + tickH/2);
-                ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1.5; ctx.stroke();
+                ctx.strokeStyle = isMinute ? '#64748b' : '#94a3b8'; ctx.lineWidth = isMinute ? 2.5 : 1.5; ctx.stroke();
+
+                if (isMinute) {
+                    ctx.fillStyle = '#64748b'; ctx.font = 'bold 12px Arial'; ctx.fillText(formatTime(tickSec), xTick, lineY + 22);
+                }
             }
             
             pausesObj.forEach(ps => {
@@ -38,24 +44,23 @@ export const generateTimelinePages = (doc, data, pausesObj, maxSec) => {
                 if (pStart < pEnd) {
                     const xStart = paddingX + ((pStart - currentDrawSec) / cycleDuration) * usableWidth;
                     const pWidth = (paddingX + ((pEnd - currentDrawSec) / cycleDuration) * usableWidth) - xStart;
-                    ctx.fillStyle = '#ef4444'; ctx.fillRect(xStart, lineY - 5, pWidth, 10);
+                    ctx.fillStyle = '#ef4444'; ctx.fillRect(xStart, lineY - 6, pWidth, 12);
                 }
             });
             
-            const cycleEvents = data.filter(e => e.missionTime >= currentDrawSec && e.missionTime < cycleEndSec);
+            const cycleEvents = data.filter(e => e.missionTime >= currentDrawSec && e.missionTime <= cycleEndSec);
             cycleEvents.forEach((ev, index) => {
                 const iconData = getIconData(ev.fullEntry);
                 if (!iconData) return;
                 const x = paddingX + (((ev.missionTime - currentDrawSec) / cycleDuration) * usableWidth);
-                const yOff = [25, -25, 55, -55, 85, -85, 115, -115][index % 8];
-                const boxY = lineY + yOff - 13;
+                const yOff = [35, -35, 75, -75, 115, -115, 155, -155][index % 8];
+                const boxY = lineY + yOff - 15;
                 
-                ctx.beginPath(); ctx.moveTo(x, lineY); ctx.lineTo(x, lineY + yOff); ctx.strokeStyle = '#94a3b8'; ctx.stroke();
-                ctx.fillStyle = '#ffffff'; drawSafeRoundRect(ctx, x - 50, boxY, 100, 26, 6); ctx.fill();
-                ctx.fillStyle = '#334155'; ctx.font = 'bold 12px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-                ctx.fillText(`${iconData.icon}`, x, boxY + 13);
+                ctx.beginPath(); ctx.moveTo(x, lineY); ctx.lineTo(x, lineY + yOff); ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1.5; ctx.stroke();
+                ctx.fillStyle = '#f8fafc'; ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 2; drawSafeRoundRect(ctx, x - 25, boxY, 50, 30, 8); ctx.fill(); ctx.stroke();
+                ctx.fillStyle = iconData.isText ? '#E3000F' : '#1e293b'; ctx.font = 'bold 16px Arial'; ctx.fillText(`${iconData.icon}`, x, boxY + 15);
             });
         }
-        doc.addImage(canvas.toDataURL('image/jpeg', 0.8), 'JPEG', 10, 10, 277, 190, undefined, 'FAST');
+        doc.addImage(canvas.toDataURL('image/jpeg', 1.0), 'JPEG', 10, 10, 277, 190, undefined, 'FAST');
     }
 };
