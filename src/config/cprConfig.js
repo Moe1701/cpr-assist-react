@@ -1,43 +1,106 @@
-// --- Datei: src/config/cprConfig.js ---
-export const CPR_CONFIG = {
-  PHASES: {
-    ONBOARDING: 'onboarding',
-    OB_INITIAL_BREATHS: 'ob_initial_breaths',
-    OB_COMPRESSIONS: 'ob_compressions',
-    OB_ANALYZE: 'ob_analyze',
-    DECISION: 'decision',
-    JOULE: 'joule',
-    WAITING_CPR_RESUME: 'waiting_cpr_resume',
-    RUNNING: 'running',
-    ZUGANG: 'zugang',
-    AIRWAY_MENU: 'airway_menu',
-    AIRWAY_DOC: 'airway_doc',
-    MEDS_MENU: 'meds_menu',
-    ROSC: 'rosc',
-    DEBRIEFING: 'debriefing'
-  },
-  EVENTS: {
-    DRUG: 'Medikament',
-    SHOCK: 'Schock',
-    AIRWAY: 'Atemweg',
-    ACCESS: 'Zugang',
-    INFO: 'Info',
-    HITS: 'HITS'
+// --- Datei: src/context/CprContext.jsx ---
+import React, { createContext, useReducer, useEffect, useCallback } from 'react';
+import { cprReducer, initialState } from './cprReducer.js'; 
+
+export const CprContext = createContext();
+
+const loadState = () => {
+  try {
+    const saved = localStorage.getItem('cprAssist_db');
+    if (saved) {
+       const parsed = JSON.parse(saved);
+       parsed.isGridVisible = false;
+       parsed.isPatientModalOpen = false;
+       parsed.isHitsModalOpen = false; 
+       parsed.isLogModalOpen = false;
+       parsed.isAbbruchModalOpen = false;
+       
+       if (parsed.bpm === undefined) parsed.bpm = 110;
+       if (parsed.isMuted === undefined) parsed.isMuted = false;
+       if (parsed.shockCount === undefined) parsed.shockCount = 0;
+       if (parsed.lastJoule === undefined) parsed.lastJoule = null; 
+       if (parsed.airwayEstablished === undefined) parsed.airwayEstablished = false;
+       if (parsed.zugang === undefined) parsed.zugang = null;
+       if (parsed.adrSeconds === undefined) parsed.adrSeconds = 0;
+       if (parsed.adrCount === undefined) parsed.adrCount = 0;
+       if (parsed.amioCount === undefined) parsed.amioCount = 0; 
+       if (parsed.hitsStatus === undefined) parsed.hitsStatus = {}; 
+       if (parsed.anamneseData === undefined) parsed.anamneseData = initialState.anamneseData; 
+       if (parsed.roscChecklist === undefined) parsed.roscChecklist = {};
+       
+       return parsed;
+    }
+    return initialState;
+  } catch (e) {
+    return initialState;
   }
 };
 
-export const CHECKLISTS = {
-  ROSC_DATA: [
-    { cat: 'A', title: 'Airway', items: [{ label: 'Atemweg & Cuffdruck (20-30 cmH2O)' }, { label: 'Magensonde (Dekompressions)' }] },
-    { cat: 'B', title: 'Breathing', items: [{ label: 'Auskultation (Seitengleich?)' }, { label: 'Oxygenierung', sub: 'SpO2 Ziel: 94-98%' }, { label: 'Normoventilation', sub: 'etCO2 Ziel: 35-45 mmHg' }, { label: 'Oberkörper 30° hochlagern' }] },
-    { cat: 'C', title: 'Circulation', items: [{ label: '12-Kanal EKG', sub: 'Suche nach STEMI / Ischämie' }, { label: 'Blutdruck stabilisieren', sub: 'Ziel: MAP > 65 mmHg | syst > 100' }, { label: 'Rekap-Zeit prüfen (< 2 Sek.)' }, { label: 'Zugänge prüfen & Katecholamine' }] },
-    { cat: 'D', title: 'Disability (Neuro)', items: [{ label: 'Pupillen kontrollieren' }, { label: 'GCS ermitteln' }, { label: 'Analgosedierung sichern' }, { label: 'Blutzucker messen', sub: 'Ziel: 140 - 180 mg/dl' }] },
-    { cat: 'E', title: 'Exposure & Environment', items: [{ label: 'Bodycheck', sub: 'Keine Diagnose durch die Hose!' }, { label: 'Temperaturmanagement', sub: 'Ziel: 36 °C (Fieber strikt meiden!)' }, { label: 'Ursachenforschung (HITS) re-evaluieren' }, { label: 'Zielklinik / CAC anmelden', sub: 'Vorab-Info über EKG & Status' }, { label: 'Angehörige informieren / betreuen' }] }
-  ],
-  ABBRUCH_REASONS: [
-    { id: 'erfolglos', label: 'Erfolglose Reanimation', icon: 'fa-heart-crack', color: 'text-red-500' },
-    { id: 'dnr', label: 'Patientenverfügung / DNR', icon: 'fa-file-signature', color: 'text-indigo-500' },
-    { id: 'angehoerige', label: 'Wunsch der Angehörigen', icon: 'fa-users', color: 'text-amber-500' },
-    { id: 'todeszeichen', label: 'Sichere Todeszeichen', icon: 'fa-book-skull', color: 'text-slate-800' }
-  ]
-};
+export function CprProvider({ children }) {
+  const [state, dispatch] = useReducer(cprReducer, initialState, loadState);
+
+  useEffect(() => {
+    const stateToSave = {
+      appPhase: state.appPhase,
+      isPediatric: state.isPediatric,
+      patientWeight: state.patientWeight,
+      cprMode: state.cprMode,
+      bpm: state.bpm,                 
+      isMuted: state.isMuted,         
+      shockCount: state.shockCount,   
+      lastJoule: state.lastJoule,     
+      startTime: state.startTime,
+      missionSeconds: state.missionSeconds,
+      cprSeconds: state.cprSeconds,
+      cycleSeconds: state.cycleSeconds,
+      isCompressing: state.isCompressing,
+      airwayEstablished: state.airwayEstablished,
+      airwayType: state.airwayType,
+      airwaySize: state.airwaySize,   
+      airwayDepth: state.airwayDepth, 
+      zugang: state.zugang,           
+      adrSeconds: state.adrSeconds,
+      adrCount: state.adrCount,
+      amioCount: state.amioCount, 
+      hitsStatus: state.hitsStatus, 
+      anamneseData: state.anamneseData, 
+      roscChecklist: state.roscChecklist,
+      events: state.events,
+      reminders: state.reminders,
+      currentCcfPercent: state.currentCcfPercent,
+      compressingSeconds: state.compressingSeconds,
+      arrestSeconds: state.arrestSeconds
+    };
+    localStorage.setItem('cprAssist_db', JSON.stringify(stateToSave));
+  }, [state]);
+
+  const logEvent = useCallback((type, detail = "") => {
+    const now = new Date();
+    const realTimeStr = now.toLocaleTimeString('de-DE', { hour12: false });
+    
+    const formatMissionTime = (totalSeconds) => {
+      const m = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+      const s = (totalSeconds % 60).toString().padStart(2, '0');
+      return `${m}:${s}`;
+    };
+
+    const formattedEntry = `[${realTimeStr}] (${formatMissionTime(state.missionSeconds)}) ${type}: ${detail}`;
+
+    const newEvent = {
+      id: crypto.randomUUID(),
+      realTime: realTimeStr,
+      missionTime: state.missionSeconds,
+      type: type,
+      detail: detail,
+      fullEntry: formattedEntry
+    };
+    
+    dispatch({ type: 'LOG_EVENT', payload: newEvent });
+  }, [state.missionSeconds]);
+
+  return (
+    <CprContext.Provider value={{ state, dispatch, logEvent }}>
+      {children}
+    </CprContext.Provider>
+  );
+}
