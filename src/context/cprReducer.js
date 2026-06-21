@@ -88,7 +88,35 @@ export function cprReducer(state, action) {
     case 'SET_ABBRUCH_REASON': return { ...state, abbruchReason: action.payload };
     case 'TOGGLE_GRID': return { ...state, isGridVisible: !state.isGridVisible };
     case 'LOG_EVENT': return { ...state, events: [...state.events, action.payload] };
-    case 'UNDO_LAST_EVENT': return state.events.length === 0 ? state : { ...state, events: state.events.slice(0, -1) };
+    
+    // SMART UNDO LOGIC
+    case 'UNDO_LAST_EVENT': {
+      if (state.events.length === 0) return state;
+      const lastEvent = state.events[state.events.length - 1];
+      const newEvents = state.events.slice(0, -1);
+      
+      let newAdr = state.adrCount;
+      let newAmio = state.amioCount;
+      let newShock = state.shockCount;
+      
+      const txt = lastEvent.fullEntry.toLowerCase();
+      if (txt.includes('adrenalin')) newAdr = Math.max(0, newAdr - 1);
+      if (txt.includes('amiodaron') || txt.includes('amio')) newAmio = Math.max(0, newAmio - 1);
+      if (txt.includes('schock abgegeben')) newShock = Math.max(0, newShock - 1);
+
+      return { ...state, events: newEvents, adrCount: newAdr, amioCount: newAmio, shockCount: newShock };
+    }
+
+    // ROSC CLEANUP LOGIC
+    case 'CLEANUP_RE_ARREST': 
+      return { 
+        ...state, 
+        roscSeconds: 0, 
+        roscChecklist: {}, 
+        isCompressing: false, 
+        appPhase: CPR_CONFIG.PHASES.RUNNING 
+      };
+
     case 'TOGGLE_COMPRESSION': return { ...state, isCompressing: action.payload, pauseSeconds: action.payload ? 0 : state.pauseSeconds };
     case 'SET_COMPRESSION_COUNT': return { ...state, compressionCount: action.payload };
     case 'SET_VENTILATION_PHASE': return { ...state, isVentilationPhase: action.payload };
@@ -99,7 +127,6 @@ export function cprReducer(state, action) {
     case 'SET_ZUGANG': return { ...state, zugang: action.payload };
     case 'GIVE_ADRENALIN': return { ...state, adrCount: state.adrCount + 1, adrSeconds: 1 };
     case 'GIVE_AMIODARON': return { ...state, amioCount: state.amioCount + 1 };
-    case 'UNDO_AMIODARON': return { ...state, amioCount: Math.max(0, state.amioCount - 1) };
     case 'TOGGLE_HITS_ITEM': return { ...state, hitsStatus: { ...state.hitsStatus, [action.payload.id]: action.payload.value } };
     case 'SAVE_ANAMNESE': return { ...state, anamneseData: action.payload };
     case 'TOGGLE_ROSC_ITEM': return { ...state, roscChecklist: { ...state.roscChecklist, [action.payload]: !state.roscChecklist[action.payload] } };
