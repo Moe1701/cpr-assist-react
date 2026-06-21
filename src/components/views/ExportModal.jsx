@@ -5,7 +5,9 @@ import { generatePDFExport } from '../../utils/pdfExport.js';
 
 export default function ExportModal({ onClose }) {
   const { state } = useContext(CprContext);
-  const [exportType, setExportType] = useState('übergabe'); // 'übergabe' oder 'debriefing'
+  
+  // State ist strikt 'übergabe' oder 'debriefing'
+  const [exportType, setExportType] = useState('übergabe'); 
   const [isCopied, setIsCopied] = useState(false);
 
   const formatTime = (seconds) => {
@@ -25,18 +27,19 @@ export default function ExportModal({ onClose }) {
   };
 
   const handlePdfExport = () => {
+    // Gibt exakt 'übergabe' oder 'debriefing' an die Engine weiter
     generatePDFExport(state, exportType);
     onClose();
   };
 
   return (
-    // FIX: pointer-events-auto hinzugefügt, damit das Modal wieder klickbar wird!
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200 pointer-events-auto">
       
       <div className="bg-white w-[90%] max-w-[340px] rounded-3xl p-6 shadow-2xl flex flex-col items-center animate-in zoom-in-95 duration-200">
          <h2 className="text-lg font-black text-slate-800 tracking-wider mb-1">EXPORTIEREN</h2>
          <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-5">Protokoll-Umfang</span>
 
+         {/* DER TOGGLE SWITCH */}
          <div className="flex w-full bg-slate-100 p-1 rounded-xl mb-6">
             <button 
               onClick={() => setExportType('übergabe')}
