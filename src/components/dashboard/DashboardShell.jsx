@@ -34,7 +34,7 @@ const OrbitPosition = ({ x, y, children, zIndex = 20 }) => (
 );
 
 export default function DashboardShell() {
-  const { state, dispatch, logEvent } = useContext(CprContext);
+  const { state, dispatch } = useContext(CprContext);
   const { toggleCprMode } = usePatientLogic();
   const { toggleCpr } = useMasterLoop(); 
 
@@ -52,17 +52,10 @@ export default function DashboardShell() {
   const showSatellites = isRunning;
   const showBottomButtons = !isSetup; 
 
-  const handleRoscTrigger = () => {
-    dispatch({ type: 'RESET_ROSC_TIMER' });
-    dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.ROSC });
-    const m = Math.floor(state.missionSeconds / 60);
-    const s = state.missionSeconds % 60;
-    if (logEvent) logEvent('ROSC', `ROSC eingetreten nach ${m} Min ${s} Sek`);
-  };
-
   return (
     <div className="absolute inset-0 w-full h-full flex flex-col bg-slate-50 animate-in fade-in duration-500 overflow-hidden">
       
+      {/* HEADER STATS */}
       <div className={`flex items-stretch justify-between gap-2 px-3 py-2 shrink-0 z-40 relative transition-opacity duration-300 ${!showTopStats ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         <div className="bg-white rounded-[14px] px-3 py-2 shadow-sm border border-slate-200 flex-[0.85] flex flex-col justify-between">
           <div className="w-full mb-1">
@@ -90,6 +83,7 @@ export default function DashboardShell() {
         </div>
       </div>
 
+      {/* SATELLITEN ORBIT */}
       <div className="flex-1 relative w-full flex items-center justify-center z-30 overflow-visible">
         <OrbitPosition x={0} y={0} zIndex={10}>
           <CenterDisplay />
@@ -114,6 +108,7 @@ export default function DashboardShell() {
               />
             </OrbitPosition>
 
+            {/* FIX: Öffnet das OutcomeModal! */}
             <OrbitPosition x={0} y={163}>
               <SatelliteBtn 
                 icon="fa-flag-checkered" 
@@ -144,13 +139,16 @@ export default function DashboardShell() {
         )}
       </div>
 
+      {/* GRADIENT FOOTER */}
       <div className="absolute bottom-0 w-full h-40 bg-gradient-to-t from-slate-200/90 to-transparent z-10 pointer-events-none"></div>
 
+      {/* FIXED BUTTONS (AIRWAY & CPR) */}
       <div className={`shrink-0 w-full flex justify-between items-end px-5 pb-8 pt-2 z-50 transition-opacity duration-300 pointer-events-none ${!showBottomButtons ? 'opacity-0' : 'opacity-100'}`}>
         <AirwayButton />
         <CprButton toggleCpr={toggleCpr} />
       </div>
 
+      {/* MODALS & FULLSCREEN VIEWS */}
       {state.isPatientModalOpen && <PatientSetupModal />}
       {state.isHitsModalOpen && <HitsModal />}
       {state.isLogModalOpen && <ViewLogbook />}
