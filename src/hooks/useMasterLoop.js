@@ -74,9 +74,21 @@ export function useMasterLoop() {
     setTimeout(() => {
       playVentSound();
       setTimeout(() => {
-        const validPhases = [CPR_CONFIG.PHASES.RUNNING, CPR_CONFIG.PHASES.OB_ANALYZE, CPR_CONFIG.PHASES.DECISION, CPR_CONFIG.PHASES.JOULE, CPR_CONFIG.PHASES.WAITING_CPR_RESUME];
-        if (validPhases.includes(stateRef.current.appPhase)) {
-           dispatch({ type: 'SET_VENTILATION_PHASE', payload: false });
+        // FIX 1: IMMER die Beatmungsphase (blaues UI) beenden, egal wo der User ist!
+        dispatch({ type: 'SET_VENTILATION_PHASE', payload: false });
+
+        // FIX 2: Das Metronom NUR DANN automatisch fortsetzen, wenn wir im echten 
+        // CPR-Betrieb sind (Dashboard oder Dokumentations-Overlays).
+        // Während Analyse (DECISION) oder Schockabgabe (JOULE) darf es NICHT starten!
+        const activePhases = [
+          CPR_CONFIG.PHASES.RUNNING, 
+          CPR_CONFIG.PHASES.ZUGANG, 
+          CPR_CONFIG.PHASES.AIRWAY_MENU, 
+          CPR_CONFIG.PHASES.AIRWAY_DOC, 
+          CPR_CONFIG.PHASES.MEDS_MENU
+        ];
+        
+        if (activePhases.includes(stateRef.current.appPhase)) {
            dispatch({ type: 'TOGGLE_COMPRESSION', payload: true });
         }
       }, 1500);
@@ -84,7 +96,7 @@ export function useMasterLoop() {
   }, [dispatch, playVentSound]);
 
   // ==============================================
-  // DER KORRIGIERTE MASTER-TIMER
+  // DER MASTER-TIMER
   // ==============================================
   useEffect(() => {
     let lastTick = Date.now();
@@ -100,23 +112,19 @@ export function useMasterLoop() {
         
         const phase = stateRef.current.appPhase;
         
-        // 1. Absolute Einsatzzeit (Fix: Einfrieren bei Abbruch/Debriefing!)
         const isEnded = [CPR_CONFIG.PHASES.TERMINATION, CPR_CONFIG.PHASES.DEBRIEFING].includes(phase);
         if (!isEnded) {
           dispatch({ type: 'TICK_MISSION' });
         }
 
-        // 2. Adrenalin-Timer (Läuft, falls aktiv)
         if (stateRef.current.adrSeconds > 0) {
           dispatch({ type: 'TICK_ADR' });
         }
 
-        // 3. ROSC Stabilisierungs-Timer (Läuft NUR im ROSC)
         if (phase === CPR_CONFIG.PHASES.ROSC) {
           dispatch({ type: 'TICK_ROSC' });
         }
 
-        // 4. CPR Qualitäts-Messung & Pausen (Läuft NICHT in End-States)
         const isResuscitating = ![
           CPR_CONFIG.PHASES.ONBOARDING, 
           CPR_CONFIG.PHASES.OB_INITIAL_BREATHS, 
@@ -134,7 +142,6 @@ export function useMasterLoop() {
           }
         }
 
-        // 5. Rhythmusanalyse 120s Loop (Läuft nur im Haupt-Dashboard)
         if (phase === CPR_CONFIG.PHASES.RUNNING) {
           dispatch({ type: 'TICK_CYCLE' });
         }
