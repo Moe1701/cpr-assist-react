@@ -34,7 +34,6 @@ const playAdrAlarm = (isMuted) => {
 export default function AdrenalinButton() {
   const { state, dispatch, logEvent } = useContext(CprContext);
 
-  // KRITISCHER FIX: Eiserne Trennung zwischen Kind und Erwachsenen
   const dose = state.isPediatric 
     ? (state.patientWeight ? `${Math.round(state.patientWeight * 10)} µg` : '?? µg (Gewicht!)')
     : '1 mg';
@@ -64,8 +63,8 @@ export default function AdrenalinButton() {
     return `${m}:${s}`;
   };
 
-  const strokeWidth = 5;
-  const radius = 43 - strokeWidth / 2;
+  const strokeWidth = 4;
+  const radius = 38 - strokeWidth / 2; // = 36
   const circumference = 2 * Math.PI * radius;
   const progress = isActive ? state.adrSeconds / 240 : 0;
   const strokeDasharray = `${circumference * progress} ${circumference}`;
@@ -73,31 +72,31 @@ export default function AdrenalinButton() {
   const hasWeightWarning = dose.includes('??');
 
   return (
-    <div className="relative pointer-events-auto w-[86px] h-[86px]">
+    <div className="relative pointer-events-auto w-[76px] h-[76px]">
       <button
         onClick={handleClick}
         className={`w-full h-full rounded-full shadow-sm border-[3px] flex flex-col items-center justify-center gap-1 active:scale-95 transition-all overflow-hidden relative cursor-pointer ${isActive ? 'bg-white border-slate-100' : 'bg-white border-emerald-400 hover:bg-slate-50'}`}
       >
         {isActive && (
-          <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 86 86">
-            <circle cx="43" cy="43" r={radius} fill="none" stroke="#f1f5f9" strokeWidth={strokeWidth} transform="rotate(-90 43 43)" />
+          <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 76 76">
+            <circle cx="38" cy="38" r={radius} fill="none" stroke="#f1f5f9" strokeWidth={strokeWidth} transform="rotate(-90 38 38)" />
             <circle
-              cx="43" cy="43" r={radius} fill="none" stroke="#E3000F" strokeWidth={strokeWidth}
-              strokeDasharray={strokeDasharray} strokeLinecap="round" transform="rotate(-90 43 43)"
+              cx="38" cy="38" r={radius} fill="none" stroke="#E3000F" strokeWidth={strokeWidth}
+              strokeDasharray={strokeDasharray} strokeLinecap="round" transform="rotate(-90 38 38)"
               className="transition-all duration-1000 ease-linear"
             />
           </svg>
         )}
 
         <div className={`absolute inset-0 flex flex-col items-center justify-center w-full h-full transition-opacity duration-200 pointer-events-none ${isActive ? 'opacity-0' : 'opacity-100'}`}>
-          <i className={`fa-solid fa-syringe text-[24px] mb-0.5 ${hasWeightWarning ? 'text-red-500' : 'text-emerald-600'}`}></i>
-          <span className={`text-[9px] font-black uppercase tracking-wider leading-none text-center px-1 ${hasWeightWarning ? 'text-red-500' : 'text-emerald-600'}`}>
+          <i className={`fa-solid fa-syringe text-[22px] mb-0.5 ${hasWeightWarning ? 'text-red-500' : 'text-emerald-600'}`}></i>
+          <span className={`text-[8px] font-black uppercase tracking-wider leading-none text-center px-1 ${hasWeightWarning ? 'text-red-500' : 'text-emerald-600'}`}>
             {hasWeightWarning ? '?? µg' : dose}
           </span>
         </div>
 
         {isActive && (
-          <div className={`absolute inset-0 flex items-center justify-center w-full h-full z-30 rounded-full bg-white/60 backdrop-blur-[1px] text-[18px] font-black tracking-tighter pointer-events-none ${isWarning ? 'text-[#E3000F] animate-pulse' : 'text-slate-700'}`}>
+          <div className={`absolute inset-0 flex items-center justify-center w-full h-full z-30 rounded-full bg-white/60 backdrop-blur-[1px] text-[16px] font-black tracking-tighter pointer-events-none ${isWarning ? 'text-[#E3000F] animate-pulse' : 'text-slate-700'}`}>
             {formatTime(remaining)}
           </div>
         )}

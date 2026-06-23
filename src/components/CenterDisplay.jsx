@@ -15,10 +15,14 @@ import ViewMedsMenu from './views/ViewMedsMenu.jsx';
 export default function CenterDisplay() {
   
   const { 
-    state, circleSize, formatCprTime, handleManualAnalyze, 
+    state, formatCprTime, handleManualAnalyze, 
     remaining, ringColor, warningText, textColor, isPulsing, isEscalated,
     radius, strokeDasharray, strokeWidth, displayJoule 
   } = useCenterEngine();
+
+  // WICHTIG: Die Layout-Werte für Vanilla-Proportionen
+  const isSmallCircle = state.appPhase === CPR_CONFIG.PHASES.RUNNING;
+  const circleSize = isSmallCircle ? '224px' : '330px';
 
   const renderPhase = () => {
     switch (state.appPhase) {
@@ -43,7 +47,7 @@ export default function CenterDisplay() {
               />
             </svg>
             
-            <div className={`text-[66px] font-black tracking-tighter leading-none font-mono z-10 transition-colors duration-500 ${isEscalated ? 'text-[#E3000F]' : 'text-[#1e293b]'}`}>
+            <div className={`text-[72px] font-black tracking-tighter leading-none font-mono z-10 transition-colors duration-500 ${isEscalated ? 'text-[#E3000F]' : 'text-[#1e293b]'}`}>
                {formatCprTime(remaining)}
             </div>
 
@@ -76,8 +80,8 @@ export default function CenterDisplay() {
       case CPR_CONFIG.PHASES.DECISION: return <ViewDecision />;
       case CPR_CONFIG.PHASES.JOULE: return <ViewJoule />;
       case CPR_CONFIG.PHASES.WAITING_CPR_RESUME: return <ViewCprResume />;
-      case CPR_CONFIG.PHASES.ZUGANG: return <ViewZugang />; // <--- NEU
-      case CPR_CONFIG.PHASES.MEDS_MENU: return <ViewMedsMenu />; // <--- NEU HINZUFÜGEN
+      case CPR_CONFIG.PHASES.ZUGANG: return <ViewZugang />;
+      case CPR_CONFIG.PHASES.MEDS_MENU: return <ViewMedsMenu />;
       default: return <PatientSelection />;
     }
   };

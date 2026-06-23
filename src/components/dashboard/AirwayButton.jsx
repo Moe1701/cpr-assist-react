@@ -12,7 +12,7 @@ export default function AirwayButton() {
   } = useAirwayEngine();
 
   return (
-    <div className="relative pointer-events-auto z-50 w-[100px] h-[100px]">
+    <div className="relative pointer-events-auto z-50 w-[85px] h-[85px]">
       
       {/* 1. WEISSER BASIS-HINTERGRUND */}
       <div className={`absolute inset-0 rounded-full bg-white border-[3px] transition-colors ${btnClass}`}></div>
@@ -27,16 +27,16 @@ export default function AirwayButton() {
       {/* 3. DER KLICKBARE BUTTON (Text & Icon) */}
       <button 
         onClick={handleClick} 
-        className="absolute inset-0 w-full h-full rounded-full flex flex-col items-center justify-center pt-1 pb-0 active:scale-95 transition-transform z-20 bg-transparent"
+        className="absolute inset-0 w-full h-full rounded-full flex flex-col items-center justify-center pt-1 pb-0 active:scale-95 transition-transform z-20 bg-transparent cursor-pointer"
       >
         <div className="flex flex-col items-center justify-center pointer-events-none w-full px-1">
-          <i ref={iconRef} className={`fa-solid ${icon} text-[28px] mb-0.5 transition-colors ${iconClass}`}></i>
+          {/* Beachte: useAirwayEngine liefert die iconClass, in der text-[28px] steht! */}
+          <i ref={iconRef} className={`fa-solid ${icon} mb-0.5 transition-colors ${iconClass}`}></i>
           
           <span ref={textRef} className={`text-[9px] font-black uppercase tracking-wider leading-tight text-center transition-colors ${textClass}`}>
             {labelTop}
           </span>
           
-          {/* Die farbige Pill / Box für die 2. Textzeile */}
           {labelBottom && (
             <span className={`text-[8px] font-black uppercase tracking-wider leading-none text-center px-1.5 py-0.5 mt-0.5 rounded-sm ${isPill ? (staticBadge?.bg === 'bg-[#E3000F]' ? 'bg-[#E3000F] text-white' : 'bg-amber-500 text-white') : ''}`}>
               {labelBottom}
@@ -45,14 +45,14 @@ export default function AirwayButton() {
         </div>
       </button>
 
-      {/* 4. DYNAMISCHER COUNTDOWN BADGE (Jetzt identisch mit dem CPR-Badge) */}
+      {/* 4. DYNAMISCHER COUNTDOWN BADGE */}
       <div 
         ref={badgeRef} 
         className="absolute -top-1 -right-1 w-[28px] h-[28px] text-[12px] font-black bg-slate-700 text-white rounded-full flex items-center justify-center shadow-md border-[2px] border-white pointer-events-none z-30"
         style={{ opacity: 0, display: 'none' }}
       ></div>
       
-      {/* 5. DAS STATISCHE AUSRUFEZEICHEN (Gelb oder Rot) */}
+      {/* 5. DAS STATISCHE AUSRUFEZEICHEN */}
       {staticBadge && !state.airwayEstablished && (
         <div 
           ref={escalationBadgeRef} 

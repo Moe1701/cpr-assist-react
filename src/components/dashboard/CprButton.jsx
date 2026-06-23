@@ -1,3 +1,4 @@
+// --- Datei: src/components/dashboard/CprButton.jsx ---
 import React, { useContext, useEffect, useState } from 'react';
 import { CprContext } from '../../context/CprContext.jsx';
 
@@ -5,13 +6,9 @@ export default function CprButton({ toggleCpr }) {
   const { state } = useContext(CprContext);
   const [isFlashing, setIsFlashing] = useState(false);
 
-  // ==========================================
-  // DAS VISUELLE METRONOM (Der Flash-Effekt)
-  // ==========================================
   useEffect(() => {
     if (state?.isCompressing && state?.compressionCount > 0) {
       setIsFlashing(true);
-      // Nach 150ms wird der Button automatisch wieder weiß (exakt wie im alten JS-Code)
       const timer = setTimeout(() => setIsFlashing(false), 150); 
       return () => clearTimeout(timer);
     }
@@ -28,9 +25,9 @@ export default function CprButton({ toggleCpr }) {
       <div className="relative pointer-events-auto">
         <button
           onClick={toggleCpr} 
-          className="w-[100px] h-[100px] rounded-full border-2 flex flex-col items-center justify-center gap-1.5 transition-all bg-cyan-500 text-white border-cyan-400 shadow-[0_0_30px_rgba(6,182,212,0.6)] active:scale-95"
+          className="w-[85px] h-[85px] rounded-full border-2 flex flex-col items-center justify-center gap-1.5 transition-all bg-cyan-500 text-white border-cyan-400 shadow-[0_0_30px_rgba(6,182,212,0.6)] active:scale-95 cursor-pointer"
         >
-          <i className="fa-solid fa-lungs text-[32px] animate-pulse"></i>
+          <i className="fa-solid fa-lungs text-[28px] animate-pulse"></i>
           <span className="text-[10px] font-black uppercase tracking-widest leading-none text-center px-1">Beatmen</span>
         </button>
       </div>
@@ -44,7 +41,6 @@ export default function CprButton({ toggleCpr }) {
     const isWarning = pauseSecs >= 5 && pauseSecs < 10;
     const isCritical = pauseSecs >= 10;
 
-    // ORIGINAL-LAYOUT FÜR DIE PAUSE: Weißer Button, grünes Icon
     let btnClass = "bg-white border-slate-100 shadow-[0_10px_25px_rgba(0,0,0,0.05)] text-slate-600";
     let iconClass = "text-emerald-500"; 
     let badgeClass = "bg-slate-700 text-white border-slate-100";
@@ -63,9 +59,9 @@ export default function CprButton({ toggleCpr }) {
       <div className="relative pointer-events-auto">
         <button
           onClick={toggleCpr}
-          className={`w-[100px] h-[100px] rounded-full border-2 flex flex-col items-center justify-center gap-1.5 transition-all active:scale-95 ${btnClass}`}
+          className={`w-[85px] h-[85px] rounded-full border-2 flex flex-col items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer ${btnClass}`}
         >
-          <i className={`fa-solid fa-play text-[32px] ${iconClass}`}></i>
+          <i className={`fa-solid fa-play text-[28px] ${iconClass}`}></i>
           <span className="text-[10px] font-black uppercase tracking-widest leading-none text-center px-1">CPR Fortsetzen</span>
         </button>
         
@@ -82,7 +78,6 @@ export default function CprButton({ toggleCpr }) {
   // STATE 3: LÄUFT (Der Metronom-Modus)
   // ==========================================
   
-  // Wenn das Metronom "tickt", legen wir blitzschnell den roten Flash über den Button
   const flashClass = isFlashing 
     ? "bg-red-50 border-red-500 shadow-[0_0_50px_rgba(227,0,15,0.85)]" 
     : "bg-white border-slate-100 shadow-[0_10px_25px_rgba(0,0,0,0.05)]";
@@ -91,13 +86,12 @@ export default function CprButton({ toggleCpr }) {
     <div className="relative pointer-events-auto">
       <button
         onClick={toggleCpr}
-        className={`w-[100px] h-[100px] rounded-full border-2 flex flex-col items-center justify-center gap-1.5 transition-all active:scale-95 text-slate-600 ${flashClass}`}
+        className={`w-[85px] h-[85px] rounded-full border-2 flex flex-col items-center justify-center gap-1.5 transition-all active:scale-95 text-slate-600 cursor-pointer ${flashClass}`}
       >
-        <i className="fa-solid fa-pause text-[32px] text-slate-400"></i>
+        <i className="fa-solid fa-pause text-[28px] text-slate-400"></i>
         <span className="text-[10px] font-black uppercase tracking-widest leading-none text-center px-1">CPR Pausieren</span>
       </button>
       
-      {/* Das sichtbare Zahl-Badge (erscheint nur im 15:2 oder 30:2 Modus) */}
       {state.cprMode !== 'continuous' && state.compressionCount > 0 && (
         <div className="absolute -top-1 -right-1 w-[28px] h-[28px] text-[12px] font-black bg-slate-700 text-white rounded-full flex items-center justify-center shadow-md border-[2px] border-white z-10">
           {state.compressionCount}

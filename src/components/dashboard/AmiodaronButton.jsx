@@ -15,13 +15,13 @@ export default function AmiodaronButton() {
 
   if (state.amioCount >= 2) {
     return (
-      <div className="relative pointer-events-auto w-[86px] h-[86px]">
+      <div className="relative pointer-events-auto w-[76px] h-[76px]">
         <button 
           onClick={() => dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.MEDS_MENU })} 
           className="w-full h-full rounded-full shadow-sm border-[3px] flex flex-col items-center justify-center gap-1 hover:bg-slate-50 active:scale-95 transition-all cursor-pointer bg-white text-indigo-600 border-indigo-400"
         >
-          <i className="fa-solid fa-suitcase-medical text-[24px] mb-0.5 pointer-events-none"></i>
-          <span className="text-[9px] font-black uppercase tracking-wider leading-none text-center px-1 pointer-events-none">
+          <i className="fa-solid fa-suitcase-medical text-[22px] mb-0.5 pointer-events-none"></i>
+          <span className="text-[8px] font-black uppercase tracking-wider leading-none text-center px-1 pointer-events-none">
             Weitere Meds
           </span>
         </button>
@@ -36,7 +36,6 @@ export default function AmiodaronButton() {
     );
   }
 
-  // KRITISCHER FIX: Sicherer Fallback für Kinder ohne Gewicht
   const dose = state.isPediatric
     ? (state.patientWeight ? `${Math.round(state.patientWeight * 5)} mg` : '?? mg (Gewicht!)')
     : (state.amioCount === 0 ? '300 mg' : '150 mg');
@@ -49,13 +48,13 @@ export default function AmiodaronButton() {
   const hasWeightWarning = dose.includes('??');
 
   return (
-    <div className="relative pointer-events-auto w-[86px] h-[86px]">
+    <div className="relative pointer-events-auto w-[76px] h-[76px]">
       <button
         onClick={handleClick}
         className={`w-full h-full rounded-full shadow-sm border-[3px] flex flex-col items-center justify-center gap-1 active:scale-95 transition-all cursor-pointer hover:bg-slate-50 ${hasWeightWarning ? 'bg-red-50 border-red-400 text-red-500' : 'bg-white border-purple-400 text-purple-600'}`}
       >
-        <i className="fa-solid fa-syringe text-[24px] mb-0.5 pointer-events-none"></i>
-        <span className="text-[9px] font-black uppercase tracking-wider leading-none text-center px-1 pointer-events-none">
+        <i className="fa-solid fa-syringe text-[22px] mb-0.5 pointer-events-none"></i>
+        <span className="text-[8px] font-black uppercase tracking-wider leading-none text-center px-1 pointer-events-none">
           Amio. {hasWeightWarning ? '?? mg' : dose}
         </span>
       </button>

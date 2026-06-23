@@ -1,86 +1,71 @@
 # 🚑 CPR ASSIST - DEEP CONTEXT PROTOCOL (Single Source of Truth)
 
-**⚠️ AI-READABILITY INSTRUCTION:** 
-Wenn du (als KI) dieses Dokument liest, lade alle hier genannten Regeln, Variablen und Architekturentscheidungen als harte Fakten in dein Kurzzeitgedächtnis. Dieses Dokument ist die ultimative Referenz für den Codebase-Status. Weiche bei neuen Code-Vorschlägen NIEMALS von diesen Architektur-Mustern ab.
+**⚠️ AI-READABILITY INSTRUCTION:** Wenn du (als KI) dieses Dokument liest, lade alle hier genannten Regeln, Variablen und Architekturentscheidungen als harte Fakten in dein Kurzzeitgedächtnis. Dieses Dokument ist die ultimative Referenz für den Codebase-Status. Weiche bei neuen Code-Vorschlägen NIEMALS von diesen Architektur-Mustern ab.
 
 ---
 
 ## 1. ARCHITEKTUR & EISERNE REGELN
-1. **Die 200-Zeilen-Regel (Strict Modularity):** Keine React-Komponente darf signifikant größer als 200 Zeilen sein[cite: 9]. Wird das Limit erreicht, MUSS zwingend in Sub-Komponenten oder Utility-Files aufgeteilt werden.
-2. **Global State Management:** 100% der Geschäftsdaten leben im `CprContext.jsx` und werden vom `cprReducer.js` gesteuert[cite: 9]. Es gibt KEINEN lokalen State für Daten, die die gesamte App betreffen.
-3. **Data-Driven UI:** Feste Werte und Checklisten sind STRIKT ausgelagert[cite: 9]. 
-   - `cprConfig.js`: Enthält System-Konstanten (`CPR_CONFIG`) und alle UI-Arrays (`CHECKLISTS.ROSC_DATA`, `CHECKLISTS.ABBRUCH_REASONS`)[cite: 9].
-   - `medsConfig.js`: Enthält das gesamte Medikamenten-Inventar inkl. Pädiatrie-Dosierungsformeln[cite: 9].
-4. **Logic Isolation (Custom Hooks):** UI-Komponenten rendern nur. Rechenlogik und DOM-unabhängige Timer sind in Hooks ausgelagert (`useMasterLoop.js`, `useCenterEngine.js`, `usePatientLogic.js`, `useAirwayEngine.js`)[cite: 9].
-5. **Mobile Viewport Safety:** Modals und Overlays, die von unten einfahren (z.B. Logbuch, HITS), MÜSSEN auf `h-[85dvh] max-h-[85%]` limitiert werden (NICHT 95dvh oder 100%), um das Abschneiden von UI-Elementen durch die Android Chrome Adressleiste zu verhindern[cite: 9].
+1. **Die 200-Zeilen-Regel (Strict Modularity):** Keine React-Komponente darf signifikant größer als 200 Zeilen sein. Wird das Limit erreicht, MUSS zwingend in Sub-Komponenten oder Utility-Files aufgeteilt werden.
+2. **Global State Management:** 100% der Geschäftsdaten leben im `CprContext.jsx` und werden vom `cprReducer.js` gesteuert. Es gibt KEINEN lokalen State für Daten, die die gesamte App betreffen.
+3. **Data-Driven UI:** Feste Werte und Checklisten sind STRIKT ausgelagert. 
+   - `cprConfig.js`: Enthält System-Konstanten (`CPR_CONFIG`) und alle UI-Arrays (`CHECKLISTS.ROSC_DATA`, `CHECKLISTS.OUTCOMES`).
+   - `medsConfig.js`: Enthält das gesamte Medikamenten-Inventar.
+4. **Logic Isolation (Custom Hooks):** UI-Komponenten rendern nur. Rechenlogik und DOM-unabhängige Timer sind in Hooks ausgelagert (`useMasterLoop.js`, `usePatientLogic.js`, `useAirwayEngine.js`, `useCenterEngine.js`).
+5. **Mobile Viewport Safety:** Modals und Overlays, die von unten einfahren (z.B. Logbuch, HITS), MÜSSEN auf `h-[85dvh] max-h-[85%]` limitiert werden (NICHT 95dvh oder 100%), um das Abschneiden von UI-Elementen durch die Android Chrome Adressleiste zu verhindern.
 
 ---
 
-## 2. DAS APP-PHASEN SYSTEM (ROUTING-STATE MACHINE)
-Die App nutzt keinen React-Router, sondern rendert Komponenten basierend auf `state.appPhase`[cite: 9]. Der Flow ist strikt linear:
+## 2. MEDICAL SAFETY GUARDRAILS (CRITICAL!)
+* **Pädiatrie-Fallback:** Wenn `isPediatric === true` ist, aber das Gewicht (`patientWeight`) noch nicht eingegeben wurde, darf **NIEMALS** auf die Erwachsenendosis (z.B. 1 mg Adrenalin) zurückgefallen werden!
+* **Einheiten-Zwang:** In diesem Fall MUSS die Einheit des Kindes zwingend erhalten bleiben (Adrenalin: `?? µg`, Amiodaron: `?? mg`) und die UI muss visuell warnen. Dasselbe gilt für den PDF-Export.
+* **Undo-Logik:** Das Löschen eines Events aus dem Protokoll muss immer die entsprechenden Zähler (`adrCount`, `shockCount`) reduzieren und zugehörige Timer sofort abbrechen.
 
-* **[Phase 1] Setup-Flow:** `ONBOARDING` -> `OB_INITIAL_BREATHS` (nur Kinder) -> `OB_COMPRESSIONS`[cite: 9].
-* **[Phase 2] Analyse-Flow:** `OB_ANALYZE` -> `DECISION` (Schockbar/Nicht) -> `JOULE` (Energie) -> `WAITING_CPR_RESUME`[cite: 9].
-* **[Phase 3] Das Live-System:** `RUNNING` (Reguläres Dashboard mit Satelliten-Orbit und 120s-Loop)[cite: 9].
-* **[Phase 4] Overlays (Background-Timer laufen weiter):** `ZUGANG`, `AIRWAY_MENU`, `AIRWAY_DOC`, `MEDS_MENU`[cite: 9].
+---
+
+## 3. DAS APP-PHASEN SYSTEM (ROUTING-STATE MACHINE)
+Die App nutzt keinen React-Router, sondern rendert Komponenten linear basierend auf `state.appPhase`:
+* **[Phase 1] Setup-Flow:** `ONBOARDING` -> `OB_INITIAL_BREATHS` (nur Kinder) -> `OB_COMPRESSIONS`.
+* **[Phase 2] Analyse-Flow:** `OB_ANALYZE` -> `DECISION` (Schockbar/Nicht) -> `JOULE` (Energie) -> `WAITING_CPR_RESUME`.
+* **[Phase 3] Das Live-System:** `RUNNING` (Reguläres Dashboard mit Satelliten-Orbit und 120s-Loop).
+* **[Phase 4] Overlays (Timer laufen weiter):** `ZUGANG`, `AIRWAY_MENU`, `AIRWAY_DOC`, `MEDS_MENU`.
 * **[Phase 5] Post-Resuscitation & Ende:** 
-  * `ROSC`: Pausiert CPR/Adrenalin, startet `roscSeconds`, zeigt Pädiatrie-Zielwerte (`PediSafeLimits.jsx`) und die ABCDE-Checkliste[cite: 9].
-  * `DEBRIEFING`: Finaler Screen (nach ROSC-Ende oder AbbruchModal). Zeigt KPIs und bietet PDF-Export an[cite: 9].
+  * `ROSC`: Pausiert CPR/Adrenalin, startet `roscSeconds`.
+  * `OUTCOME_MODAL`: Zwischenschritt-Abfrage (ROSC oder Abbruch?).
+  * `TERMINATION`: Abbruch-Screen (Re-Start oder zum Debriefing).
+  * `DEBRIEFING`: Finaler Screen. Zeigt KPIs und bietet PDF-Export an.
 
 ---
 
-## 3. CORE ENGINES & VARIABLEN
-### A) Timer-Variablen im Reducer
-* `missionSeconds`: Die absolute Einsatzzeit. Stoppt NIEMALS[cite: 9].
-* `cycleSeconds`: Der 120s-Rhythmus-Check-Loop. Wird bei Analyse resettet[cite: 9].
-* `pauseSeconds`: Zählt hoch, wenn `isCompressing === false`[cite: 9]. Steuert die Eskalationswarnung (Grün -> Gelb -> Rot).
-* `adrSeconds`: 240s-Timer für Adrenalin[cite: 9].
-* `roscSeconds`: Stabilisierungs-Timer (ab Phase ROSC)[cite: 9].
-
-### B) Audio Engine (Web Audio API)
-Audio wird 100% nativ über `AudioContext` generiert (Synthese von Oszillatoren), um Latenzen auf mobilen Browsern zu vermeiden[cite: 9]. Der `isMuted`-State unterdrückt *nur* die Tonausgabe – das visuelle Metronom und Timer-Eskalationen laufen stummgeschaltet weiter[cite: 9].
+## 4. CORE ENGINES & TIMER (`useMasterLoop.js`)
+Der Master-Timer tickt jede Sekunde und unterscheidet streng nach Phase:
+* `missionSeconds`: Die absolute Einsatzzeit. Stoppt NUR bei Einsatzende (`TERMINATION` oder `DEBRIEFING`).
+* `roscSeconds`: Stabilisierungs-Timer (läuft NUR in Phase `ROSC`).
+* `adrSeconds`: 240s-Timer für Adrenalin.
+* `cycleSeconds`: Der 120s-Rhythmus-Check-Loop (nur in `RUNNING`). Wird bei Analyse, Re-Arrest oder Abbruch-Widerruf auf 0 gesetzt.
+* **Statistik-Timer (`pauseSeconds`, `arrestSeconds`, `compressingSeconds`):** Laufen NUR während der aktiven Reanimation.
 
 ---
 
-## 4. PÄDIATRIE & BROSELOW-LOGIK (CRITICAL DATA)
-* **Single Source of Truth:** `state.patientWeight` diktiert die gesamte App (Joule, Tubusgrößen, Pedi-Safe-Limits für Blutdruck/Beatmung, Medikamentendosen)[cite: 9].
-* **Synchronisation:** Alter, Gewicht und Länge sind aneinandergekoppelt (`calculatePediatricVitals`)[cite: 9].
+## 5. STATUS & ROADMAP
+* **STATUS:** LOGIK & ENGINE ABGESCHLOSSEN. BEREIT FÜR UI-POLISHING.
+* Die Geschäftslogik, State-Machine und PDF-Engine sind kugelsicher und in Stein gemeißelt.
+* **Aktueller Fokus:** Die Layouts und UI-Komponenten werden in einem separaten Branch poliert.
 
 ---
 
-## 5. DAS DASHBOARD & DER SATELLITEN-ORBIT
-Das Center-Display (SVG-Morphing-Kreis) wird von exakt 6 Satelliten flankiert[cite: 9]:
-1. **12 Uhr (Adrenalin):** Ring-Timer (240s) mit Auto-Alarm[cite: 9].
-2. **2 Uhr (Amiodaron/Meds):** Transformiert sich nach der 2. Gabe in den Koffer (`MEDS_MENU`).
-3. **4 Uhr (HITS/SAMPLER):** Trigger für das Anamnese-Modal[cite: 9].
-4. **6 Uhr (Ende ROSC):** Trigger für den Post-Resuscitation-Pfad[cite: 9].
-5. **8 Uhr (Logbuch):** Modal-Trigger für SBAR, Statistik und Timeline[cite: 9].
-6. **10 Uhr (Zugang):** Legt Zugang fest und färbt sich dynamisch blau[cite: 9].
+## 6. AI HANDOVER PROMPT (FÜR NEUE UI-CHATS)
+*Kopiere den folgenden Text, um einen neuen KI-Chat ausschließlich für das Design-Update zu starten:*
 
-*Hinweis: Der CPR-Button und der Atemweg-Button liegen fixiert in der unteren Leiste[cite: 9].*
-
----
-
-## 6. LOGBUCH, SMART-UNDO & NATIVE PDF ENGINE
-Jede Aktion feuert ein `logEvent` an den Context[cite: 9].
-
-### A) Smart Undo-Logik
-Wird der Undo-Button betätigt (`UNDO_LAST_EVENT`), löscht der Reducer nicht nur das Event aus der Zeitlinie, sondern **zählt auch dynamisch die entsprechenden Tracker (`adrCount`, `amioCount`, `shockCount`) wieder herunter**, um Desynchronisationen im PDF-Export zu vermeiden.
-
-### B) Clean Re-Arrest Logik
-Bei einem Re-Arrest aus der ROSC-Phase wird der Befehl `CLEANUP_RE_ARREST` genutzt. Dieser setzt den ROSC-Timer auf 0 und leert die abgehakte ROSC-Checkliste, damit bei einem erneuten ROSC keine fehlerhaften (alten) Daten übernommen werden.
-
-### C) Die PDF-Export Architektur (`src/utils/pdf/`)
-Um die 200-Zeilen-Regel einzuhalten, ist der PDF-Export (jsPDF) radikal modularisiert[cite: 9]:
-1. `pdfHelpers.js`: Formatierungs-Tools, Canvas-Rundungen und Icon-Mapping[cite: 9].
-2. `pdfDataParser.js`: Analysiert die `state.events` und berechnet KPIs, Pausen und CCF-Ratios[cite: 9].
-3. `pdfRenderers.js`: Zeichnet Seite 1 (SBAR-Übergabe) und Seite 2 (Performance Insights)[cite: 9].
-4. `pdfCanvasTimeline.js`: **Das Meisterstück.** Rendert die 120s-Zeitlinien-Tracks über die *native HTML5 Canvas 2D API* im Hintergrund (ohne `html2canvas`) und fügt sie als hochauflösendes JPEG in Seite 3 ein[cite: 9].
-5. `pdfExport.js`: Der reine Orchestrator, der die Module zusammenführt und das Dokument je nach Modus (`übergabe` vs. `debriefing`) generiert und speichert[cite: 9].
-
----
-
-## 7. STATUS & ROADMAP
-* **STATUS:** ORBIT COMPLETE, FEATURE COMPLETE & SYNCED.
-* Alle Module (Engine, Pädiatrie, UI-Flows, ROSC/Abbruch, Smart-Undo, Native PDF-Generierung) sind vollständig integriert und halten sich strikt an die Clean-Architecture-Vorgaben.
-* Die App ist nun bereit für den produktionsnahen Usability-Test.
+> **SYSTEM PROMPT: REINER UI/UX & LAYOUT MODUS**
+> 
+> Du bist ein absoluter Experte für React, Tailwind CSS v4 und moderne, mobile UI/UX-Gestaltung. Wir arbeiten in einem separaten GitHub-Branch an einer hochkomplexen, medizinischen App (CPR Assist). 
+> 
+> **DER STATUS:**
+> Die gesamte Geschäftslogik, die State-Machine (`cprReducer.js`), alle Hooks und die PDF-Engine sind **fehlerfrei, fertig und unantastbar**. Wir kümmern uns hier AUSSCHLIESSLICH um das visuelle Polishing (Tailwind-Klassen, Layouts, Abstände, Animationen, Responsive Design).
+> 
+> **DEINE EISERNEN REGELN:**
+> 1. **STRICT LOGIC FREEZE:** Du darfst unter keinen Umständen React States (`useState`), Context-Dispatches, useEffect-Hooks oder die Struktur der Config-Dateien verändern. Dein Scope beschränkt sich auf das `className` Attribut und die DOM-Struktur (HTML-Tags).
+> 2. **OBLIGATORISCHER SICHERHEITSCHECK:** Bevor du mir neuen Code generierst, musst du in Gedanken prüfen: *Verändert dieser Layout-Vorschlag eine zugrundeliegende Logik? Zerstört es die "Strict Modularity" (200-Zeilen-Regel)? Zerschießt es das 85dvh-Sicherheitslimit für Modals auf mobilen Geräten?* Wenn ja, musst du den Layout-Vorschlag anpassen.
+> 3. **REFERENCE:** Das Dokument `projekt_handbuch.md` ist deine Bibel für den architektonischen Kontext.
+> 
+> Bestätige, dass du diese Regeln verstanden hast. Frag mich danach, an welcher Komponente wir das Design zuerst verbessern wollen und bitte mich um den aktuellen Code dieser Komponente.
