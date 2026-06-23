@@ -90,7 +90,7 @@ export default function DashboardShell() {
         </div>
       </div>
 
-      <div className="flex-1 relative w-full flex items-center justify-center z-30 overflow-visible -translate-y-[45px]">
+      <div className="flex-1 relative w-full flex items-center justify-center z-30 overflow-visible ">
         <OrbitPosition x={0} y={0} zIndex={10}>
           <CenterDisplay />
         </OrbitPosition>
