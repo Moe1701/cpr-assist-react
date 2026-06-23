@@ -68,7 +68,6 @@ src/components/HelpOverlay.jsx
 src/components/PatientSelection.jsx
 src/components/PatientSetupModal.jsx
 src/components/SettingsModal.jsx
-src/components/views/AbbruchModal.jsx
 src/components/views/ExportModal.jsx
 src/components/views/HitsModal.jsx
 src/components/views/OutcomeModal.jsx
@@ -323,6 +322,101 @@ If you are developing a production application, we recommend using TypeScript wi
 
 <file path="src/assets/vite.svg">
 <svg xmlns="http://www.w3.org/2000/svg" width="77" height="47" fill="none" aria-labelledby="vite-logo-title" viewBox="0 0 77 47"><title id="vite-logo-title">Vite</title><style>.parenthesis{fill:#000}@media (prefers-color-scheme:dark){.parenthesis{fill:#fff}}</style><path fill="#9135ff" d="M40.151 45.71c-.663.844-2.02.374-2.02-.699V34.708a2.26 2.26 0 0 0-2.262-2.262H24.493c-.92 0-1.457-1.04-.92-1.788l7.479-10.471c1.07-1.498 0-3.578-1.842-3.578H15.443c-.92 0-1.456-1.04-.92-1.788l9.696-13.576c.213-.297.556-.474.92-.474h28.894c.92 0 1.456 1.04.92 1.788l-7.48 10.472c-1.07 1.497 0 3.578 1.842 3.578h11.376c.944 0 1.474 1.087.89 1.83L40.153 45.712z"/><mask id="a" width="48" height="47" x="14" y="0" maskUnits="userSpaceOnUse" style="mask-type:alpha"><path fill="#000" d="M40.047 45.71c-.663.843-2.02.374-2.02-.699V34.708a2.26 2.26 0 0 0-2.262-2.262H24.389c-.92 0-1.457-1.04-.92-1.788l7.479-10.472c1.07-1.497 0-3.578-1.842-3.578H15.34c-.92 0-1.456-1.04-.92-1.788l9.696-13.575c.213-.297.556-.474.92-.474H53.93c.92 0 1.456 1.04.92 1.788L47.37 13.03c-1.07 1.498 0 3.578 1.842 3.578h11.376c.944 0 1.474 1.088.89 1.831L40.049 45.712z"/></mask><g mask="url(#a)"><g filter="url(#b)"><ellipse cx="5.508" cy="14.704" fill="#eee6ff" rx="5.508" ry="14.704" transform="rotate(269.814 20.96 11.29)scale(-1 1)"/></g><g filter="url(#c)"><ellipse cx="10.399" cy="29.851" fill="#eee6ff" rx="10.399" ry="29.851" transform="rotate(89.814 -16.902 -8.275)scale(1 -1)"/></g><g filter="url(#d)"><ellipse cx="5.508" cy="30.487" fill="#8900ff" rx="5.508" ry="30.487" transform="rotate(89.814 -19.197 -7.127)scale(1 -1)"/></g><g filter="url(#e)"><ellipse cx="5.508" cy="30.599" fill="#8900ff" rx="5.508" ry="30.599" transform="rotate(89.814 -25.928 4.177)scale(1 -1)"/></g><g filter="url(#f)"><ellipse cx="5.508" cy="30.599" fill="#8900ff" rx="5.508" ry="30.599" transform="rotate(89.814 -25.738 5.52)scale(1 -1)"/></g><g filter="url(#g)"><ellipse cx="14.072" cy="22.078" fill="#eee6ff" rx="14.072" ry="22.078" transform="rotate(93.35 31.245 55.578)scale(-1 1)"/></g><g filter="url(#h)"><ellipse cx="3.47" cy="21.501" fill="#8900ff" rx="3.47" ry="21.501" transform="rotate(89.009 35.419 55.202)scale(-1 1)"/></g><g filter="url(#i)"><ellipse cx="3.47" cy="21.501" fill="#8900ff" rx="3.47" ry="21.501" transform="rotate(89.009 35.419 55.202)scale(-1 1)"/></g><g filter="url(#j)"><ellipse cx="14.592" cy="9.743" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(39.51 14.592 9.743)"/></g><g filter="url(#k)"><ellipse cx="61.728" cy="-5.321" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 61.728 -5.32)"/></g><g filter="url(#l)"><ellipse cx="55.618" cy="7.104" fill="#00c2ff" rx="5.971" ry="9.665" transform="rotate(37.892 55.618 7.104)"/></g><g filter="url(#m)"><ellipse cx="12.326" cy="39.103" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 12.326 39.103)"/></g><g filter="url(#n)"><ellipse cx="12.326" cy="39.103" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 12.326 39.103)"/></g><g filter="url(#o)"><ellipse cx="49.857" cy="30.678" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 49.857 30.678)"/></g><g filter="url(#p)"><ellipse cx="52.623" cy="33.171" fill="#00c2ff" rx="5.971" ry="15.297" transform="rotate(37.892 52.623 33.17)"/></g></g><path d="M6.919 0c-9.198 13.166-9.252 33.575 0 46.789h6.215c-9.25-13.214-9.196-33.623 0-46.789zm62.424 0h-6.215c9.198 13.166 9.252 33.575 0 46.789h6.215c9.25-13.214 9.196-33.623 0-46.789" class="parenthesis"/><defs><filter id="b" width="60.045" height="41.654" x="-5.564" y="16.92" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="c" width="90.34" height="51.437" x="-40.407" y="-6.762" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="d" width="79.355" height="29.4" x="-35.435" y="2.801" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="e" width="79.579" height="29.4" x="-30.84" y="20.8" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="f" width="79.579" height="29.4" x="-29.307" y="21.949" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="g" width="74.749" height="58.852" x="29.961" y="-17.13" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="h" width="61.377" height="25.362" x="37.754" y="3.055" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="i" width="61.377" height="25.362" x="37.754" y="3.055" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="j" width="56.045" height="63.649" x="-13.43" y="-22.082" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="k" width="54.814" height="64.646" x="34.321" y="-37.644" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="l" width="33.541" height="35.313" x="38.847" y="-10.552" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="m" width="54.814" height="64.646" x="-15.081" y="6.78" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="n" width="54.814" height="64.646" x="-15.081" y="6.78" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="o" width="54.814" height="64.646" x="22.45" y="-1.645" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="p" width="39.409" height="43.623" x="32.919" y="11.36" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter></defs></svg>
+</file>
+
+<file path="src/components/AirwayModal.jsx">
+import React, { useContext } from 'react';
+import { CprContext } from '../context/CprContext.jsx';
+import { useMasterLoop } from '../hooks/useMasterLoop.js';
+import { getBroselowZone } from '../config/broselowData.js';
+
+export default function AirwayModal() {
+  const { state, dispatch } = useContext(CprContext);
+  const { setAirway } = useMasterLoop();
+
+  if (!state.isAirwayModalOpen) return null;
+
+  const handleSelect = (type) => {
+    setAirway(type);
+    dispatch({ type: 'TOGGLE_AIRWAY_MODAL', payload: false });
+  };
+
+  const handleRemove = () => {
+    setAirway(null);
+    dispatch({ type: 'TOGGLE_AIRWAY_MODAL', payload: false });
+  };
+
+  // Broselow-Daten laden, falls das Kind-Setup aktiv ist
+  const activeZone = state.isPediatric ? getBroselowZone(state.patientWeight || 10) : null;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm animate-in fade-in duration-200 p-4">
+      <div className="relative bg-white w-full max-w-[340px] rounded-[2rem] p-6 border border-slate-100 shadow-2xl flex flex-col animate-in zoom-in-95 duration-300">
+        
+        <button 
+          onClick={() => dispatch({ type: 'TOGGLE_AIRWAY_MODAL', payload: false })} 
+          className="absolute top-4 right-4 w-8 h-8 bg-slate-100 rounded-full text-slate-500 flex items-center justify-center active:scale-95 cursor-pointer"
+        >
+          <i className="fa-solid fa-xmark pointer-events-none"></i>
+        </button>
+
+        <h2 className="text-lg font-black text-slate-800 uppercase tracking-widest text-center mt-2 mb-6">
+          Atemweg sichern
+        </h2>
+
+        {/* BESI-ANZEIGE: Pädiatrie Tubus-Größen! */}
+        {state.isPediatric && activeZone && (
+          <div className="mb-6 p-4 bg-indigo-50 border border-indigo-100 rounded-2xl shadow-inner">
+            <div className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-2 text-center">Broselow Info ({activeZone.color})</div>
+            <div className="flex justify-between items-center px-2">
+                <div className="flex flex-col items-center">
+                    <span className="text-[10px] font-bold text-slate-500 uppercase">Tubus</span>
+                    <span className="font-black text-indigo-700 text-lg">{activeZone.airway.tubus}</span>
+                </div>
+                <div className="w-px h-8 bg-indigo-200"></div>
+                <div className="flex flex-col items-center">
+                    <span className="text-[10px] font-bold text-slate-500 uppercase">Tiefe</span>
+                    <span className="font-black text-indigo-700 text-lg">{activeZone.airway.tiefe} cm</span>
+                </div>
+                <div className="w-px h-8 bg-indigo-200"></div>
+                <div className="flex flex-col items-center">
+                    <span className="text-[10px] font-bold text-slate-500 uppercase">SGA</span>
+                    <span className="font-black text-indigo-700 text-lg">{activeZone.airway.sga}</span>
+                </div>
+            </div>
+          </div>
+        )}
+
+        <div className="flex flex-col gap-3 mb-6">
+          <button 
+            onClick={() => handleSelect('Beutel-Maske')}
+            className={`w-full h-[70px] rounded-2xl font-black uppercase tracking-widest flex items-center justify-center gap-3 active:scale-95 transition-all border-2 cursor-pointer ${state.airwayType === 'Beutel-Maske' ? 'bg-cyan-50 border-cyan-400 text-cyan-700' : 'bg-white border-slate-200 text-slate-600 shadow-sm'}`}
+          >
+            <i className="fa-solid fa-mask-ventilator text-2xl pointer-events-none"></i>
+            <span className="pointer-events-none">Beutel-Maske</span>
+          </button>
+          
+          <button 
+            onClick={() => handleSelect('Invasiv')}
+            className={`w-full h-[70px] rounded-2xl font-black uppercase tracking-widest flex items-center justify-center gap-3 active:scale-95 transition-all border-2 cursor-pointer ${state.airwayType === 'Invasiv' ? 'bg-cyan-50 border-cyan-400 text-cyan-700' : 'bg-white border-slate-200 text-slate-600 shadow-sm'}`}
+          >
+            <i className="fa-solid fa-virus-covid text-2xl pointer-events-none"></i>
+            <span className="pointer-events-none">Tubus / SGA</span>
+          </button>
+        </div>
+
+        {state.airwayEstablished && (
+          <button 
+            onClick={handleRemove}
+            className="w-full h-[50px] rounded-2xl font-bold uppercase tracking-widest text-[11px] bg-red-50 text-red-600 border border-red-200 active:scale-95 transition-all cursor-pointer"
+          >
+            Atemweg entfernen
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
 </file>
 
 <file path="src/components/dashboard/CprButton.jsx">
@@ -658,46 +752,6 @@ export default function SettingsModal({ isOpen, onClose }) {
           <span className="pointer-events-none">Zurück zum Einsatz</span>
         </button>
 
-      </div>
-    </div>
-  );
-}
-</file>
-
-<file path="src/components/views/AbbruchModal.jsx">
-// --- Datei: src/components/views/AbbruchModal.jsx ---
-import React, { useContext } from 'react';
-import { CprContext } from '../../context/CprContext.jsx';
-import { CPR_CONFIG, CHECKLISTS } from '../../config/cprConfig.js';
-
-export default function AbbruchModal() {
-  const { state, dispatch, logEvent } = useContext(CprContext);
-
-  if (!state.isAbbruchModalOpen) return null;
-
-  const handleReasonSelect = (reason) => {
-    logEvent("EINSATZ BEENDET", `Abbruchgrund: ${reason}`);
-    dispatch({ type: 'SET_ABBRUCH_REASON', payload: reason });
-    dispatch({ type: 'TOGGLE_ABBRUCH_MODAL', payload: false });
-    dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.DEBRIEFING });
-  };
-
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200 px-4">
-      <div className="bg-white w-full max-w-[340px] rounded-3xl p-6 shadow-2xl flex flex-col animate-in zoom-in-95 duration-200">
-        <div className="text-center mb-5">
-            <h2 className="text-lg font-black text-slate-800 tracking-wider">EINSATZ ABBRECHEN</h2>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Grund für Beendigung wählen</p>
-        </div>
-        <div className="flex flex-col gap-2 mb-6">
-            {CHECKLISTS.ABBRUCH_REASONS.map(r => (
-                <button key={r.id} onClick={() => handleReasonSelect(r.label)} className="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl flex items-center gap-3 active:scale-95 transition-transform hover:bg-slate-100 cursor-pointer">
-                    <div className={`w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center shrink-0 ${r.color}`}><i className={`fa-solid ${r.icon}`}></i></div>
-                    <span className="text-[11px] font-black text-slate-700 tracking-wide text-left">{r.label}</span>
-                </button>
-            ))}
-        </div>
-        <button onClick={() => dispatch({ type: 'TOGGLE_ABBRUCH_MODAL', payload: false })} className="w-full bg-white border-2 border-slate-200 text-slate-500 py-3 rounded-xl font-black uppercase tracking-widest text-[11px] active:scale-95 transition-transform cursor-pointer hover:bg-slate-50">Zurück</button>
       </div>
     </div>
   );
@@ -1448,225 +1502,6 @@ export default function App() {
 }
 </file>
 
-<file path="src/components/AirwayModal.jsx">
-import React, { useContext } from 'react';
-import { CprContext } from '../context/CprContext.jsx';
-import { useMasterLoop } from '../hooks/useMasterLoop.js';
-import { getBroselowZone } from '../config/broselowData.js';
-
-export default function AirwayModal() {
-  const { state, dispatch } = useContext(CprContext);
-  const { setAirway } = useMasterLoop();
-
-  if (!state.isAirwayModalOpen) return null;
-
-  const handleSelect = (type) => {
-    setAirway(type);
-    dispatch({ type: 'TOGGLE_AIRWAY_MODAL', payload: false });
-  };
-
-  const handleRemove = () => {
-    setAirway(null);
-    dispatch({ type: 'TOGGLE_AIRWAY_MODAL', payload: false });
-  };
-
-  // Broselow-Daten laden, falls das Kind-Setup aktiv ist
-  const activeZone = state.isPediatric ? getBroselowZone(state.patientWeight || 10) : null;
-
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm animate-in fade-in duration-200 p-4">
-      <div className="relative bg-white w-full max-w-[340px] rounded-[2rem] p-6 border border-slate-100 shadow-2xl flex flex-col animate-in zoom-in-95 duration-300">
-        
-        <button 
-          onClick={() => dispatch({ type: 'TOGGLE_AIRWAY_MODAL', payload: false })} 
-          className="absolute top-4 right-4 w-8 h-8 bg-slate-100 rounded-full text-slate-500 flex items-center justify-center active:scale-95 cursor-pointer"
-        >
-          <i className="fa-solid fa-xmark pointer-events-none"></i>
-        </button>
-
-        <h2 className="text-lg font-black text-slate-800 uppercase tracking-widest text-center mt-2 mb-6">
-          Atemweg sichern
-        </h2>
-
-        {/* BESI-ANZEIGE: Pädiatrie Tubus-Größen! */}
-        {state.isPediatric && activeZone && (
-          <div className="mb-6 p-4 bg-indigo-50 border border-indigo-100 rounded-2xl shadow-inner">
-            <div className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-2 text-center">Broselow Info ({activeZone.color})</div>
-            <div className="flex justify-between items-center px-2">
-                <div className="flex flex-col items-center">
-                    <span className="text-[10px] font-bold text-slate-500 uppercase">Tubus</span>
-                    <span className="font-black text-indigo-700 text-lg">{activeZone.airway.tubus}</span>
-                </div>
-                <div className="w-px h-8 bg-indigo-200"></div>
-                <div className="flex flex-col items-center">
-                    <span className="text-[10px] font-bold text-slate-500 uppercase">Tiefe</span>
-                    <span className="font-black text-indigo-700 text-lg">{activeZone.airway.tiefe} cm</span>
-                </div>
-                <div className="w-px h-8 bg-indigo-200"></div>
-                <div className="flex flex-col items-center">
-                    <span className="text-[10px] font-bold text-slate-500 uppercase">SGA</span>
-                    <span className="font-black text-indigo-700 text-lg">{activeZone.airway.sga}</span>
-                </div>
-            </div>
-          </div>
-        )}
-
-        <div className="flex flex-col gap-3 mb-6">
-          <button 
-            onClick={() => handleSelect('Beutel-Maske')}
-            className={`w-full h-[70px] rounded-2xl font-black uppercase tracking-widest flex items-center justify-center gap-3 active:scale-95 transition-all border-2 cursor-pointer ${state.airwayType === 'Beutel-Maske' ? 'bg-cyan-50 border-cyan-400 text-cyan-700' : 'bg-white border-slate-200 text-slate-600 shadow-sm'}`}
-          >
-            <i className="fa-solid fa-mask-ventilator text-2xl pointer-events-none"></i>
-            <span className="pointer-events-none">Beutel-Maske</span>
-          </button>
-          
-          <button 
-            onClick={() => handleSelect('Invasiv')}
-            className={`w-full h-[70px] rounded-2xl font-black uppercase tracking-widest flex items-center justify-center gap-3 active:scale-95 transition-all border-2 cursor-pointer ${state.airwayType === 'Invasiv' ? 'bg-cyan-50 border-cyan-400 text-cyan-700' : 'bg-white border-slate-200 text-slate-600 shadow-sm'}`}
-          >
-            <i className="fa-solid fa-virus-covid text-2xl pointer-events-none"></i>
-            <span className="pointer-events-none">Tubus / SGA</span>
-          </button>
-        </div>
-
-        {state.airwayEstablished && (
-          <button 
-            onClick={handleRemove}
-            className="w-full h-[50px] rounded-2xl font-bold uppercase tracking-widest text-[11px] bg-red-50 text-red-600 border border-red-200 active:scale-95 transition-all cursor-pointer"
-          >
-            Atemweg entfernen
-          </button>
-        )}
-      </div>
-    </div>
-  );
-}
-</file>
-
-<file path="src/components/dashboard/AdrenalinButton.jsx">
-// --- Datei: src/components/dashboard/AdrenalinButton.jsx ---
-import React, { useContext, useEffect, useRef } from 'react';
-import { CprContext } from '../../context/CprContext.jsx';
-import { CPR_CONFIG } from '../../config/cprConfig.js';
-
-// Eigener Audio-Alarm für abgelaufene Medikamenten-Timer
-const playAdrAlarm = (isMuted) => {
-  if (isMuted || !window.CPR_AudioCtx) return;
-  try {
-    const ctx = window.CPR_AudioCtx;
-    if(ctx.state === 'suspended') ctx.resume();
-    
-    const playBeep = (startTime) => {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'square';
-        osc.frequency.setValueAtTime(880, startTime);
-        gain.gain.setValueAtTime(0, startTime);
-        gain.gain.linearRampToValueAtTime(0.3, startTime + 0.05);
-        gain.gain.setValueAtTime(0.3, startTime + 0.2);
-        gain.gain.linearRampToValueAtTime(0, startTime + 0.3);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start(startTime);
-        osc.stop(startTime + 0.35);
-    };
-
-    // Doppel-Beep
-    playBeep(ctx.currentTime);
-    playBeep(ctx.currentTime + 0.4);
-  } catch (e) {
-    console.warn("Audio Context failed:", e);
-  }
-};
-
-export default function AdrenalinButton() {
-  const { state, dispatch, logEvent } = useContext(CprContext);
-
-  // Dosierungs-Logik: 10 µg/kg bei Kindern, sonst 1 mg
-  const dose = state.isPediatric && state.patientWeight
-    ? `${Math.round(state.patientWeight * 10)} µg`
-    : '1 mg';
-
-  const isActive = state.adrSeconds > 0;
-  const remaining = isActive ? 240 - state.adrSeconds : 0;
-  const isWarning = isActive && remaining <= 30;
-
-  // Trigger für Alarm & Vibration bei Ablauf (wenn der Reducer ihn auf 0 setzt)
-  const prevAdrRef = useRef(state.adrSeconds);
-  useEffect(() => {
-    if (prevAdrRef.current >= 239 && state.adrSeconds === 0) {
-      if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 200]);
-      playAdrAlarm(state.isMuted);
-    }
-    prevAdrRef.current = state.adrSeconds;
-  }, [state.adrSeconds, state.isMuted]);
-
-  const handleClick = () => {
-    // Verhindert mehrfaches Klicken, während der Timer schon läuft
-    if (isActive) return; 
-    
-    logEvent(CPR_CONFIG.EVENTS.DRUG, `Adrenalin ${dose} gegeben`);
-    dispatch({ type: 'GIVE_ADRENALIN' });
-  };
-
-  const formatTime = (secs) => {
-    const m = Math.floor(secs / 60).toString().padStart(2, '0');
-    const s = (secs % 60).toString().padStart(2, '0');
-    return `${m}:${s}`;
-  };
-
-  // SVG Mathematik für den 86px Button (Radius = 43)
-  const strokeWidth = 5;
-  const radius = 43 - strokeWidth / 2;
-  const circumference = 2 * Math.PI * radius;
-  const progress = isActive ? state.adrSeconds / 240 : 0;
-  const strokeDasharray = `${circumference * progress} ${circumference}`;
-
-  return (
-    <div className="relative pointer-events-auto w-[86px] h-[86px]">
-      <button
-        onClick={handleClick}
-        className={`w-full h-full rounded-full shadow-sm border-[3px] flex flex-col items-center justify-center gap-1 active:scale-95 transition-all overflow-hidden relative cursor-pointer ${isActive ? 'bg-white border-slate-100' : 'bg-white border-emerald-400 hover:bg-slate-50'}`}
-      >
-        {/* SVG Ring (nur sichtbar wenn Timer läuft) */}
-        {isActive && (
-          <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 86 86">
-            <circle cx="43" cy="43" r={radius} fill="none" stroke="#f1f5f9" strokeWidth={strokeWidth} transform="rotate(-90 43 43)" />
-            <circle
-              cx="43" cy="43" r={radius} fill="none" stroke="#E3000F" strokeWidth={strokeWidth}
-              strokeDasharray={strokeDasharray} strokeLinecap="round" transform="rotate(-90 43 43)"
-              className="transition-all duration-1000 ease-linear"
-            />
-          </svg>
-        )}
-
-        {/* Normaler Button-Inhalt (Icon + Dosis) */}
-        <div className={`absolute inset-0 flex flex-col items-center justify-center w-full h-full transition-opacity duration-200 pointer-events-none ${isActive ? 'opacity-0' : 'opacity-100'}`}>
-          <i className="fa-solid fa-syringe text-[24px] mb-0.5 text-emerald-600"></i>
-          <span className="text-[10px] font-black uppercase tracking-wider leading-none text-center px-1 text-emerald-600">
-            {dose}
-          </span>
-        </div>
-
-        {/* Timer Overlay */}
-        {isActive && (
-          <div className={`absolute inset-0 flex items-center justify-center w-full h-full z-30 rounded-full bg-white/60 backdrop-blur-[1px] text-[18px] font-black tracking-tighter pointer-events-none ${isWarning ? 'text-[#E3000F] animate-pulse' : 'text-slate-700'}`}>
-            {formatTime(remaining)}
-          </div>
-        )}
-      </button>
-
-      {/* Rotes Badge oben rechts für die Anzahl der Gaben */}
-      {state.adrCount > 0 && (
-        <div className="absolute -top-2 -right-2 bg-[#E3000F] text-white text-[12px] font-black px-2 min-w-[26px] h-7 flex items-center justify-center rounded-full shadow-md border-2 border-white z-40 pointer-events-none">
-          {state.adrCount}
-        </div>
-      )}
-    </div>
-  );
-}
-</file>
-
 <file path="src/components/views/HitsModal.jsx">
 // --- Datei: src/components/views/HitsModal.jsx ---
 import React, { useContext, useState } from 'react';
@@ -2107,113 +1942,6 @@ export default function TabStatistik() {
           <Row label="1. Schock" val={stats.firstShock !== null ? format(stats.firstShock) : '--:--'} icon="fa-bolt" colorClass="text-amber-500" />
           <Row label="1. Supra" val={stats.firstAdr !== null ? format(stats.firstAdr) : '--:--'} icon="fa-syringe" colorClass="text-[#E3000F]" />
           <Row label="1. Zugang" val={stats.firstAccess !== null ? format(stats.firstAccess) : '--:--'} icon="fa-droplet" colorClass="text-indigo-500" />
-        </div>
-      </div>
-
-    </div>
-  );
-}
-</file>
-
-<file path="src/components/views/TabUebergabe.jsx">
-// --- Datei: src/components/views/TabUebergabe.jsx ---
-import React, { useContext } from 'react';
-import { CprContext } from '../../context/CprContext.jsx';
-import { CPR_CONFIG } from '../../config/cprConfig.js';
-
-export default function TabUebergabe() {
-  const { state } = useContext(CprContext);
-
-  const formatTime = (seconds) => {
-    if (isNaN(seconds) || seconds === null) return "00:00";
-    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-    const s = (seconds % 60).toString().padStart(2, '0');
-    return `${m}:${s}`;
-  };
-
-  // --- SBAR DATEN AUFBEREITEN ---
-  const aData = state.anamneseData;
-  
-  // Situation: Alter & Gewicht String
-  let ageStr = state.isPediatric ? (state.patientWeight ? `Kind (${state.patientWeight} kg)` : 'Kind') : 'Erwachsener';
-  if (aData.alter || aData.gewicht) {
-      let zusatz = [];
-      if (aData.alter) zusatz.push(`${aData.alter} J.`);
-      if (aData.gewicht) zusatz.push(`${aData.gewicht} kg`);
-      ageStr += ` (${zusatz.join(' | ')})`;
-  }
-
-  // Response: Medikamente berechnen
-  let adrTotal = "0 mg";
-  if (state.adrCount > 0) adrTotal = (state.isPediatric && state.patientWeight) ? (state.adrCount * Math.round(state.patientWeight * 10)) + " µg" : state.adrCount + " mg";
-  
-  let amioTotal = "0 mg";
-  if (state.amioCount > 0) amioTotal = (state.isPediatric && state.patientWeight) ? (state.amioCount * Math.round(state.patientWeight * 5)) + " mg" : (state.amioCount === 1 ? '300 mg' : '450 mg');
-
-  // HITS filtern
-  const activeHits = Object.entries(state.hitsStatus)
-    .filter(([_, isActive]) => isActive)
-    .map(([key]) => {
-       const labels = { hypoxie: 'Hypoxie', hypovolaemie: 'Hypovolämie', hypo_hyperkali: 'Hypo- / Hyperkaliämie', hypothermie: 'Hypothermie', herzbeutel: 'Herzbeuteltamponade', toxine: 'Toxine', thrombose: 'Thrombose', tension: 'Spannungspneu' };
-       return labels[key] || key;
-    });
-
-  // SAMPLER filtern
-  const samplerItems = Object.entries(aData.sampler)
-    .filter(([_, val]) => val && val.trim() !== '')
-    .map(([key, val]) => ({ key: key.toUpperCase(), val }));
-
-  return (
-    <div className="p-4 flex flex-col gap-4 pb-12 animate-in fade-in slide-in-from-bottom-2 duration-300">
-      
-      {/* S - SITUATION */}
-      <div className="bg-white rounded-xl border-l-4 border-[#E3000F] p-3 shadow-sm">
-        <h4 className="text-[10px] font-black text-[#E3000F] uppercase tracking-widest mb-2">S - Situation</h4>
-        <div className="grid grid-cols-2 gap-2">
-            <div><span className="block text-[9px] font-bold text-slate-400 uppercase">Patient</span><span className="text-xs font-black text-slate-700">{ageStr}</span></div>
-            <div><span className="block text-[9px] font-bold text-slate-400 uppercase">Dauer</span><span className="text-xs font-black text-slate-700">{formatTime(state.missionSeconds)} Min</span></div>
-            <div className="col-span-2"><span className="block text-[9px] font-bold text-slate-400 uppercase">Letzter Rhythmus</span><span className="text-xs font-black text-slate-700">Unbekannt / Ausstehend</span></div>
-        </div>
-      </div>
-
-      {/* B - BACKGROUND */}
-      <div className="bg-white rounded-xl border-l-4 border-slate-400 p-3 shadow-sm">
-        <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">B - Background</h4>
-        <div className="grid grid-cols-2 gap-y-2 gap-x-1 text-[10px]">
-            <div><span className="font-bold text-slate-400">Beobachtet:</span> <span className="font-black text-slate-700">{aData.beobachtet?.toUpperCase() || '?'}</span></div>
-            <div><span className="font-bold text-slate-400">Laien-REA:</span> <span className="font-black text-slate-700">{aData.laienrea?.toUpperCase() || '?'}</span></div>
-        </div>
-        {samplerItems.length > 0 && (
-          <div className="mt-2 text-[10px] leading-tight text-slate-600 space-y-1 pt-2 border-t border-slate-100">
-            {samplerItems.map(item => (
-              <div key={item.key}><span className="font-black text-slate-700">{item.key}:</span> {item.val}</div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* A - ASSESSMENT */}
-      <div className="bg-white rounded-xl border-l-4 border-amber-400 p-3 shadow-sm">
-        <h4 className="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-2">A - Assessment</h4>
-        <div className="flex justify-between items-center mb-2 pb-2 border-b border-slate-100">
-            <span className="text-[10px] font-bold text-slate-500">CPR Qualität (CCF)</span>
-            <span className={`text-sm font-black ${state.currentCcfPercent >= 80 ? 'text-emerald-500' : 'text-[#E3000F]'}`}>{state.currentCcfPercent || 100}%</span>
-        </div>
-        <div className="text-[10px] text-slate-600">
-            <span className="font-bold text-slate-400 block mb-1">Erfasste Ursachen (HITS):</span>
-            {activeHits.length > 0 ? activeHits.map(h => <div key={h} className="font-bold text-slate-700 truncate">- {h} gecheckt/behandelt</div>) : 'Keine HITS erfasst.'}
-        </div>
-      </div>
-
-      {/* R - RESPONSE */}
-      <div className="bg-white rounded-xl border-l-4 border-emerald-500 p-3 shadow-sm">
-        <h4 className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-2">R - Response</h4>
-        <div className="grid grid-cols-1 gap-1.5 text-[10px]">
-            <div className="flex justify-between"><span className="font-bold text-slate-400">Atemweg</span><span className="font-black text-slate-700">{state.airwayType || 'Nicht dok.'}</span></div>
-            <div className="flex justify-between"><span className="font-bold text-slate-400">Zugang</span><span className="font-black text-slate-700">{state.zugang || 'Nicht dok.'}</span></div>
-            <div className="flex justify-between"><span className="font-bold text-slate-400">Schocks</span><span className="font-black text-amber-500">{state.shockCount || 0}x abgegeben</span></div>
-            <div className="flex justify-between"><span className="font-bold text-slate-400">Adrenalin</span><span className="font-black text-[#E3000F]">{adrTotal} ({state.adrCount}x)</span></div>
-            <div className="flex justify-between"><span className="font-bold text-slate-400">Amiodaron</span><span className="font-black text-purple-600">{amioTotal} ({state.amioCount}x)</span></div>
         </div>
       </div>
 
@@ -2699,82 +2427,120 @@ export const getIconData = (txt) => {
 };
 </file>
 
-<file path="src/utils/pdf/pdfRenderers.js">
-// --- Datei: src/utils/pdf/pdfRenderers.js ---
-import { formatTime, drawFooter } from './pdfHelpers.js';
+<file path="src/components/dashboard/AdrenalinButton.jsx">
+// --- Datei: src/components/dashboard/AdrenalinButton.jsx ---
+import React, { useContext, useEffect, useRef } from 'react';
+import { CprContext } from '../../context/CprContext.jsx';
+import { CPR_CONFIG } from '../../config/cprConfig.js';
 
-export const renderSbarPage = (doc, state, parsed, isSummary) => {
-    let ageStr = state.isPediatric ? (state.patientWeight ? `Kind (${state.patientWeight} kg)` : 'Kind') : 'Erwachsener';
-    let adrTotal = state.adrCount > 0 ? ((state.isPediatric && state.patientWeight) ? (state.adrCount * Math.round(state.patientWeight * 10)) + " µg" : state.adrCount + " mg") : "0 mg";
-    let amioTotal = state.amioCount > 0 ? ((state.isPediatric && state.patientWeight) ? (state.amioCount * Math.round(state.patientWeight * 5)) + " mg" : (state.amioCount === 1 ? '300 mg' : '450 mg')) : "0 mg";
+const playAdrAlarm = (isMuted) => {
+  if (isMuted || !window.CPR_AudioCtx) return;
+  try {
+    const ctx = window.CPR_AudioCtx;
+    if(ctx.state === 'suspended') ctx.resume();
     
-    const aData = state.anamneseData;
-    const activeHits = Object.entries(state.hitsStatus).filter(([_, isActive]) => isActive).map(([key]) => key);
-    const samplerCount = Object.values(aData.sampler).filter(v => v !== '').length;
+    const playBeep = (startTime) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(880, startTime);
+        gain.gain.setValueAtTime(0, startTime);
+        gain.gain.linearRampToValueAtTime(0.3, startTime + 0.05);
+        gain.gain.setValueAtTime(0.3, startTime + 0.2);
+        gain.gain.linearRampToValueAtTime(0, startTime + 0.3);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(startTime);
+        osc.stop(startTime + 0.35);
+    };
 
-    doc.setFontSize(22); doc.setTextColor(15, 23, 42); doc.setFont("helvetica", "bold"); doc.text("REANIMATIONSPROTOKOLL", 15, 20);
-    // HIER WIRD DER TITEL DYNAMISCH ANGEPASST
-    doc.setFontSize(10); doc.setTextColor(100, 116, 139); doc.setFont("helvetica", "normal"); doc.text(`MODUS: ${isSummary ? 'SCHOCKRAUM ÜBERGABE' : 'DEBRIEFING & AUDIT'}`, 15, 26);
-    doc.text(`Datum: ${new Date().toLocaleDateString('de-DE')}`, 195, 20, {align: 'right'}); doc.text(`Einsatzbeginn: ${state.startTime || '--:--'} Uhr`, 195, 26, {align: 'right'});
-    doc.setDrawColor(227, 0, 15); doc.setLineWidth(1); doc.line(15, 30, 195, 30);
-  
-    // S - SITUATION
-    let y = 40; doc.setFontSize(14); doc.setTextColor(227, 0, 15); doc.setFont("helvetica", "bold"); doc.text("S - SITUATION", 15, y); doc.setDrawColor(241, 245, 249); doc.setLineWidth(0.5); doc.line(15, y+2, 195, y+2); y+=8;
-    doc.setFontSize(9); doc.setTextColor(100, 116, 139); doc.setFont("helvetica", "bold"); doc.text("PATIENT", 15, y); doc.text("GESAMTDAUER", 75, y); doc.text("AKTUELLER STATUS", 135, y);
-    y+=6; doc.setFontSize(12); doc.setTextColor(15, 23, 42); doc.text(ageStr, 15, y); doc.text(`${formatTime(state.missionSeconds)} Min`, 75, y); 
-    const lines = doc.splitTextToSize(parsed.endStatus.toUpperCase(), 60); doc.text(lines, 135, y);
-  
-    // B - BACKGROUND
-    y += 20; doc.setFontSize(14); doc.setTextColor(227, 0, 15); doc.setFont("helvetica", "bold"); doc.text("B - BACKGROUND (ANAMNESE)", 15, y); doc.setDrawColor(241, 245, 249); doc.setLineWidth(0.5); doc.line(15, y+2, 195, y+2); y+=8;
-    doc.setFontSize(10); doc.setTextColor(100, 116, 139); doc.text("Beobachtet:", 15, y); doc.setTextColor(15, 23, 42); doc.text(aData.beobachtet || '?', 40, y);
-    doc.setTextColor(100, 116, 139); doc.text("Laien-REA:", 75, y); doc.setTextColor(15, 23, 42); doc.text(aData.laienrea || '?', 100, y);
-    doc.setTextColor(100, 116, 139); doc.text("Brustschmerz:", 135, y); doc.setTextColor(15, 23, 42); doc.text(aData.brustschmerz || '?', 165, y);
-    y+=8; doc.setTextColor(100, 116, 139); doc.text("SAMPLER:", 15, y); y+=6; doc.setFont("helvetica", "normal"); doc.setTextColor(15, 23, 42);
-    if(samplerCount > 0) { Object.entries(aData.sampler).filter(([_,v])=>v).forEach(([k,v]) => { doc.text(`${k.toUpperCase()}: ${v}`, 15, y); y+=5; }); } 
-    else { doc.text("Keine SAMPLER-Daten erfasst.", 15, y); y+=5; }
-    
-    // A - ASSESSMENT
-    y += 10; doc.setFontSize(14); doc.setTextColor(227, 0, 15); doc.setFont("helvetica", "bold"); doc.text("A - ASSESSMENT (DIAGNOSTIK)", 15, y); doc.setDrawColor(241, 245, 249); doc.setLineWidth(0.5); doc.line(15, y+2, 195, y+2); y+=8;
-    doc.setFontSize(10); doc.setTextColor(100, 116, 139); doc.text("Reversible Ursachen (HITS):", 15, y); doc.text("CPR Qualität (CCF):", 135, y);
-    y+=6; doc.setTextColor(15, 23, 42); doc.setFont("helvetica", "normal");
-    if(activeHits.length > 0) { activeHits.forEach(h => { doc.text(`- ${h.toUpperCase()} gecheckt/behandelt`, 15, y); y += 5; }); } 
-    else { doc.text("Keine Ursachen (HITS) erfasst.", 15, y); }
-    doc.setFontSize(22); doc.setFont("helvetica", "bold"); doc.setTextColor(state.currentCcfPercent >= 80 ? 16 : 227, state.currentCcfPercent >= 80 ? 185 : 0, state.currentCcfPercent >= 80 ? 129 : 15); doc.text(`${state.currentCcfPercent || 100}%`, 135, y);
-    doc.setFontSize(9); doc.setTextColor(100, 116, 139); doc.setFont("helvetica", "normal"); doc.text("Zielwert: > 80%", 135, y+5);
-  
-    // R - RESPONSE
-    y += 20; doc.setFontSize(14); doc.setTextColor(227, 0, 15); doc.setFont("helvetica", "bold"); doc.text("R - RESPONSE (MASSNAHMEN)", 15, y); doc.setDrawColor(241, 245, 249); doc.setLineWidth(0.5); doc.line(15, y+2, 195, y+2); y+=8;
-    const dR = (l, v) => { doc.setFontSize(10); doc.setFont("helvetica", "bold"); doc.setTextColor(100, 116, 139); doc.text(l, 15, y); doc.setTextColor(15, 23, 42); doc.setFont("helvetica", "normal"); doc.text(`|  ${v}`, 60, y); y+=8; };
-    dR("Atemweg", state.airwayType || 'Nicht dokumentiert'); dR("Zugang", state.zugang || 'Nicht dokumentiert');
-    dR("Defibrillationen", `${state.shockCount || 0}x Schocks abgegeben`); dR("Adrenalin", `Gesamt: ${adrTotal} (${state.adrCount} Gaben)`); dR("Amiodaron", `Gesamt: ${amioTotal} (${state.amioCount} Gaben)`);
-    drawFooter(doc);
+    playBeep(ctx.currentTime);
+    playBeep(ctx.currentTime + 0.4);
+  } catch (e) {
+    console.warn("Audio Context failed:", e);
+  }
 };
 
-export const renderKpiPage = (doc, state, parsed) => {
-    doc.addPage('a4', 'portrait'); let y = 20;
-    doc.setFontSize(22); doc.setTextColor(15, 23, 42); doc.setFont("helvetica", "bold"); doc.text("PERFORMANCE INSIGHTS", 15, y);
-    doc.setFontSize(10); doc.setTextColor(100, 116, 139); doc.setFont("helvetica", "normal"); doc.text("DETAILLIERTE KPI-AUSWERTUNG FÜR DAS DEBRIEFING", 15, y+6);
-    y+=12; doc.setDrawColor(227, 0, 15); doc.setLineWidth(1); doc.line(15, y, 195, y); y+=10;
-    
-    const h3 = (t) => { doc.setFontSize(12); doc.setTextColor(227, 0, 15); doc.setFont("helvetica", "bold"); doc.text(t, 15, y); y+=6; };
-    const kv = (x, l, v, sub) => { doc.setFontSize(8); doc.setTextColor(100, 116, 139); doc.setFont("helvetica", "bold"); doc.text(l, x, y); doc.setFontSize(14); doc.setTextColor(15, 23, 42); doc.text(v, x, y+6); if(sub) { doc.setFontSize(8); doc.setFont("helvetica", "normal"); doc.text(sub, x, y+10); } };
-    
-    h3("1. CPR QUALITÄT & PAUSEN");
-    kv(15, "CCF (CPR-ANTEIL)", `${state.currentCcfPercent || 100}%`); kv(75, "HANDS-OFF GESAMT", `${formatTime(parsed.totalHandsOff)} Min`); kv(135, "LÄNGSTE PAUSE", `${parsed.maxPause} s`); y+=20;
-    
-    h3("2. SCHOCK-THERAPIE & RHYTHMUS");
-    kv(15, "DEFIBRILLATIONEN", `${state.shockCount}x (${parsed.totalJoule} J)`); kv(75, "PRE-SHOCK PAUSE", `${parsed.maxPreShock > 0 ? parsed.maxPreShock + ' s' : '-- s'}`, `Min: ${parsed.minPreShock} Max: ${parsed.maxPreShock}`); y+=20;
-    
-    h3("3. MEDIKAMENTE & INTERVALLE");
-    kv(15, "Ø ADRENALIN-INTERVALL", parsed.avgAdr ? formatTime(parsed.avgAdr) : '--:--'); kv(75, "Ø AMIODARON-INTERVALL", parsed.avgAmio ? formatTime(parsed.avgAmio) : '--:--'); kv(135, "ZEIT BIS ROSC", parsed.timeToRosc ? formatTime(parsed.timeToRosc) : '--:--'); y+=20;
-    
-    h3("4. ATEMWEGS-MANAGEMENT");
-    kv(15, `1. MASSNAHME (${parsed.firstAirway?.type?.toUpperCase() || '-'})`, parsed.firstAirway ? formatTime(parsed.firstAirway.time) : '--:--'); kv(75, `SICHERUNG (${state.airwayType ? state.airwayType.toUpperCase() : '-'})`, state.airwayType ? 'Erfolgt' : '--:--'); y+=20;
-    
-    h3("5. REAKTIONSZEITEN (AB START REA)");
-    kv(15, "1. KOMPRESSION", parsed.firstCPR ? formatTime(parsed.firstCPR) : '--:--'); kv(60, "1. SCHOCK", parsed.firstShock ? formatTime(parsed.firstShock) : '--:--'); kv(105, "1. SUPRA", parsed.firstAdr ? formatTime(parsed.firstAdr) : '--:--'); kv(150, "1. ZUGANG", parsed.firstAccess ? formatTime(parsed.firstAccess) : '--:--');
-    drawFooter(doc);
-};
+export default function AdrenalinButton() {
+  const { state, dispatch, logEvent } = useContext(CprContext);
+
+  // KRITISCHER FIX: Eiserne Trennung zwischen Kind und Erwachsenen
+  const dose = state.isPediatric 
+    ? (state.patientWeight ? `${Math.round(state.patientWeight * 10)} µg` : '?? µg (Gewicht!)')
+    : '1 mg';
+
+  const isActive = state.adrSeconds > 0;
+  const remaining = isActive ? 240 - state.adrSeconds : 0;
+  const isWarning = isActive && remaining <= 30;
+
+  const prevAdrRef = useRef(state.adrSeconds);
+  useEffect(() => {
+    if (prevAdrRef.current >= 239 && state.adrSeconds === 0) {
+      if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 200]);
+      playAdrAlarm(state.isMuted);
+    }
+    prevAdrRef.current = state.adrSeconds;
+  }, [state.adrSeconds, state.isMuted]);
+
+  const handleClick = () => {
+    if (isActive) return; 
+    logEvent(CPR_CONFIG.EVENTS.DRUG, `Adrenalin ${dose} gegeben`);
+    dispatch({ type: 'GIVE_ADRENALIN' });
+  };
+
+  const formatTime = (secs) => {
+    const m = Math.floor(secs / 60).toString().padStart(2, '0');
+    const s = (secs % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  };
+
+  const strokeWidth = 5;
+  const radius = 43 - strokeWidth / 2;
+  const circumference = 2 * Math.PI * radius;
+  const progress = isActive ? state.adrSeconds / 240 : 0;
+  const strokeDasharray = `${circumference * progress} ${circumference}`;
+
+  const hasWeightWarning = dose.includes('??');
+
+  return (
+    <div className="relative pointer-events-auto w-[86px] h-[86px]">
+      <button
+        onClick={handleClick}
+        className={`w-full h-full rounded-full shadow-sm border-[3px] flex flex-col items-center justify-center gap-1 active:scale-95 transition-all overflow-hidden relative cursor-pointer ${isActive ? 'bg-white border-slate-100' : 'bg-white border-emerald-400 hover:bg-slate-50'}`}
+      >
+        {isActive && (
+          <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 86 86">
+            <circle cx="43" cy="43" r={radius} fill="none" stroke="#f1f5f9" strokeWidth={strokeWidth} transform="rotate(-90 43 43)" />
+            <circle
+              cx="43" cy="43" r={radius} fill="none" stroke="#E3000F" strokeWidth={strokeWidth}
+              strokeDasharray={strokeDasharray} strokeLinecap="round" transform="rotate(-90 43 43)"
+              className="transition-all duration-1000 ease-linear"
+            />
+          </svg>
+        )}
+
+        <div className={`absolute inset-0 flex flex-col items-center justify-center w-full h-full transition-opacity duration-200 pointer-events-none ${isActive ? 'opacity-0' : 'opacity-100'}`}>
+          <i className={`fa-solid fa-syringe text-[24px] mb-0.5 ${hasWeightWarning ? 'text-red-500' : 'text-emerald-600'}`}></i>
+          <span className={`text-[9px] font-black uppercase tracking-wider leading-none text-center px-1 ${hasWeightWarning ? 'text-red-500' : 'text-emerald-600'}`}>
+            {hasWeightWarning ? '?? µg' : dose}
+          </span>
+        </div>
+
+        {isActive && (
+          <div className={`absolute inset-0 flex items-center justify-center w-full h-full z-30 rounded-full bg-white/60 backdrop-blur-[1px] text-[18px] font-black tracking-tighter pointer-events-none ${isWarning ? 'text-[#E3000F] animate-pulse' : 'text-slate-700'}`}>
+            {formatTime(remaining)}
+          </div>
+        )}
+      </button>
+
+      {state.adrCount > 0 && (
+        <div className="absolute -top-2 -right-2 bg-[#E3000F] text-white text-[12px] font-black px-2 min-w-[26px] h-7 flex items-center justify-center rounded-full shadow-md border-2 border-white z-40 pointer-events-none">
+          {state.adrCount}
+        </div>
+      )}
+    </div>
+  );
+}
 </file>
 
 <file path="src/components/PatientSetupModal.jsx">
@@ -2951,6 +2717,104 @@ export default function PatientSetupModal() {
             </button>
           </div>
 
+        </div>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="src/components/views/TabUebergabe.jsx">
+// --- Datei: src/components/views/TabUebergabe.jsx ---
+import React, { useContext } from 'react';
+import { CprContext } from '../../context/CprContext.jsx';
+
+export default function TabUebergabe() {
+  const { state } = useContext(CprContext);
+
+  const formatTime = (seconds) => {
+    if (isNaN(seconds) || seconds === null) return "00:00";
+    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  };
+
+  const aData = state.anamneseData;
+  
+  let ageStr = state.isPediatric ? (state.patientWeight ? `Kind (${state.patientWeight} kg)` : 'Kind') : 'Erwachsener';
+  if (aData.alter || aData.gewicht) {
+      let zusatz = [];
+      if (aData.alter) zusatz.push(`${aData.alter} J.`);
+      if (aData.gewicht) zusatz.push(`${aData.gewicht} kg`);
+      ageStr += ` (${zusatz.join(' | ')})`;
+  }
+
+  // KRITISCHER FIX: Sichere Berechnung für SBAR Text
+  let adrTotal = "0 mg";
+  if (state.adrCount > 0) {
+      adrTotal = state.isPediatric 
+        ? (state.patientWeight ? `${state.adrCount * Math.round(state.patientWeight * 10)} µg` : `${state.adrCount}x (Gewicht fehlt)`) 
+        : `${state.adrCount} mg`;
+  }
+  
+  let amioTotal = "0 mg";
+  if (state.amioCount > 0) {
+      amioTotal = state.isPediatric 
+        ? (state.patientWeight ? `${state.amioCount * Math.round(state.patientWeight * 5)} mg` : `${state.amioCount}x (Gewicht fehlt)`) 
+        : (state.amioCount === 1 ? '300 mg' : '450 mg');
+  }
+
+  const activeHits = Object.entries(state.hitsStatus).filter(([_, isActive]) => isActive).map(([key]) => {
+       const labels = { hypoxie: 'Hypoxie', hypovolaemie: 'Hypovolämie', hypo_hyperkali: 'Hypo- / Hyperkaliämie', hypothermie: 'Hypothermie', herzbeutel: 'Herzbeuteltamponade', toxine: 'Toxine', thrombose: 'Thrombose', tension: 'Spannungspneu' };
+       return labels[key] || key;
+  });
+
+  const samplerItems = Object.entries(aData.sampler).filter(([_, val]) => val && val.trim() !== '').map(([key, val]) => ({ key: key.toUpperCase(), val }));
+
+  return (
+    <div className="p-4 flex flex-col gap-4 pb-12 animate-in fade-in slide-in-from-bottom-2 duration-300">
+      <div className="bg-white rounded-xl border-l-4 border-[#E3000F] p-3 shadow-sm">
+        <h4 className="text-[10px] font-black text-[#E3000F] uppercase tracking-widest mb-2">S - Situation</h4>
+        <div className="grid grid-cols-2 gap-2">
+            <div><span className="block text-[9px] font-bold text-slate-400 uppercase">Patient</span><span className="text-xs font-black text-slate-700">{ageStr}</span></div>
+            <div><span className="block text-[9px] font-bold text-slate-400 uppercase">Dauer</span><span className="text-xs font-black text-slate-700">{formatTime(state.missionSeconds)} Min</span></div>
+            <div className="col-span-2"><span className="block text-[9px] font-bold text-slate-400 uppercase">Letzter Rhythmus</span><span className="text-xs font-black text-slate-700">Unbekannt / Ausstehend</span></div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl border-l-4 border-slate-400 p-3 shadow-sm">
+        <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">B - Background</h4>
+        <div className="grid grid-cols-2 gap-y-2 gap-x-1 text-[10px]">
+            <div><span className="font-bold text-slate-400">Beobachtet:</span> <span className="font-black text-slate-700">{aData.beobachtet?.toUpperCase() || '?'}</span></div>
+            <div><span className="font-bold text-slate-400">Laien-REA:</span> <span className="font-black text-slate-700">{aData.laienrea?.toUpperCase() || '?'}</span></div>
+        </div>
+        {samplerItems.length > 0 && (
+          <div className="mt-2 text-[10px] leading-tight text-slate-600 space-y-1 pt-2 border-t border-slate-100">
+            {samplerItems.map(item => (<div key={item.key}><span className="font-black text-slate-700">{item.key}:</span> {item.val}</div>))}
+          </div>
+        )}
+      </div>
+
+      <div className="bg-white rounded-xl border-l-4 border-amber-400 p-3 shadow-sm">
+        <h4 className="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-2">A - Assessment</h4>
+        <div className="flex justify-between items-center mb-2 pb-2 border-b border-slate-100">
+            <span className="text-[10px] font-bold text-slate-500">CPR Qualität (CCF)</span>
+            <span className={`text-sm font-black ${state.currentCcfPercent >= 80 ? 'text-emerald-500' : 'text-[#E3000F]'}`}>{state.currentCcfPercent || 100}%</span>
+        </div>
+        <div className="text-[10px] text-slate-600">
+            <span className="font-bold text-slate-400 block mb-1">Erfasste Ursachen (HITS):</span>
+            {activeHits.length > 0 ? activeHits.map(h => <div key={h} className="font-bold text-slate-700 truncate">- {h} gecheckt/behandelt</div>) : 'Keine HITS erfasst.'}
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl border-l-4 border-emerald-500 p-3 shadow-sm">
+        <h4 className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-2">R - Response</h4>
+        <div className="grid grid-cols-1 gap-1.5 text-[10px]">
+            <div className="flex justify-between"><span className="font-bold text-slate-400">Atemweg</span><span className="font-black text-slate-700">{state.airwayType || 'Nicht dok.'}</span></div>
+            <div className="flex justify-between"><span className="font-bold text-slate-400">Zugang</span><span className="font-black text-slate-700">{state.zugang || 'Nicht dok.'}</span></div>
+            <div className="flex justify-between"><span className="font-bold text-slate-400">Schocks</span><span className="font-black text-amber-500">{state.shockCount || 0}x abgegeben</span></div>
+            <div className="flex justify-between"><span className="font-bold text-slate-400">Adrenalin</span><span className="font-black text-[#E3000F]">{adrTotal}</span></div>
+            <div className="flex justify-between"><span className="font-bold text-slate-400">Amiodaron</span><span className="font-black text-purple-600">{amioTotal}</span></div>
         </div>
       </div>
     </div>
@@ -3437,6 +3301,84 @@ export function useGlobalTimer() {
 }
 </file>
 
+<file path="src/utils/pdf/pdfRenderers.js">
+// --- Datei: src/utils/pdf/pdfRenderers.js ---
+import { formatTime, drawFooter } from './pdfHelpers.js';
+
+export const renderSbarPage = (doc, state, parsed, isSummary) => {
+    let ageStr = state.isPediatric ? (state.patientWeight ? `Kind (${state.patientWeight} kg)` : 'Kind') : 'Erwachsener';
+    
+    // KRITISCHER FIX FÜR PDF EXPORT
+    let adrTotal = "0 mg";
+    if (state.adrCount > 0) adrTotal = state.isPediatric ? (state.patientWeight ? `${state.adrCount * Math.round(state.patientWeight * 10)} µg` : `${state.adrCount}x (Gewicht fehlt)`) : `${state.adrCount} mg`;
+    
+    let amioTotal = "0 mg";
+    if (state.amioCount > 0) amioTotal = state.isPediatric ? (state.patientWeight ? `${state.amioCount * Math.round(state.patientWeight * 5)} mg` : `${state.amioCount}x (Gewicht fehlt)`) : (state.amioCount === 1 ? '300 mg' : '450 mg');
+    
+    const aData = state.anamneseData;
+    const activeHits = Object.entries(state.hitsStatus).filter(([_, isActive]) => isActive).map(([key]) => key);
+    const samplerCount = Object.values(aData.sampler).filter(v => v !== '').length;
+
+    doc.setFontSize(22); doc.setTextColor(15, 23, 42); doc.setFont("helvetica", "bold"); doc.text("REANIMATIONSPROTOKOLL", 15, 20);
+    doc.setFontSize(10); doc.setTextColor(100, 116, 139); doc.setFont("helvetica", "normal"); doc.text(`MODUS: ${isSummary ? 'SCHOCKRAUM ÜBERGABE' : 'DEBRIEFING & AUDIT'}`, 15, 26);
+    doc.text(`Datum: ${new Date().toLocaleDateString('de-DE')}`, 195, 20, {align: 'right'}); doc.text(`Einsatzbeginn: ${state.startTime || '--:--'} Uhr`, 195, 26, {align: 'right'});
+    doc.setDrawColor(227, 0, 15); doc.setLineWidth(1); doc.line(15, 30, 195, 30);
+  
+    let y = 40; doc.setFontSize(14); doc.setTextColor(227, 0, 15); doc.setFont("helvetica", "bold"); doc.text("S - SITUATION", 15, y); doc.setDrawColor(241, 245, 249); doc.setLineWidth(0.5); doc.line(15, y+2, 195, y+2); y+=8;
+    doc.setFontSize(9); doc.setTextColor(100, 116, 139); doc.setFont("helvetica", "bold"); doc.text("PATIENT", 15, y); doc.text("GESAMTDAUER", 75, y); doc.text("AKTUELLER STATUS", 135, y);
+    y+=6; doc.setFontSize(12); doc.setTextColor(15, 23, 42); doc.text(ageStr, 15, y); doc.text(`${formatTime(state.missionSeconds)} Min`, 75, y); 
+    const lines = doc.splitTextToSize(parsed.endStatus.toUpperCase(), 60); doc.text(lines, 135, y);
+  
+    y += 20; doc.setFontSize(14); doc.setTextColor(227, 0, 15); doc.setFont("helvetica", "bold"); doc.text("B - BACKGROUND (ANAMNESE)", 15, y); doc.setDrawColor(241, 245, 249); doc.setLineWidth(0.5); doc.line(15, y+2, 195, y+2); y+=8;
+    doc.setFontSize(10); doc.setTextColor(100, 116, 139); doc.text("Beobachtet:", 15, y); doc.setTextColor(15, 23, 42); doc.text(aData.beobachtet || '?', 40, y);
+    doc.setTextColor(100, 116, 139); doc.text("Laien-REA:", 75, y); doc.setTextColor(15, 23, 42); doc.text(aData.laienrea || '?', 100, y);
+    doc.setTextColor(100, 116, 139); doc.text("Brustschmerz:", 135, y); doc.setTextColor(15, 23, 42); doc.text(aData.brustschmerz || '?', 165, y);
+    y+=8; doc.setTextColor(100, 116, 139); doc.text("SAMPLER:", 15, y); y+=6; doc.setFont("helvetica", "normal"); doc.setTextColor(15, 23, 42);
+    if(samplerCount > 0) { Object.entries(aData.sampler).filter(([_,v])=>v).forEach(([k,v]) => { doc.text(`${k.toUpperCase()}: ${v}`, 15, y); y+=5; }); } 
+    else { doc.text("Keine SAMPLER-Daten erfasst.", 15, y); y+=5; }
+    
+    y += 10; doc.setFontSize(14); doc.setTextColor(227, 0, 15); doc.setFont("helvetica", "bold"); doc.text("A - ASSESSMENT (DIAGNOSTIK)", 15, y); doc.setDrawColor(241, 245, 249); doc.setLineWidth(0.5); doc.line(15, y+2, 195, y+2); y+=8;
+    doc.setFontSize(10); doc.setTextColor(100, 116, 139); doc.text("Reversible Ursachen (HITS):", 15, y); doc.text("CPR Qualität (CCF):", 135, y);
+    y+=6; doc.setTextColor(15, 23, 42); doc.setFont("helvetica", "normal");
+    if(activeHits.length > 0) { activeHits.forEach(h => { doc.text(`- ${h.toUpperCase()} gecheckt/behandelt`, 15, y); y += 5; }); } 
+    else { doc.text("Keine Ursachen (HITS) erfasst.", 15, y); }
+    doc.setFontSize(22); doc.setFont("helvetica", "bold"); doc.setTextColor(state.currentCcfPercent >= 80 ? 16 : 227, state.currentCcfPercent >= 80 ? 185 : 0, state.currentCcfPercent >= 80 ? 129 : 15); doc.text(`${state.currentCcfPercent || 100}%`, 135, y);
+    doc.setFontSize(9); doc.setTextColor(100, 116, 139); doc.setFont("helvetica", "normal"); doc.text("Zielwert: > 80%", 135, y+5);
+  
+    y += 20; doc.setFontSize(14); doc.setTextColor(227, 0, 15); doc.setFont("helvetica", "bold"); doc.text("R - RESPONSE (MASSNAHMEN)", 15, y); doc.setDrawColor(241, 245, 249); doc.setLineWidth(0.5); doc.line(15, y+2, 195, y+2); y+=8;
+    const dR = (l, v) => { doc.setFontSize(10); doc.setFont("helvetica", "bold"); doc.setTextColor(100, 116, 139); doc.text(l, 15, y); doc.setTextColor(15, 23, 42); doc.setFont("helvetica", "normal"); doc.text(`|  ${v}`, 60, y); y+=8; };
+    dR("Atemweg", state.airwayType || 'Nicht dokumentiert'); dR("Zugang", state.zugang || 'Nicht dokumentiert');
+    dR("Defibrillationen", `${state.shockCount || 0}x Schocks abgegeben`); dR("Adrenalin", `Gesamt: ${adrTotal}`); dR("Amiodaron", `Gesamt: ${amioTotal}`);
+    drawFooter(doc);
+};
+
+export const renderKpiPage = (doc, state, parsed) => {
+    doc.addPage('a4', 'portrait'); let y = 20;
+    doc.setFontSize(22); doc.setTextColor(15, 23, 42); doc.setFont("helvetica", "bold"); doc.text("PERFORMANCE INSIGHTS", 15, y);
+    doc.setFontSize(10); doc.setTextColor(100, 116, 139); doc.setFont("helvetica", "normal"); doc.text("DETAILLIERTE KPI-AUSWERTUNG FÜR DAS DEBRIEFING", 15, y+6);
+    y+=12; doc.setDrawColor(227, 0, 15); doc.setLineWidth(1); doc.line(15, y, 195, y); y+=10;
+    
+    const h3 = (t) => { doc.setFontSize(12); doc.setTextColor(227, 0, 15); doc.setFont("helvetica", "bold"); doc.text(t, 15, y); y+=6; };
+    const kv = (x, l, v, sub) => { doc.setFontSize(8); doc.setTextColor(100, 116, 139); doc.setFont("helvetica", "bold"); doc.text(l, x, y); doc.setFontSize(14); doc.setTextColor(15, 23, 42); doc.text(v, x, y+6); if(sub) { doc.setFontSize(8); doc.setFont("helvetica", "normal"); doc.text(sub, x, y+10); } };
+    
+    h3("1. CPR QUALITÄT & PAUSEN");
+    kv(15, "CCF (CPR-ANTEIL)", `${state.currentCcfPercent || 100}%`); kv(75, "HANDS-OFF GESAMT", `${formatTime(parsed.totalHandsOff)} Min`); kv(135, "LÄNGSTE PAUSE", `${parsed.maxPause} s`); y+=20;
+    
+    h3("2. SCHOCK-THERAPIE & RHYTHMUS");
+    kv(15, "DEFIBRILLATIONEN", `${state.shockCount}x (${parsed.totalJoule} J)`); kv(75, "PRE-SHOCK PAUSE", `${parsed.maxPreShock > 0 ? parsed.maxPreShock + ' s' : '-- s'}`, `Min: ${parsed.minPreShock} Max: ${parsed.maxPreShock}`); y+=20;
+    
+    h3("3. MEDIKAMENTE & INTERVALLE");
+    kv(15, "Ø ADRENALIN-INTERVALL", parsed.avgAdr ? formatTime(parsed.avgAdr) : '--:--'); kv(75, "Ø AMIODARON-INTERVALL", parsed.avgAmio ? formatTime(parsed.avgAmio) : '--:--'); kv(135, "ZEIT BIS ROSC", parsed.timeToRosc ? formatTime(parsed.timeToRosc) : '--:--'); y+=20;
+    
+    h3("4. ATEMWEGS-MANAGEMENT");
+    kv(15, `1. MASSNAHME (${parsed.firstAirway?.type?.toUpperCase() || '-'})`, parsed.firstAirway ? formatTime(parsed.firstAirway.time) : '--:--'); kv(75, `SICHERUNG (${state.airwayType ? state.airwayType.toUpperCase() : '-'})`, state.airwayType ? 'Erfolgt' : '--:--'); y+=20;
+    
+    h3("5. REAKTIONSZEITEN (AB START REA)");
+    kv(15, "1. KOMPRESSION", parsed.firstCPR ? formatTime(parsed.firstCPR) : '--:--'); kv(60, "1. SCHOCK", parsed.firstShock ? formatTime(parsed.firstShock) : '--:--'); kv(105, "1. SUPRA", parsed.firstAdr ? formatTime(parsed.firstAdr) : '--:--'); kv(150, "1. ZUGANG", parsed.firstAccess ? formatTime(parsed.firstAccess) : '--:--');
+    drawFooter(doc);
+};
+</file>
+
 <file path="package.json">
 {
   "name": "cpr-assist",
@@ -3470,85 +3412,6 @@ export function useGlobalTimer() {
     "vite": "^8.0.16",
     "vite-plugin-pwa": "^1.3.0"
   }
-}
-</file>
-
-<file path="src/components/dashboard/AmiodaronButton.jsx">
-// --- Datei: src/components/dashboard/AmiodaronButton.jsx ---
-import React, { useContext } from 'react';
-import { CprContext } from '../../context/CprContext.jsx';
-import { CPR_CONFIG } from '../../config/cprConfig.js';
-
-export default function AmiodaronButton() {
-  const { state, dispatch, logEvent } = useContext(CprContext);
-
-  const handleUndo = (e) => {
-    e.stopPropagation();
-    if (window.confirm("Letztes Ereignis (Amiodaron) aus Protokoll löschen?")) {
-      dispatch({ type: 'UNDO_LAST_EVENT' });
-    }
-  };
-
-  if (state.amioCount >= 2) {
-    return (
-      <div className="relative pointer-events-auto w-[86px] h-[86px]">
-        <button 
-          onClick={() => dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.MEDS_MENU })} 
-          className="w-full h-full rounded-full shadow-sm border-[3px] flex flex-col items-center justify-center gap-1 hover:bg-slate-50 active:scale-95 transition-all cursor-pointer bg-white text-indigo-600 border-indigo-400"
-        >
-          <i className="fa-solid fa-suitcase-medical text-[24px] mb-0.5 pointer-events-none"></i>
-          <span className="text-[9px] font-black uppercase tracking-wider leading-none text-center px-1 pointer-events-none">
-            Weitere Meds
-          </span>
-        </button>
-
-        <button 
-          onClick={handleUndo} 
-          className="absolute -top-1 -left-1 bg-slate-100 text-slate-500 w-7 h-7 flex items-center justify-center rounded-full shadow-sm border-2 border-white z-40 active:scale-90 hover:bg-slate-200 cursor-pointer"
-        >
-          <i className="fa-solid fa-rotate-left text-[10px] pointer-events-none"></i>
-        </button>
-      </div>
-    );
-  }
-
-  const dose = state.isPediatric && state.patientWeight
-    ? `${Math.round(state.patientWeight * 5)} mg`
-    : (state.amioCount === 0 ? '300 mg' : '150 mg');
-
-  const handleClick = () => {
-    logEvent(CPR_CONFIG.EVENTS.DRUG, `Amiodaron ${dose} gegeben`);
-    dispatch({ type: 'GIVE_AMIODARON' });
-  };
-
-  return (
-    <div className="relative pointer-events-auto w-[86px] h-[86px]">
-      <button
-        onClick={handleClick}
-        className="w-full h-full rounded-full shadow-sm border-[3px] flex flex-col items-center justify-center gap-1 active:scale-95 transition-all cursor-pointer bg-white border-purple-400 hover:bg-slate-50"
-      >
-        <i className="fa-solid fa-syringe text-[24px] mb-0.5 text-purple-600 pointer-events-none"></i>
-        <span className="text-[9px] font-black uppercase tracking-wider leading-none text-center px-1 text-purple-600 pointer-events-none">
-          Amio. {dose}
-        </span>
-      </button>
-
-      {state.amioCount > 0 && (
-        <button 
-          onClick={handleUndo} 
-          className="absolute -top-1 -left-1 bg-slate-100 text-slate-500 w-7 h-7 flex items-center justify-center rounded-full shadow-sm border-2 border-white z-40 active:scale-90 hover:bg-slate-200 cursor-pointer"
-        >
-          <i className="fa-solid fa-rotate-left text-[10px] pointer-events-none"></i>
-        </button>
-      )}
-
-      {state.amioCount > 0 && (
-        <div className="absolute -top-2 -right-2 bg-[#E3000F] text-white text-[12px] font-black px-2 min-w-[26px] h-7 flex items-center justify-center rounded-full shadow-md border-2 border-white z-40 pointer-events-none">
-          {state.amioCount}
-        </div>
-      )}
-    </div>
-  );
 }
 </file>
 
@@ -3733,285 +3596,6 @@ export default function ViewLogbook() {
 }
 </file>
 
-<file path="src/hooks/useAirwayTimer.js">
-// --- Datei: src/hooks/useAirwayTimer.js ---
-export function useAirwayTimer() {
-  // Dieser Hook ist nun obsolet!
-  // Das gesamte visuelle und akustische Feedback (inklusive requestAnimationFrame)
-  // findet jetzt für maximale 60-FPS-Performance direkt in AirwayButton.jsx statt.
-  return { isFlashingHub: false };
-}
-</file>
-
-<file path="src/hooks/useMasterLoop.js">
-// --- Datei: src/hooks/useMasterLoop.js ---
-import { useEffect, useContext, useRef, useCallback } from 'react';
-import { CprContext } from '../context/CprContext.jsx';
-import { CPR_CONFIG } from '../config/cprConfig.js';
-
-export function useMasterLoop() {
-  const { state, dispatch, logEvent } = useContext(CprContext);
-  
-  const stateRef = useRef(state);
-  stateRef.current = state; 
-
-  const toggleCpr = useCallback(() => {
-    if (!window.CPR_AudioCtx) {
-        window.CPR_AudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    if (window.CPR_AudioCtx.state === 'suspended') window.CPR_AudioCtx.resume();
-
-    const isComp = !stateRef.current.isCompressing;
-    dispatch({ type: 'TOGGLE_COMPRESSION', payload: isComp });
-    dispatch({ type: 'SET_COMPRESSION_COUNT', payload: 0 }); 
-    logEvent(CPR_CONFIG.EVENTS.PAUSE, isComp ? "Kompression FORTGESETZT" : "Kompression PAUSE");
-  }, [dispatch, logEvent]);
-
-  const setAirway = useCallback((airwayType) => {
-    dispatch({ type: 'SET_AIRWAY', payload: !!airwayType });
-    dispatch({ type: 'SET_AIRWAY_TYPE', payload: airwayType });
-    logEvent(CPR_CONFIG.EVENTS.AIRWAY, airwayType ? `Atemweg gesichert: ${airwayType}` : "Atemweg entfernt");
-
-    if (airwayType === 'Beutel-Maske') {
-      const mode = stateRef.current.isPediatric ? '15:2' : '30:2';
-      dispatch({ type: 'SET_CPR_MODE', payload: mode });
-      logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, `Modus: ${mode} (Beutel-Maske)`);
-    } else if (airwayType === 'Invasiv') {
-      dispatch({ type: 'SET_CPR_MODE', payload: 'continuous' });
-      logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, `Modus: KONT (Invasiv)`);
-    }
-  }, [dispatch, logEvent]);
-
-  const playVentSound = useCallback(() => {
-    if (stateRef.current.isMuted || !window.CPR_AudioCtx) return;
-    
-    const ctx = window.CPR_AudioCtx;
-    const bufferSize = ctx.sampleRate * 1.0;
-    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
-
-    const source = ctx.createBufferSource();
-    source.buffer = buffer;
-    const filter = ctx.createBiquadFilter();
-    filter.type = 'bandpass';
-    filter.frequency.value = 400;
-    filter.Q.value = 0.8;
-
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.6, ctx.currentTime + 0.1);
-    gain.gain.setValueAtTime(0.6, ctx.currentTime + 0.7);
-    gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.0);
-
-    source.connect(filter);
-    filter.connect(gain);
-    gain.connect(ctx.destination);
-    source.start();
-    source.stop(ctx.currentTime + 1.0);
-  }, []);
-
-  const triggerVentilationPhase = useCallback(() => {
-    dispatch({ type: 'SET_VENTILATION_PHASE', payload: true });
-    dispatch({ type: 'TOGGLE_COMPRESSION', payload: false });
-    dispatch({ type: 'SET_COMPRESSION_COUNT', payload: 0 });
-
-    playVentSound();
-    setTimeout(() => {
-      playVentSound();
-      setTimeout(() => {
-        const validPhases = [CPR_CONFIG.PHASES.RUNNING, CPR_CONFIG.PHASES.OB_ANALYZE, CPR_CONFIG.PHASES.DECISION, CPR_CONFIG.PHASES.JOULE, CPR_CONFIG.PHASES.WAITING_CPR_RESUME];
-        if (validPhases.includes(stateRef.current.appPhase)) {
-           dispatch({ type: 'SET_VENTILATION_PHASE', payload: false });
-           dispatch({ type: 'TOGGLE_COMPRESSION', payload: true });
-        }
-      }, 1500);
-    }, 1500);
-  }, [dispatch, playVentSound]);
-
-  useEffect(() => {
-    let lastTick = Date.now();
-    const masterTimer = setInterval(() => {
-      if (stateRef.current.appPhase === 'ONBOARDING') {
-        lastTick = Date.now();
-        return;
-      }
-      
-      const now = Date.now();
-      if (now - lastTick >= 1000) {
-        lastTick += 1000;
-        dispatch({ type: 'TICK_MISSION' });
-
-        if (stateRef.current.adrSeconds > 0) {
-          dispatch({ type: 'TICK_ADR' });
-        }
-
-        const isPastSetup = !['ONBOARDING', 'OB_INITIAL_BREATHS'].includes(stateRef.current.appPhase);
-        if (isPastSetup) {
-          dispatch({ type: 'TICK_CCF_ARREST' });
-          if (stateRef.current.isCompressing) dispatch({ type: 'TICK_CCF_COMPRESSING' });
-          else if (!stateRef.current.isVentilationPhase) dispatch({ type: 'TICK_PAUSE' });
-        }
-        if (stateRef.current.appPhase === CPR_CONFIG.PHASES.RUNNING) dispatch({ type: 'TICK_CYCLE' });
-      }
-    }, 100);
-    return () => clearInterval(masterTimer);
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (!state.isCompressing) return;
-
-    if (!window.CPR_AudioCtx) {
-        window.CPR_AudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    if (window.CPR_AudioCtx.state === 'suspended') window.CPR_AudioCtx.resume();
-
-    const ctx = window.CPR_AudioCtx;
-    let nextNoteTime = ctx.currentTime + 0.05;
-    let timerID;
-
-    const scheduler = () => {
-        while (nextNoteTime < ctx.currentTime + 0.1) {
-            
-            if (!stateRef.current.isMuted) {
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(800, nextNoteTime);
-                gain.gain.setValueAtTime(0, nextNoteTime);
-                gain.gain.linearRampToValueAtTime(1.0, nextNoteTime + 0.01);
-                gain.gain.exponentialRampToValueAtTime(0.001, nextNoteTime + 0.05);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start(nextNoteTime);
-                osc.stop(nextNoteTime + 0.05);
-            }
-
-            const timeUntilNote = Math.max(0, (nextNoteTime - ctx.currentTime) * 1000);
-            setTimeout(() => {
-                const currentCount = stateRef.current.compressionCount;
-                if (stateRef.current.cprMode === 'continuous') {
-                    dispatch({ type: 'SET_COMPRESSION_COUNT', payload: currentCount === 99 ? 1 : currentCount + 1 });
-                } else {
-                    const limit = stateRef.current.isPediatric ? 15 : 30;
-                    const nextCount = currentCount + 1;
-                    dispatch({ type: 'SET_COMPRESSION_COUNT', payload: nextCount });
-
-                    if (nextCount >= limit) {
-                        setTimeout(() => triggerVentilationPhase(), 200);
-                    }
-                }
-            }, timeUntilNote);
-
-            const secondsPerBeat = 60.0 / (stateRef.current.bpm || 110);
-            nextNoteTime += secondsPerBeat;
-        }
-        
-        timerID = setTimeout(scheduler, 25);
-    };
-
-    scheduler();
-    return () => clearTimeout(timerID);
-    
-  }, [state.isCompressing, triggerVentilationPhase, dispatch]);
-
-  return { toggleCpr, setAirway };
-}
-</file>
-
-<file path="src/components/views/ViewAirwayDoc.jsx">
-// --- Datei: src/components/views/ViewAirwayDoc.jsx ---
-import React, { useContext, useState } from 'react';
-import { CprContext } from '../../context/CprContext.jsx';
-import { CPR_CONFIG } from '../../config/cprConfig.js';
-import { getBroselowZone } from '../../config/broselowData.js';
-
-export default function ViewAirwayDoc() {
-  const { state, dispatch, logEvent } = useContext(CprContext);
-  const activeZone = state.isPediatric ? getBroselowZone(state.patientWeight || 10) : null;
-  
-  const [size, setSize] = useState('');
-  const [depth, setDepth] = useState('');
-  
-  const returnPhase = state.previousAppPhase || CPR_CONFIG.PHASES.RUNNING;
-
-  const handleSave = () => {
-    const finalSize = size || '?';
-    const finalDepth = depth || '?';
-    
-    dispatch({ 
-      type: 'SET_AIRWAY', 
-      payload: { established: true, type: state.airwayType, size: finalSize, depth: finalDepth } 
-    });
-    
-    dispatch({ type: 'SET_CPR_MODE', payload: 'continuous' });
-    dispatch({ type: 'SET_COMPRESSION_COUNT', payload: 0 }); 
-    
-    logEvent(CPR_CONFIG.EVENTS.AIRWAY, `${state.airwayType} etabliert (Gr. ${finalSize}, Tiefe: ${finalDepth}cm)`);
-    logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, `Modus: continuous (Auto-Switch durch Invasiv)`);
-    
-    dispatch({ type: 'SET_PHASE', payload: returnPhase });
-  };
-
-  return (
-    <div className="flex flex-col items-center justify-center w-full h-full p-6 animate-in slide-in-from-right-8 duration-200">
-      
-      <button 
-        onClick={() => dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.AIRWAY_MENU })} 
-        className="absolute top-4 left-4 w-8 h-8 bg-slate-50 rounded-full text-slate-400 flex items-center justify-center active:scale-95 transition-transform z-10 hover:bg-slate-100"
-      >
-        <i className="fa-solid fa-arrow-left pointer-events-none"></i>
-      </button>
-
-      <h2 className="text-[12px] font-black text-slate-700 uppercase tracking-widest text-center mt-1 mb-2">
-        Doku: {state.airwayType || 'Invasiv'}
-      </h2>
-
-      {/* Subtiler, unaufdringlicher Hinweis statt blinkender Warnung */}
-      <div className="flex items-center gap-1.5 text-slate-400 mb-5">
-        <i className="fa-solid fa-circle-info text-[10px]"></i>
-        <span className="text-[8px] font-bold uppercase tracking-widest">etCO2 & Cuffdruck prüfen</span>
-      </div>
-
-      <div className="w-[85%] max-w-[220px] flex flex-col gap-2.5 mb-5">
-        <div>
-          <label className="text-[8px] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-0.5 block">
-            Größe (mm)
-          </label>
-          <input 
-            type="text" 
-            value={size} 
-            onChange={(e) => setSize(e.target.value)} 
-            placeholder={activeZone?.airway?.tubus || "z.B. 7.5"} 
-            className="w-full bg-slate-50 border border-slate-200 rounded-[14px] p-2.5 text-center font-black text-slate-600 text-sm placeholder:text-slate-300 placeholder:font-bold focus:outline-none focus:border-cyan-300 focus:bg-cyan-50 transition-colors" 
-          />
-        </div>
-        <div>
-          <label className="text-[8px] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-0.5 block">
-            Tiefe (cm)
-          </label>
-          <input 
-            type="text" 
-            value={depth} 
-            onChange={(e) => setDepth(e.target.value)} 
-            placeholder={activeZone?.airway?.tiefe || "z.B. 21"} 
-            className="w-full bg-slate-50 border border-slate-200 rounded-[14px] p-2.5 text-center font-black text-slate-600 text-sm placeholder:text-slate-300 placeholder:font-bold focus:outline-none focus:border-cyan-300 focus:bg-cyan-50 transition-colors" 
-          />
-        </div>
-      </div>
-
-      <button 
-        onClick={handleSave} 
-        className="w-[85%] max-w-[220px] py-3 rounded-full font-black uppercase tracking-widest text-[11px] bg-emerald-500 text-white shadow-sm hover:bg-emerald-400 active:scale-95 transition-all flex items-center justify-center gap-2"
-      >
-        <i className="fa-solid fa-check pointer-events-none"></i> 
-        <span className="pointer-events-none">Speichern</span>
-      </button>
-    </div>
-  );
-}
-</file>
-
 <file path="src/components/views/ViewAirwayMenu.jsx">
 // --- Datei: src/components/views/ViewAirwayMenu.jsx ---
 import React, { useContext } from 'react';
@@ -4114,6 +3698,398 @@ export default function ViewAirwayMenu() {
           <span className="pointer-events-none">Atemweg entfernen</span>
         </button>
       )}
+    </div>
+  );
+}
+</file>
+
+<file path="src/hooks/useAirwayTimer.js">
+// --- Datei: src/hooks/useAirwayTimer.js ---
+export function useAirwayTimer() {
+  // Dieser Hook ist nun obsolet!
+  // Das gesamte visuelle und akustische Feedback (inklusive requestAnimationFrame)
+  // findet jetzt für maximale 60-FPS-Performance direkt in AirwayButton.jsx statt.
+  return { isFlashingHub: false };
+}
+</file>
+
+<file path="src/hooks/useMasterLoop.js">
+// --- Datei: src/hooks/useMasterLoop.js ---
+import { useEffect, useContext, useRef, useCallback } from 'react';
+import { CprContext } from '../context/CprContext.jsx';
+import { CPR_CONFIG } from '../config/cprConfig.js';
+
+export function useMasterLoop() {
+  const { state, dispatch, logEvent } = useContext(CprContext);
+  
+  const stateRef = useRef(state);
+  stateRef.current = state; 
+
+  const toggleCpr = useCallback(() => {
+    if (!window.CPR_AudioCtx) {
+        window.CPR_AudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (window.CPR_AudioCtx.state === 'suspended') window.CPR_AudioCtx.resume();
+
+    const isComp = !stateRef.current.isCompressing;
+    dispatch({ type: 'TOGGLE_COMPRESSION', payload: isComp });
+    dispatch({ type: 'SET_COMPRESSION_COUNT', payload: 0 }); 
+    logEvent(CPR_CONFIG.EVENTS.PAUSE, isComp ? "Kompression FORTGESETZT" : "Kompression PAUSE");
+  }, [dispatch, logEvent]);
+
+  const setAirway = useCallback((airwayType) => {
+    dispatch({ type: 'SET_AIRWAY', payload: !!airwayType });
+    dispatch({ type: 'SET_AIRWAY_TYPE', payload: airwayType });
+    logEvent(CPR_CONFIG.EVENTS.AIRWAY, airwayType ? `Atemweg gesichert: ${airwayType}` : "Atemweg entfernt");
+
+    if (airwayType === 'Beutel-Maske') {
+      const mode = stateRef.current.isPediatric ? '15:2' : '30:2';
+      dispatch({ type: 'SET_CPR_MODE', payload: mode });
+      logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, `Modus: ${mode} (Beutel-Maske)`);
+    } else if (airwayType === 'Invasiv') {
+      dispatch({ type: 'SET_CPR_MODE', payload: 'continuous' });
+      logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, `Modus: KONT (Invasiv)`);
+    }
+  }, [dispatch, logEvent]);
+
+  const playVentSound = useCallback(() => {
+    if (stateRef.current.isMuted || !window.CPR_AudioCtx) return;
+    
+    const ctx = window.CPR_AudioCtx;
+    const bufferSize = ctx.sampleRate * 1.0;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.value = 400;
+    filter.Q.value = 0.8;
+
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0, ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.6, ctx.currentTime + 0.1);
+    gain.gain.setValueAtTime(0.6, ctx.currentTime + 0.7);
+    gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.0);
+
+    source.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+    source.start();
+    source.stop(ctx.currentTime + 1.0);
+  }, []);
+
+  const triggerVentilationPhase = useCallback(() => {
+    dispatch({ type: 'SET_VENTILATION_PHASE', payload: true });
+    dispatch({ type: 'TOGGLE_COMPRESSION', payload: false });
+    dispatch({ type: 'SET_COMPRESSION_COUNT', payload: 0 });
+
+    playVentSound();
+    setTimeout(() => {
+      playVentSound();
+      setTimeout(() => {
+        const validPhases = [CPR_CONFIG.PHASES.RUNNING, CPR_CONFIG.PHASES.OB_ANALYZE, CPR_CONFIG.PHASES.DECISION, CPR_CONFIG.PHASES.JOULE, CPR_CONFIG.PHASES.WAITING_CPR_RESUME];
+        if (validPhases.includes(stateRef.current.appPhase)) {
+           dispatch({ type: 'SET_VENTILATION_PHASE', payload: false });
+           dispatch({ type: 'TOGGLE_COMPRESSION', payload: true });
+        }
+      }, 1500);
+    }, 1500);
+  }, [dispatch, playVentSound]);
+
+  // ==============================================
+  // DER KORRIGIERTE MASTER-TIMER
+  // ==============================================
+  useEffect(() => {
+    let lastTick = Date.now();
+    const masterTimer = setInterval(() => {
+      if (stateRef.current.appPhase === CPR_CONFIG.PHASES.ONBOARDING) {
+        lastTick = Date.now();
+        return;
+      }
+      
+      const now = Date.now();
+      if (now - lastTick >= 1000) {
+        lastTick += 1000;
+        
+        const phase = stateRef.current.appPhase;
+        
+        // 1. Absolute Einsatzzeit (Läuft immer)
+        dispatch({ type: 'TICK_MISSION' });
+
+        // 2. Adrenalin-Timer (Läuft, falls aktiv)
+        if (stateRef.current.adrSeconds > 0) {
+          dispatch({ type: 'TICK_ADR' });
+        }
+
+        // 3. ROSC Stabilisierungs-Timer (Läuft NUR im ROSC)
+        if (phase === CPR_CONFIG.PHASES.ROSC) {
+          dispatch({ type: 'TICK_ROSC' });
+        }
+
+        // 4. CPR Qualitäts-Messung & Pausen (Läuft NICHT in End-States)
+        const isResuscitating = ![
+          CPR_CONFIG.PHASES.ONBOARDING, 
+          CPR_CONFIG.PHASES.OB_INITIAL_BREATHS, 
+          CPR_CONFIG.PHASES.ROSC, 
+          CPR_CONFIG.PHASES.TERMINATION, 
+          CPR_CONFIG.PHASES.DEBRIEFING
+        ].includes(phase);
+
+        if (isResuscitating) {
+          dispatch({ type: 'TICK_CCF_ARREST' });
+          if (stateRef.current.isCompressing) {
+             dispatch({ type: 'TICK_CCF_COMPRESSING' });
+          } else if (!stateRef.current.isVentilationPhase) {
+             dispatch({ type: 'TICK_PAUSE' });
+          }
+        }
+
+        // 5. Rhythmusanalyse 120s Loop (Läuft nur im Haupt-Dashboard)
+        if (phase === CPR_CONFIG.PHASES.RUNNING) {
+          dispatch({ type: 'TICK_CYCLE' });
+        }
+      }
+    }, 100);
+    return () => clearInterval(masterTimer);
+  }, [dispatch]);
+
+  // ==============================================
+  // METRONOM SCHEDULER
+  // ==============================================
+  useEffect(() => {
+    if (!state.isCompressing) return;
+
+    if (!window.CPR_AudioCtx) {
+        window.CPR_AudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (window.CPR_AudioCtx.state === 'suspended') window.CPR_AudioCtx.resume();
+
+    const ctx = window.CPR_AudioCtx;
+    let nextNoteTime = ctx.currentTime + 0.05;
+    let timerID;
+
+    const scheduler = () => {
+        while (nextNoteTime < ctx.currentTime + 0.1) {
+            
+            if (!stateRef.current.isMuted) {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(800, nextNoteTime);
+                gain.gain.setValueAtTime(0, nextNoteTime);
+                gain.gain.linearRampToValueAtTime(1.0, nextNoteTime + 0.01);
+                gain.gain.exponentialRampToValueAtTime(0.001, nextNoteTime + 0.05);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(nextNoteTime);
+                osc.stop(nextNoteTime + 0.05);
+            }
+
+            const timeUntilNote = Math.max(0, (nextNoteTime - ctx.currentTime) * 1000);
+            setTimeout(() => {
+                const currentCount = stateRef.current.compressionCount;
+                if (stateRef.current.cprMode === 'continuous') {
+                    dispatch({ type: 'SET_COMPRESSION_COUNT', payload: currentCount === 99 ? 1 : currentCount + 1 });
+                } else {
+                    const limit = stateRef.current.isPediatric ? 15 : 30;
+                    const nextCount = currentCount + 1;
+                    dispatch({ type: 'SET_COMPRESSION_COUNT', payload: nextCount });
+
+                    if (nextCount >= limit) {
+                        setTimeout(() => triggerVentilationPhase(), 200);
+                    }
+                }
+            }, timeUntilNote);
+
+            const secondsPerBeat = 60.0 / (stateRef.current.bpm || 110);
+            nextNoteTime += secondsPerBeat;
+        }
+        
+        timerID = setTimeout(scheduler, 25);
+    };
+
+    scheduler();
+    return () => clearTimeout(timerID);
+    
+  }, [state.isCompressing, triggerVentilationPhase, dispatch]);
+
+  return { toggleCpr, setAirway };
+}
+</file>
+
+<file path="src/components/dashboard/AmiodaronButton.jsx">
+// --- Datei: src/components/dashboard/AmiodaronButton.jsx ---
+import React, { useContext } from 'react';
+import { CprContext } from '../../context/CprContext.jsx';
+import { CPR_CONFIG } from '../../config/cprConfig.js';
+
+export default function AmiodaronButton() {
+  const { state, dispatch, logEvent } = useContext(CprContext);
+
+  const handleUndo = (e) => {
+    e.stopPropagation();
+    if (window.confirm("Letztes Ereignis (Amiodaron) aus Protokoll löschen?")) {
+      dispatch({ type: 'UNDO_AMIODARON' });
+    }
+  };
+
+  if (state.amioCount >= 2) {
+    return (
+      <div className="relative pointer-events-auto w-[86px] h-[86px]">
+        <button 
+          onClick={() => dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.MEDS_MENU })} 
+          className="w-full h-full rounded-full shadow-sm border-[3px] flex flex-col items-center justify-center gap-1 hover:bg-slate-50 active:scale-95 transition-all cursor-pointer bg-white text-indigo-600 border-indigo-400"
+        >
+          <i className="fa-solid fa-suitcase-medical text-[24px] mb-0.5 pointer-events-none"></i>
+          <span className="text-[9px] font-black uppercase tracking-wider leading-none text-center px-1 pointer-events-none">
+            Weitere Meds
+          </span>
+        </button>
+
+        <button 
+          onClick={handleUndo} 
+          className="absolute -top-1 -left-1 bg-slate-100 text-slate-500 w-7 h-7 flex items-center justify-center rounded-full shadow-sm border-2 border-white z-40 active:scale-90 hover:bg-slate-200 cursor-pointer"
+        >
+          <i className="fa-solid fa-rotate-left text-[10px] pointer-events-none"></i>
+        </button>
+      </div>
+    );
+  }
+
+  // KRITISCHER FIX: Sicherer Fallback für Kinder ohne Gewicht
+  const dose = state.isPediatric
+    ? (state.patientWeight ? `${Math.round(state.patientWeight * 5)} mg` : '?? mg (Gewicht!)')
+    : (state.amioCount === 0 ? '300 mg' : '150 mg');
+
+  const handleClick = () => {
+    logEvent(CPR_CONFIG.EVENTS.DRUG, `Amiodaron ${dose} gegeben`);
+    dispatch({ type: 'GIVE_AMIODARON' });
+  };
+
+  const hasWeightWarning = dose.includes('??');
+
+  return (
+    <div className="relative pointer-events-auto w-[86px] h-[86px]">
+      <button
+        onClick={handleClick}
+        className={`w-full h-full rounded-full shadow-sm border-[3px] flex flex-col items-center justify-center gap-1 active:scale-95 transition-all cursor-pointer hover:bg-slate-50 ${hasWeightWarning ? 'bg-red-50 border-red-400 text-red-500' : 'bg-white border-purple-400 text-purple-600'}`}
+      >
+        <i className="fa-solid fa-syringe text-[24px] mb-0.5 pointer-events-none"></i>
+        <span className="text-[9px] font-black uppercase tracking-wider leading-none text-center px-1 pointer-events-none">
+          Amio. {hasWeightWarning ? '?? mg' : dose}
+        </span>
+      </button>
+
+      {state.amioCount > 0 && (
+        <button 
+          onClick={handleUndo} 
+          className="absolute -top-1 -left-1 bg-slate-100 text-slate-500 w-7 h-7 flex items-center justify-center rounded-full shadow-sm border-2 border-white z-40 active:scale-90 hover:bg-slate-200 cursor-pointer"
+        >
+          <i className="fa-solid fa-rotate-left text-[10px] pointer-events-none"></i>
+        </button>
+      )}
+
+      {state.amioCount > 0 && (
+        <div className="absolute -top-2 -right-2 bg-[#E3000F] text-white text-[12px] font-black px-2 min-w-[26px] h-7 flex items-center justify-center rounded-full shadow-md border-2 border-white z-40 pointer-events-none">
+          {state.amioCount}
+        </div>
+      )}
+    </div>
+  );
+}
+</file>
+
+<file path="src/components/views/ViewAirwayDoc.jsx">
+// --- Datei: src/components/views/ViewAirwayDoc.jsx ---
+import React, { useContext, useState } from 'react';
+import { CprContext } from '../../context/CprContext.jsx';
+import { CPR_CONFIG } from '../../config/cprConfig.js';
+import { getBroselowZone } from '../../config/broselowData.js';
+
+export default function ViewAirwayDoc() {
+  const { state, dispatch, logEvent } = useContext(CprContext);
+  const activeZone = state.isPediatric ? getBroselowZone(state.patientWeight || 10) : null;
+  
+  const [size, setSize] = useState('');
+  const [depth, setDepth] = useState('');
+  
+  const returnPhase = state.previousAppPhase || CPR_CONFIG.PHASES.RUNNING;
+
+  const handleSave = () => {
+    const finalSize = size || '?';
+    const finalDepth = depth || '?';
+    
+    dispatch({ 
+      type: 'SET_AIRWAY', 
+      payload: { established: true, type: state.airwayType, size: finalSize, depth: finalDepth } 
+    });
+    
+    dispatch({ type: 'SET_CPR_MODE', payload: 'continuous' });
+    dispatch({ type: 'SET_COMPRESSION_COUNT', payload: 0 }); 
+    
+    logEvent(CPR_CONFIG.EVENTS.AIRWAY, `${state.airwayType} etabliert (Gr. ${finalSize}, Tiefe: ${finalDepth}cm)`);
+    logEvent(CPR_CONFIG.EVENTS.PHASE_CHANGE, `Modus: continuous (Auto-Switch durch Invasiv)`);
+    
+    dispatch({ type: 'SET_PHASE', payload: returnPhase });
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center w-full h-full p-6 animate-in slide-in-from-right-8 duration-200">
+      
+      <button 
+        onClick={() => dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.AIRWAY_MENU })} 
+        className="absolute top-4 left-4 w-8 h-8 bg-slate-50 rounded-full text-slate-400 flex items-center justify-center active:scale-95 transition-transform z-10 hover:bg-slate-100"
+      >
+        <i className="fa-solid fa-arrow-left pointer-events-none"></i>
+      </button>
+
+      <h2 className="text-[12px] font-black text-slate-700 uppercase tracking-widest text-center mt-1 mb-2">
+        Doku: {state.airwayType || 'Invasiv'}
+      </h2>
+
+      {/* Subtiler, unaufdringlicher Hinweis statt blinkender Warnung */}
+      <div className="flex items-center gap-1.5 text-slate-400 mb-5">
+        <i className="fa-solid fa-circle-info text-[10px]"></i>
+        <span className="text-[8px] font-bold uppercase tracking-widest">etCO2 & Cuffdruck prüfen</span>
+      </div>
+
+      <div className="w-[85%] max-w-[220px] flex flex-col gap-2.5 mb-5">
+        <div>
+          <label className="text-[8px] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-0.5 block">
+            Größe (mm)
+          </label>
+          <input 
+            type="text" 
+            value={size} 
+            onChange={(e) => setSize(e.target.value)} 
+            placeholder={activeZone?.airway?.tubus || "z.B. 7.5"} 
+            className="w-full bg-slate-50 border border-slate-200 rounded-[14px] p-2.5 text-center font-black text-slate-600 text-sm placeholder:text-slate-300 placeholder:font-bold focus:outline-none focus:border-cyan-300 focus:bg-cyan-50 transition-colors" 
+          />
+        </div>
+        <div>
+          <label className="text-[8px] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-0.5 block">
+            Tiefe (cm)
+          </label>
+          <input 
+            type="text" 
+            value={depth} 
+            onChange={(e) => setDepth(e.target.value)} 
+            placeholder={activeZone?.airway?.tiefe || "z.B. 21"} 
+            className="w-full bg-slate-50 border border-slate-200 rounded-[14px] p-2.5 text-center font-black text-slate-600 text-sm placeholder:text-slate-300 placeholder:font-bold focus:outline-none focus:border-cyan-300 focus:bg-cyan-50 transition-colors" 
+          />
+        </div>
+      </div>
+
+      <button 
+        onClick={handleSave} 
+        className="w-[85%] max-w-[220px] py-3 rounded-full font-black uppercase tracking-widest text-[11px] bg-emerald-500 text-white shadow-sm hover:bg-emerald-400 active:scale-95 transition-all flex items-center justify-center gap-2"
+      >
+        <i className="fa-solid fa-check pointer-events-none"></i> 
+        <span className="pointer-events-none">Speichern</span>
+      </button>
     </div>
   );
 }
@@ -4515,6 +4491,206 @@ export default function AirwayButton() {
 }
 </file>
 
+<file path="src/components/dashboard/projekt_handbuch.md">
+# 🚑 CPR ASSIST - DEEP CONTEXT PROTOCOL (Single Source of Truth)
+
+**⚠️ AI-READABILITY INSTRUCTION:** 
+Wenn du (als KI) dieses Dokument liest, lade alle hier genannten Regeln, Variablen und Architekturentscheidungen als harte Fakten in dein Kurzzeitgedächtnis. Dieses Dokument ist die ultimative Referenz für den Codebase-Status. Weiche bei neuen Code-Vorschlägen NIEMALS von diesen Architektur-Mustern ab.
+
+---
+
+## 1. ARCHITEKTUR & EISERNE REGELN
+1. **Die 200-Zeilen-Regel (Strict Modularity):** Keine React-Komponente darf signifikant größer als 200 Zeilen sein[cite: 9]. Wird das Limit erreicht, MUSS zwingend in Sub-Komponenten oder Utility-Files aufgeteilt werden.
+2. **Global State Management:** 100% der Geschäftsdaten leben im `CprContext.jsx` und werden vom `cprReducer.js` gesteuert[cite: 9]. Es gibt KEINEN lokalen State für Daten, die die gesamte App betreffen.
+3. **Data-Driven UI:** Feste Werte und Checklisten sind STRIKT ausgelagert[cite: 9]. 
+   - `cprConfig.js`: Enthält System-Konstanten (`CPR_CONFIG`) und alle UI-Arrays (`CHECKLISTS.ROSC_DATA`, `CHECKLISTS.ABBRUCH_REASONS`)[cite: 9].
+   - `medsConfig.js`: Enthält das gesamte Medikamenten-Inventar inkl. Pädiatrie-Dosierungsformeln[cite: 9].
+4. **Logic Isolation (Custom Hooks):** UI-Komponenten rendern nur. Rechenlogik und DOM-unabhängige Timer sind in Hooks ausgelagert (`useMasterLoop.js`, `useCenterEngine.js`, `usePatientLogic.js`, `useAirwayEngine.js`)[cite: 9].
+5. **Mobile Viewport Safety:** Modals und Overlays, die von unten einfahren (z.B. Logbuch, HITS), MÜSSEN auf `h-[85dvh] max-h-[85%]` limitiert werden (NICHT 95dvh oder 100%), um das Abschneiden von UI-Elementen durch die Android Chrome Adressleiste zu verhindern[cite: 9].
+
+---
+
+## 2. DAS APP-PHASEN SYSTEM (ROUTING-STATE MACHINE)
+Die App nutzt keinen React-Router, sondern rendert Komponenten basierend auf `state.appPhase`[cite: 9]. Der Flow ist strikt linear:
+
+* **[Phase 1] Setup-Flow:** `ONBOARDING` -> `OB_INITIAL_BREATHS` (nur Kinder) -> `OB_COMPRESSIONS`[cite: 9].
+* **[Phase 2] Analyse-Flow:** `OB_ANALYZE` -> `DECISION` (Schockbar/Nicht) -> `JOULE` (Energie) -> `WAITING_CPR_RESUME`[cite: 9].
+* **[Phase 3] Das Live-System:** `RUNNING` (Reguläres Dashboard mit Satelliten-Orbit und 120s-Loop)[cite: 9].
+* **[Phase 4] Overlays (Background-Timer laufen weiter):** `ZUGANG`, `AIRWAY_MENU`, `AIRWAY_DOC`, `MEDS_MENU`[cite: 9].
+* **[Phase 5] Post-Resuscitation & Ende:** 
+  * `ROSC`: Pausiert CPR/Adrenalin, startet `roscSeconds`, zeigt Pädiatrie-Zielwerte (`PediSafeLimits.jsx`) und die ABCDE-Checkliste[cite: 9].
+  * `DEBRIEFING`: Finaler Screen (nach ROSC-Ende oder AbbruchModal). Zeigt KPIs und bietet PDF-Export an[cite: 9].
+
+---
+
+## 3. CORE ENGINES & VARIABLEN
+### A) Timer-Variablen im Reducer
+* `missionSeconds`: Die absolute Einsatzzeit. Stoppt NIEMALS[cite: 9].
+* `cycleSeconds`: Der 120s-Rhythmus-Check-Loop. Wird bei Analyse resettet[cite: 9].
+* `pauseSeconds`: Zählt hoch, wenn `isCompressing === false`[cite: 9]. Steuert die Eskalationswarnung (Grün -> Gelb -> Rot).
+* `adrSeconds`: 240s-Timer für Adrenalin[cite: 9].
+* `roscSeconds`: Stabilisierungs-Timer (ab Phase ROSC)[cite: 9].
+
+### B) Audio Engine (Web Audio API)
+Audio wird 100% nativ über `AudioContext` generiert (Synthese von Oszillatoren), um Latenzen auf mobilen Browsern zu vermeiden[cite: 9]. Der `isMuted`-State unterdrückt *nur* die Tonausgabe – das visuelle Metronom und Timer-Eskalationen laufen stummgeschaltet weiter[cite: 9].
+
+---
+
+## 4. PÄDIATRIE & BROSELOW-LOGIK (CRITICAL DATA)
+* **Single Source of Truth:** `state.patientWeight` diktiert die gesamte App (Joule, Tubusgrößen, Pedi-Safe-Limits für Blutdruck/Beatmung, Medikamentendosen)[cite: 9].
+* **Synchronisation:** Alter, Gewicht und Länge sind aneinandergekoppelt (`calculatePediatricVitals`)[cite: 9].
+
+---
+
+## 5. DAS DASHBOARD & DER SATELLITEN-ORBIT
+Das Center-Display (SVG-Morphing-Kreis) wird von exakt 6 Satelliten flankiert[cite: 9]:
+1. **12 Uhr (Adrenalin):** Ring-Timer (240s) mit Auto-Alarm[cite: 9].
+2. **2 Uhr (Amiodaron/Meds):** Transformiert sich nach der 2. Gabe in den Koffer (`MEDS_MENU`).
+3. **4 Uhr (HITS/SAMPLER):** Trigger für das Anamnese-Modal[cite: 9].
+4. **6 Uhr (Ende ROSC):** Trigger für den Post-Resuscitation-Pfad[cite: 9].
+5. **8 Uhr (Logbuch):** Modal-Trigger für SBAR, Statistik und Timeline[cite: 9].
+6. **10 Uhr (Zugang):** Legt Zugang fest und färbt sich dynamisch blau[cite: 9].
+
+*Hinweis: Der CPR-Button und der Atemweg-Button liegen fixiert in der unteren Leiste[cite: 9].*
+
+---
+
+## 6. LOGBUCH, SMART-UNDO & NATIVE PDF ENGINE
+Jede Aktion feuert ein `logEvent` an den Context[cite: 9].
+
+### A) Smart Undo-Logik
+Wird der Undo-Button betätigt (`UNDO_LAST_EVENT`), löscht der Reducer nicht nur das Event aus der Zeitlinie, sondern **zählt auch dynamisch die entsprechenden Tracker (`adrCount`, `amioCount`, `shockCount`) wieder herunter**, um Desynchronisationen im PDF-Export zu vermeiden.
+
+### B) Clean Re-Arrest Logik
+Bei einem Re-Arrest aus der ROSC-Phase wird der Befehl `CLEANUP_RE_ARREST` genutzt. Dieser setzt den ROSC-Timer auf 0 und leert die abgehakte ROSC-Checkliste, damit bei einem erneuten ROSC keine fehlerhaften (alten) Daten übernommen werden.
+
+### C) Die PDF-Export Architektur (`src/utils/pdf/`)
+Um die 200-Zeilen-Regel einzuhalten, ist der PDF-Export (jsPDF) radikal modularisiert[cite: 9]:
+1. `pdfHelpers.js`: Formatierungs-Tools, Canvas-Rundungen und Icon-Mapping[cite: 9].
+2. `pdfDataParser.js`: Analysiert die `state.events` und berechnet KPIs, Pausen und CCF-Ratios[cite: 9].
+3. `pdfRenderers.js`: Zeichnet Seite 1 (SBAR-Übergabe) und Seite 2 (Performance Insights)[cite: 9].
+4. `pdfCanvasTimeline.js`: **Das Meisterstück.** Rendert die 120s-Zeitlinien-Tracks über die *native HTML5 Canvas 2D API* im Hintergrund (ohne `html2canvas`) und fügt sie als hochauflösendes JPEG in Seite 3 ein[cite: 9].
+5. `pdfExport.js`: Der reine Orchestrator, der die Module zusammenführt und das Dokument je nach Modus (`übergabe` vs. `debriefing`) generiert und speichert[cite: 9].
+
+---
+
+## 7. STATUS & ROADMAP
+* **STATUS:** ORBIT COMPLETE, FEATURE COMPLETE & SYNCED.
+* Alle Module (Engine, Pädiatrie, UI-Flows, ROSC/Abbruch, Smart-Undo, Native PDF-Generierung) sind vollständig integriert und halten sich strikt an die Clean-Architecture-Vorgaben.
+* Die App ist nun bereit für den produktionsnahen Usability-Test.
+</file>
+
+<file path="src/context/CprContext.jsx">
+// --- Datei: src/context/CprContext.jsx ---
+import React, { createContext, useReducer, useEffect, useCallback } from 'react';
+import { cprReducer, initialState } from './cprReducer.js'; 
+
+// 1. Hier wird der Context exportiert (das fehlte Vercel!)
+export const CprContext = createContext();
+
+const loadState = () => {
+  try {
+    const saved = localStorage.getItem('cprAssist_db');
+    if (saved) {
+       const parsed = JSON.parse(saved);
+       parsed.isGridVisible = false;
+       parsed.isPatientModalOpen = false;
+       parsed.isHitsModalOpen = false; 
+       parsed.isLogModalOpen = false;
+       parsed.isAbbruchModalOpen = false;
+       
+       if (parsed.bpm === undefined) parsed.bpm = 110;
+       if (parsed.isMuted === undefined) parsed.isMuted = false;
+       if (parsed.shockCount === undefined) parsed.shockCount = 0;
+       if (parsed.lastJoule === undefined) parsed.lastJoule = null; 
+       if (parsed.airwayEstablished === undefined) parsed.airwayEstablished = false;
+       if (parsed.zugang === undefined) parsed.zugang = null;
+       if (parsed.adrSeconds === undefined) parsed.adrSeconds = 0;
+       if (parsed.adrCount === undefined) parsed.adrCount = 0;
+       if (parsed.amioCount === undefined) parsed.amioCount = 0; 
+       if (parsed.hitsStatus === undefined) parsed.hitsStatus = {}; 
+       if (parsed.anamneseData === undefined) parsed.anamneseData = initialState.anamneseData; 
+       if (parsed.roscChecklist === undefined) parsed.roscChecklist = {};
+       
+       return parsed;
+    }
+    return initialState;
+  } catch (e) {
+    return initialState;
+  }
+};
+
+// 2. Hier wird der Provider exportiert (das fehlte Vercel auch!)
+export function CprProvider({ children }) {
+  const [state, dispatch] = useReducer(cprReducer, initialState, loadState);
+
+  useEffect(() => {
+    const stateToSave = {
+      appPhase: state.appPhase,
+      isPediatric: state.isPediatric,
+      patientWeight: state.patientWeight,
+      cprMode: state.cprMode,
+      bpm: state.bpm,                 
+      isMuted: state.isMuted,         
+      shockCount: state.shockCount,   
+      lastJoule: state.lastJoule,     
+      startTime: state.startTime,
+      missionSeconds: state.missionSeconds,
+      cprSeconds: state.cprSeconds,
+      cycleSeconds: state.cycleSeconds,
+      isCompressing: state.isCompressing,
+      airwayEstablished: state.airwayEstablished,
+      airwayType: state.airwayType,
+      airwaySize: state.airwaySize,   
+      airwayDepth: state.airwayDepth, 
+      zugang: state.zugang,           
+      adrSeconds: state.adrSeconds,
+      adrCount: state.adrCount,
+      amioCount: state.amioCount, 
+      hitsStatus: state.hitsStatus, 
+      anamneseData: state.anamneseData, 
+      roscChecklist: state.roscChecklist,
+      events: state.events,
+      reminders: state.reminders,
+      currentCcfPercent: state.currentCcfPercent,
+      compressingSeconds: state.compressingSeconds,
+      arrestSeconds: state.arrestSeconds
+    };
+    localStorage.setItem('cprAssist_db', JSON.stringify(stateToSave));
+  }, [state]);
+
+  const logEvent = useCallback((type, detail = "") => {
+    const now = new Date();
+    const realTimeStr = now.toLocaleTimeString('de-DE', { hour12: false });
+    
+    const formatMissionTime = (totalSeconds) => {
+      const m = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+      const s = (totalSeconds % 60).toString().padStart(2, '0');
+      return `${m}:${s}`;
+    };
+
+    const formattedEntry = `[${realTimeStr}] (${formatMissionTime(state.missionSeconds)}) ${type}: ${detail}`;
+
+    const newEvent = {
+      id: crypto.randomUUID(),
+      realTime: realTimeStr,
+      missionTime: state.missionSeconds,
+      type: type,
+      detail: detail,
+      fullEntry: formattedEntry
+    };
+    
+    dispatch({ type: 'LOG_EVENT', payload: newEvent });
+  }, [state.missionSeconds]);
+
+  return (
+    <CprContext.Provider value={{ state, dispatch, logEvent }}>
+      {children}
+    </CprContext.Provider>
+  );
+}
+</file>
+
 <file path="src/hooks/useAirwayEngine.js">
 // --- Datei: src/hooks/useAirwayEngine.js ---
 import { useContext, useEffect, useRef } from 'react';
@@ -4787,206 +4963,6 @@ export function useAirwayEngine() {
 }
 </file>
 
-<file path="src/components/dashboard/projekt_handbuch.md">
-# 🚑 CPR ASSIST - DEEP CONTEXT PROTOCOL (Single Source of Truth)
-
-**⚠️ AI-READABILITY INSTRUCTION:** 
-Wenn du (als KI) dieses Dokument liest, lade alle hier genannten Regeln, Variablen und Architekturentscheidungen als harte Fakten in dein Kurzzeitgedächtnis. Dieses Dokument ist die ultimative Referenz für den Codebase-Status. Weiche bei neuen Code-Vorschlägen NIEMALS von diesen Architektur-Mustern ab.
-
----
-
-## 1. ARCHITEKTUR & EISERNE REGELN
-1. **Die 200-Zeilen-Regel (Strict Modularity):** Keine React-Komponente darf signifikant größer als 200 Zeilen sein[cite: 9]. Wird das Limit erreicht, MUSS zwingend in Sub-Komponenten oder Utility-Files aufgeteilt werden.
-2. **Global State Management:** 100% der Geschäftsdaten leben im `CprContext.jsx` und werden vom `cprReducer.js` gesteuert[cite: 9]. Es gibt KEINEN lokalen State für Daten, die die gesamte App betreffen.
-3. **Data-Driven UI:** Feste Werte und Checklisten sind STRIKT ausgelagert[cite: 9]. 
-   - `cprConfig.js`: Enthält System-Konstanten (`CPR_CONFIG`) und alle UI-Arrays (`CHECKLISTS.ROSC_DATA`, `CHECKLISTS.ABBRUCH_REASONS`)[cite: 9].
-   - `medsConfig.js`: Enthält das gesamte Medikamenten-Inventar inkl. Pädiatrie-Dosierungsformeln[cite: 9].
-4. **Logic Isolation (Custom Hooks):** UI-Komponenten rendern nur. Rechenlogik und DOM-unabhängige Timer sind in Hooks ausgelagert (`useMasterLoop.js`, `useCenterEngine.js`, `usePatientLogic.js`, `useAirwayEngine.js`)[cite: 9].
-5. **Mobile Viewport Safety:** Modals und Overlays, die von unten einfahren (z.B. Logbuch, HITS), MÜSSEN auf `h-[85dvh] max-h-[85%]` limitiert werden (NICHT 95dvh oder 100%), um das Abschneiden von UI-Elementen durch die Android Chrome Adressleiste zu verhindern[cite: 9].
-
----
-
-## 2. DAS APP-PHASEN SYSTEM (ROUTING-STATE MACHINE)
-Die App nutzt keinen React-Router, sondern rendert Komponenten basierend auf `state.appPhase`[cite: 9]. Der Flow ist strikt linear:
-
-* **[Phase 1] Setup-Flow:** `ONBOARDING` -> `OB_INITIAL_BREATHS` (nur Kinder) -> `OB_COMPRESSIONS`[cite: 9].
-* **[Phase 2] Analyse-Flow:** `OB_ANALYZE` -> `DECISION` (Schockbar/Nicht) -> `JOULE` (Energie) -> `WAITING_CPR_RESUME`[cite: 9].
-* **[Phase 3] Das Live-System:** `RUNNING` (Reguläres Dashboard mit Satelliten-Orbit und 120s-Loop)[cite: 9].
-* **[Phase 4] Overlays (Background-Timer laufen weiter):** `ZUGANG`, `AIRWAY_MENU`, `AIRWAY_DOC`, `MEDS_MENU`[cite: 9].
-* **[Phase 5] Post-Resuscitation & Ende:** 
-  * `ROSC`: Pausiert CPR/Adrenalin, startet `roscSeconds`, zeigt Pädiatrie-Zielwerte (`PediSafeLimits.jsx`) und die ABCDE-Checkliste[cite: 9].
-  * `DEBRIEFING`: Finaler Screen (nach ROSC-Ende oder AbbruchModal). Zeigt KPIs und bietet PDF-Export an[cite: 9].
-
----
-
-## 3. CORE ENGINES & VARIABLEN
-### A) Timer-Variablen im Reducer
-* `missionSeconds`: Die absolute Einsatzzeit. Stoppt NIEMALS[cite: 9].
-* `cycleSeconds`: Der 120s-Rhythmus-Check-Loop. Wird bei Analyse resettet[cite: 9].
-* `pauseSeconds`: Zählt hoch, wenn `isCompressing === false`[cite: 9]. Steuert die Eskalationswarnung (Grün -> Gelb -> Rot).
-* `adrSeconds`: 240s-Timer für Adrenalin[cite: 9].
-* `roscSeconds`: Stabilisierungs-Timer (ab Phase ROSC)[cite: 9].
-
-### B) Audio Engine (Web Audio API)
-Audio wird 100% nativ über `AudioContext` generiert (Synthese von Oszillatoren), um Latenzen auf mobilen Browsern zu vermeiden[cite: 9]. Der `isMuted`-State unterdrückt *nur* die Tonausgabe – das visuelle Metronom und Timer-Eskalationen laufen stummgeschaltet weiter[cite: 9].
-
----
-
-## 4. PÄDIATRIE & BROSELOW-LOGIK (CRITICAL DATA)
-* **Single Source of Truth:** `state.patientWeight` diktiert die gesamte App (Joule, Tubusgrößen, Pedi-Safe-Limits für Blutdruck/Beatmung, Medikamentendosen)[cite: 9].
-* **Synchronisation:** Alter, Gewicht und Länge sind aneinandergekoppelt (`calculatePediatricVitals`)[cite: 9].
-
----
-
-## 5. DAS DASHBOARD & DER SATELLITEN-ORBIT
-Das Center-Display (SVG-Morphing-Kreis) wird von exakt 6 Satelliten flankiert[cite: 9]:
-1. **12 Uhr (Adrenalin):** Ring-Timer (240s) mit Auto-Alarm[cite: 9].
-2. **2 Uhr (Amiodaron/Meds):** Transformiert sich nach der 2. Gabe in den Koffer (`MEDS_MENU`).
-3. **4 Uhr (HITS/SAMPLER):** Trigger für das Anamnese-Modal[cite: 9].
-4. **6 Uhr (Ende ROSC):** Trigger für den Post-Resuscitation-Pfad[cite: 9].
-5. **8 Uhr (Logbuch):** Modal-Trigger für SBAR, Statistik und Timeline[cite: 9].
-6. **10 Uhr (Zugang):** Legt Zugang fest und färbt sich dynamisch blau[cite: 9].
-
-*Hinweis: Der CPR-Button und der Atemweg-Button liegen fixiert in der unteren Leiste[cite: 9].*
-
----
-
-## 6. LOGBUCH, SMART-UNDO & NATIVE PDF ENGINE
-Jede Aktion feuert ein `logEvent` an den Context[cite: 9].
-
-### A) Smart Undo-Logik
-Wird der Undo-Button betätigt (`UNDO_LAST_EVENT`), löscht der Reducer nicht nur das Event aus der Zeitlinie, sondern **zählt auch dynamisch die entsprechenden Tracker (`adrCount`, `amioCount`, `shockCount`) wieder herunter**, um Desynchronisationen im PDF-Export zu vermeiden.
-
-### B) Clean Re-Arrest Logik
-Bei einem Re-Arrest aus der ROSC-Phase wird der Befehl `CLEANUP_RE_ARREST` genutzt. Dieser setzt den ROSC-Timer auf 0 und leert die abgehakte ROSC-Checkliste, damit bei einem erneuten ROSC keine fehlerhaften (alten) Daten übernommen werden.
-
-### C) Die PDF-Export Architektur (`src/utils/pdf/`)
-Um die 200-Zeilen-Regel einzuhalten, ist der PDF-Export (jsPDF) radikal modularisiert[cite: 9]:
-1. `pdfHelpers.js`: Formatierungs-Tools, Canvas-Rundungen und Icon-Mapping[cite: 9].
-2. `pdfDataParser.js`: Analysiert die `state.events` und berechnet KPIs, Pausen und CCF-Ratios[cite: 9].
-3. `pdfRenderers.js`: Zeichnet Seite 1 (SBAR-Übergabe) und Seite 2 (Performance Insights)[cite: 9].
-4. `pdfCanvasTimeline.js`: **Das Meisterstück.** Rendert die 120s-Zeitlinien-Tracks über die *native HTML5 Canvas 2D API* im Hintergrund (ohne `html2canvas`) und fügt sie als hochauflösendes JPEG in Seite 3 ein[cite: 9].
-5. `pdfExport.js`: Der reine Orchestrator, der die Module zusammenführt und das Dokument je nach Modus (`übergabe` vs. `debriefing`) generiert und speichert[cite: 9].
-
----
-
-## 7. STATUS & ROADMAP
-* **STATUS:** ORBIT COMPLETE, FEATURE COMPLETE & SYNCED.
-* Alle Module (Engine, Pädiatrie, UI-Flows, ROSC/Abbruch, Smart-Undo, Native PDF-Generierung) sind vollständig integriert und halten sich strikt an die Clean-Architecture-Vorgaben.
-* Die App ist nun bereit für den produktionsnahen Usability-Test.
-</file>
-
-<file path="src/context/CprContext.jsx">
-// --- Datei: src/context/CprContext.jsx ---
-import React, { createContext, useReducer, useEffect, useCallback } from 'react';
-import { cprReducer, initialState } from './cprReducer.js'; 
-
-// 1. Hier wird der Context exportiert (das fehlte Vercel!)
-export const CprContext = createContext();
-
-const loadState = () => {
-  try {
-    const saved = localStorage.getItem('cprAssist_db');
-    if (saved) {
-       const parsed = JSON.parse(saved);
-       parsed.isGridVisible = false;
-       parsed.isPatientModalOpen = false;
-       parsed.isHitsModalOpen = false; 
-       parsed.isLogModalOpen = false;
-       parsed.isAbbruchModalOpen = false;
-       
-       if (parsed.bpm === undefined) parsed.bpm = 110;
-       if (parsed.isMuted === undefined) parsed.isMuted = false;
-       if (parsed.shockCount === undefined) parsed.shockCount = 0;
-       if (parsed.lastJoule === undefined) parsed.lastJoule = null; 
-       if (parsed.airwayEstablished === undefined) parsed.airwayEstablished = false;
-       if (parsed.zugang === undefined) parsed.zugang = null;
-       if (parsed.adrSeconds === undefined) parsed.adrSeconds = 0;
-       if (parsed.adrCount === undefined) parsed.adrCount = 0;
-       if (parsed.amioCount === undefined) parsed.amioCount = 0; 
-       if (parsed.hitsStatus === undefined) parsed.hitsStatus = {}; 
-       if (parsed.anamneseData === undefined) parsed.anamneseData = initialState.anamneseData; 
-       if (parsed.roscChecklist === undefined) parsed.roscChecklist = {};
-       
-       return parsed;
-    }
-    return initialState;
-  } catch (e) {
-    return initialState;
-  }
-};
-
-// 2. Hier wird der Provider exportiert (das fehlte Vercel auch!)
-export function CprProvider({ children }) {
-  const [state, dispatch] = useReducer(cprReducer, initialState, loadState);
-
-  useEffect(() => {
-    const stateToSave = {
-      appPhase: state.appPhase,
-      isPediatric: state.isPediatric,
-      patientWeight: state.patientWeight,
-      cprMode: state.cprMode,
-      bpm: state.bpm,                 
-      isMuted: state.isMuted,         
-      shockCount: state.shockCount,   
-      lastJoule: state.lastJoule,     
-      startTime: state.startTime,
-      missionSeconds: state.missionSeconds,
-      cprSeconds: state.cprSeconds,
-      cycleSeconds: state.cycleSeconds,
-      isCompressing: state.isCompressing,
-      airwayEstablished: state.airwayEstablished,
-      airwayType: state.airwayType,
-      airwaySize: state.airwaySize,   
-      airwayDepth: state.airwayDepth, 
-      zugang: state.zugang,           
-      adrSeconds: state.adrSeconds,
-      adrCount: state.adrCount,
-      amioCount: state.amioCount, 
-      hitsStatus: state.hitsStatus, 
-      anamneseData: state.anamneseData, 
-      roscChecklist: state.roscChecklist,
-      events: state.events,
-      reminders: state.reminders,
-      currentCcfPercent: state.currentCcfPercent,
-      compressingSeconds: state.compressingSeconds,
-      arrestSeconds: state.arrestSeconds
-    };
-    localStorage.setItem('cprAssist_db', JSON.stringify(stateToSave));
-  }, [state]);
-
-  const logEvent = useCallback((type, detail = "") => {
-    const now = new Date();
-    const realTimeStr = now.toLocaleTimeString('de-DE', { hour12: false });
-    
-    const formatMissionTime = (totalSeconds) => {
-      const m = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
-      const s = (totalSeconds % 60).toString().padStart(2, '0');
-      return `${m}:${s}`;
-    };
-
-    const formattedEntry = `[${realTimeStr}] (${formatMissionTime(state.missionSeconds)}) ${type}: ${detail}`;
-
-    const newEvent = {
-      id: crypto.randomUUID(),
-      realTime: realTimeStr,
-      missionTime: state.missionSeconds,
-      type: type,
-      detail: detail,
-      fullEntry: formattedEntry
-    };
-    
-    dispatch({ type: 'LOG_EVENT', payload: newEvent });
-  }, [state.missionSeconds]);
-
-  return (
-    <CprContext.Provider value={{ state, dispatch, logEvent }}>
-      {children}
-    </CprContext.Provider>
-  );
-}
-</file>
-
 <file path="src/context/cprReducer.js">
 // --- Datei: src/context/cprReducer.js ---
 import { CPR_CONFIG } from '../config/cprConfig.js';
@@ -5079,6 +5055,7 @@ export function cprReducer(state, action) {
     case 'TOGGLE_GRID': return { ...state, isGridVisible: !state.isGridVisible };
     case 'LOG_EVENT': return { ...state, events: [...state.events, action.payload] };
     
+    // --- SMART UNDO FÜR ALLGEMEINES LOGBUCH ---
     case 'UNDO_LAST_EVENT': {
       if (state.events.length === 0) return state;
       const lastEvent = state.events[state.events.length - 1];
@@ -5087,13 +5064,28 @@ export function cprReducer(state, action) {
       let newAdr = state.adrCount;
       let newAmio = state.amioCount;
       let newShock = state.shockCount;
+      let newAdrSecs = state.adrSeconds;
       
       const txt = lastEvent.fullEntry.toLowerCase();
-      if (txt.includes('adrenalin')) newAdr = Math.max(0, newAdr - 1);
+      if (txt.includes('adrenalin')) {
+        newAdr = Math.max(0, newAdr - 1);
+        newAdrSecs = 0; // Timer sofort killen
+      }
       if (txt.includes('amiodaron') || txt.includes('amio')) newAmio = Math.max(0, newAmio - 1);
       if (txt.includes('schock abgegeben')) newShock = Math.max(0, newShock - 1);
 
-      return { ...state, events: newEvents, adrCount: newAdr, amioCount: newAmio, shockCount: newShock };
+      return { ...state, events: newEvents, adrCount: newAdr, amioCount: newAmio, shockCount: newShock, adrSeconds: newAdrSecs };
+    }
+
+    // --- SMART UNDO SPEZIELL FÜR AMIODARON ---
+    case 'UNDO_AMIODARON': {
+      const reversedIndex = [...state.events].reverse().findIndex(e => e.fullEntry.toLowerCase().includes('amio'));
+      if (reversedIndex === -1) return state;
+
+      const actualIndex = state.events.length - 1 - reversedIndex;
+      const newEvents = state.events.filter((_, i) => i !== actualIndex);
+
+      return { ...state, events: newEvents, amioCount: Math.max(0, state.amioCount - 1) };
     }
 
     case 'CLEANUP_RE_ARREST': 
@@ -5159,11 +5151,6 @@ import AmiodaronButton from './AmiodaronButton.jsx';
 import { usePatientLogic } from '../../hooks/usePatientLogic.js';
 import { useMasterLoop } from '../../hooks/useMasterLoop.js'; 
 
-// =========================================================================
-// Diese Komponenten MÜSSEN außerhalb der Hauptfunktion liegen, 
-// da sie sonst im 1-Sekunden-Takt ihren internen Zustand (useState) löschen!
-// =========================================================================
-
 const SatelliteBtn = ({ icon, label, colorClass = "bg-white text-slate-500 border-slate-200", onClick }) => (
   <button onClick={onClick} className={`w-[86px] h-[86px] rounded-full shadow-sm border-[3px] flex flex-col items-center justify-center gap-1 hover:bg-slate-50 active:scale-95 transition-all cursor-pointer ${colorClass}`}>
     <i className={`fa-solid ${icon} text-[24px] mb-0.5 pointer-events-none`}></i>
@@ -5177,12 +5164,8 @@ const OrbitPosition = ({ x, y, children, zIndex = 20 }) => (
   </div>
 );
 
-// =========================================================================
-// HAUPT-SHELL
-// =========================================================================
-
 export default function DashboardShell() {
-  const { state, dispatch } = useContext(CprContext);
+  const { state, dispatch, logEvent } = useContext(CprContext);
   const { toggleCprMode } = usePatientLogic();
   const { toggleCpr } = useMasterLoop(); 
 
@@ -5200,10 +5183,17 @@ export default function DashboardShell() {
   const showSatellites = isRunning;
   const showBottomButtons = !isSetup; 
 
+  const handleRoscTrigger = () => {
+    dispatch({ type: 'RESET_ROSC_TIMER' });
+    dispatch({ type: 'SET_PHASE', payload: CPR_CONFIG.PHASES.ROSC });
+    const m = Math.floor(state.missionSeconds / 60);
+    const s = state.missionSeconds % 60;
+    if (logEvent) logEvent('ROSC', `ROSC eingetreten nach ${m} Min ${s} Sek`);
+  };
+
   return (
     <div className="absolute inset-0 w-full h-full flex flex-col bg-slate-50 animate-in fade-in duration-500 overflow-hidden">
       
-      {/* HEADER STATS */}
       <div className={`flex items-stretch justify-between gap-2 px-3 py-2 shrink-0 z-40 relative transition-opacity duration-300 ${!showTopStats ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         <div className="bg-white rounded-[14px] px-3 py-2 shadow-sm border border-slate-200 flex-[0.85] flex flex-col justify-between">
           <div className="w-full mb-1">
@@ -5231,7 +5221,6 @@ export default function DashboardShell() {
         </div>
       </div>
 
-      {/* SATELLITEN ORBIT */}
       <div className="flex-1 relative w-full flex items-center justify-center z-30 overflow-visible">
         <OrbitPosition x={0} y={0} zIndex={10}>
           <CenterDisplay />
@@ -5286,16 +5275,13 @@ export default function DashboardShell() {
         )}
       </div>
 
-      {/* GRADIENT FOOTER */}
       <div className="absolute bottom-0 w-full h-40 bg-gradient-to-t from-slate-200/90 to-transparent z-10 pointer-events-none"></div>
 
-      {/* FIXED BUTTONS (AIRWAY & CPR) */}
       <div className={`shrink-0 w-full flex justify-between items-end px-5 pb-8 pt-2 z-50 transition-opacity duration-300 pointer-events-none ${!showBottomButtons ? 'opacity-0' : 'opacity-100'}`}>
         <AirwayButton />
         <CprButton toggleCpr={toggleCpr} />
       </div>
 
-      {/* MODALS & FULLSCREEN VIEWS */}
       {state.isPatientModalOpen && <PatientSetupModal />}
       {state.isHitsModalOpen && <HitsModal />}
       {state.isLogModalOpen && <ViewLogbook />}
